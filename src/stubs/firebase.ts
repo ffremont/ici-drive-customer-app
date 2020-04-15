@@ -1,12 +1,10 @@
-class ProviderStub{
-    public addProfile(name: string){
-
-    }
-}
+function ProviderStub(){}
+ProviderStub.prototype.addProfile = (name: string) => {}
+ProviderStub.prototype.addScope = (name: string) => {}
 
 export class FirebaseStub {
 
-    private isSigned = false;
+    private isSigned = true;
 
     private authFns:any = [];
     private userMock:any = { email: 'ff.fremont.florent@gmail.com' };
@@ -25,9 +23,9 @@ export class FirebaseStub {
 
     public init(){
         const me:any = this;
-        me.auth.FacebookAuthProvider = () => new ProviderStub();
-        me.auth.EmailAuthProvider = () => new ProviderStub();
-        me.auth.GoogleAuthProvider = () => new ProviderStub();
+        me.auth.FacebookAuthProvider = () => ProviderStub;
+        me.auth.EmailAuthProvider = () => ProviderStub;
+        me.auth.GoogleAuthProvider = () => ProviderStub;
 
         return this;
     }

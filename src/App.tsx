@@ -4,7 +4,10 @@ import {
   Switch,
   Route
 } from "react-router-dom";
-import Home from "./views/home";
+
+import pink from '@material-ui/core/colors/pink';
+import { MuiThemeProvider, createMuiTheme   } from '@material-ui/core/styles';
+//import Home from "./views/home";
 import Login from './views/login';
 import Partners from './views/partners';
 import Partner from './views/partner';
@@ -12,14 +15,23 @@ import PrivateRoute from './components/private-route';
 import NoMatch from './views/no-match';
 
 
+// @see https://material-ui.com/customization/palette/
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#448aff',
+    },
+    secondary: pink,
+  },
+});
 
 // @see https://reacttraining.com/react-router/web/guides/primary-components
 function App() {
   return (
-    <div className="App">
+    <MuiThemeProvider theme={theme}>
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Partners />
           </Route>
 
           <Route path="/login">
@@ -38,7 +50,7 @@ function App() {
             <NoMatch/>
           </Route>
         </Switch>
-    </div>
+    </MuiThemeProvider>
   );
 }
 

@@ -35,15 +35,16 @@ class Login extends React.Component {
   }
 
   signFacebook(){
-    this.sign(new firebase.auth.FacebookAuthProvider());
+    this.sign(process.env.REACT_APP_STAGE === 'prod' ? 
+      new firebase.auth.FacebookAuthProvider() : new (firebase.auth.FacebookAuthProvider()) );
   }
 
   signEmail(){
-    this.sign(new firebase.auth.EmailAuthProvider());
+    this.sign(process.env.REACT_APP_STAGE === 'prod' ? new firebase.auth.EmailAuthProvider() : new (firebase.auth.EmailAuthProvider()));
   }
 
   signGoogle(){
-    this.sign(new firebase.auth.GoogleAuthProvider());    
+    this.sign(process.env.REACT_APP_STAGE === 'prod' ?  new firebase.auth.GoogleAuthProvider() : new (firebase.auth.GoogleAuthProvider()));    
   }
 
   componentDidMount() {
@@ -69,7 +70,14 @@ class Login extends React.Component {
 
   render() {
     if(this.state.loading){
-      return <Container component="main" maxWidth="xs"><CircularProgress className="wait-auth" /></Container>;
+      return <div
+      style={{
+          position: 'absolute', 
+          left: '50%', 
+          top: '50%',
+          transform: 'translate(-50%, -50%)'
+      }}
+  ><CircularProgress className="wait-auth" /></div>;
     }else{
       if (this.state.isSignedIn) {
         return <Redirect
