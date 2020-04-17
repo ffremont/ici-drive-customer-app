@@ -19,6 +19,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Badge from '@material-ui/core/Badge';
 import SearchIcon from '@material-ui/icons/Search';
+//import IciDriveTypoIcon from '../../assets/images/ici-drive-typo.png';
 import './MenuApp.scss';
 
 
@@ -83,8 +84,10 @@ const MenuApp = () => {
           <IconButton edge="start" className={classes.menuButton}  onClick={() => setOpen(true)} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
+          
           <Typography variant="h6" className={classes.title}>
-            Photos
+            {/*<img alt="logo ici drive" className="ici-drive-type" src={IciDriveTypoIcon} />*/}
+            ICI DRIVE
           </Typography>
 
           <IconButton aria-label="search" color="inherit">

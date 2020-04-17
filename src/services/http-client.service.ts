@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
 import { Subscription, Subject } from 'rxjs';
 import { HttpCall } from '../models/httpcall';
 import authService from './auth.service';
@@ -8,7 +8,7 @@ class HttpClientService{
     private subRequest = new Subject<HttpCall>();
     private subResponse = new Subject<HttpCall>();
 
-    private config: any;
+    private config: AxiosRequestConfig;
     private idToken: string|null = null;
 
     public axios:any;
@@ -17,6 +17,7 @@ class HttpClientService{
         authService.subToken.subscribe( token => this.idToken = token );
 
         this.config = {
+            responseType: 'json',
             timeout: 15000,
             transformRequest: [(data:any, headers:any)=>{
                 if(this.idToken !== null){

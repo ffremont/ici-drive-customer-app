@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+
+.backdrop{
+  z-index:1201 !important;
+  color: #fff !important,
+}

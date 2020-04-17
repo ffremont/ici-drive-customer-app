@@ -1,1 +1,35 @@
-{}
+[{
+    "email": "ff.fremont.florent@gmail.com",
+    "place": {
+        "label": "GAEC de de terre noire",
+        "address" : "5 rue de la terre, 79000 Niort",
+        "slotsDescription": "Ouvert habituellement la semaine et le week-end",
+        "capacityPerSlot": 2,
+        "hebdoSlot": {
+            "monday:": {"openAt": "8:00", "closeAt": "12:00"},
+            "tuesday:": {"openAt": "8:00", "closeAt": "12:00"},
+            "webnesday:": {"openAt": "8:00", "closeAt": "12:00"},
+            "thursday:": {"openAt": "8:00", "closeAt": "12:00"},
+            "friday:": {"openAt": "8:00", "closeAt": "12:00"},
+            "saturday:": {"openAt": "8:00", "closeAt": "12:00"},
+            "sunday:": {"openAt": "8:00", "closeAt": "18:00"}
+        },
+        "image": "https://res.cloudinary.com/dyuwlqafx/image/upload/v1587012776/ici-drive/20200416_064110_0000_1.png"
+    },
+    "categories": [
+        { "label": "Boeuf / Veau", "id": "boeuf-veau"},
+        { "label": "Volaille / Lapin", "id": "volaille-lapin"},
+        { "label": "Agneau / Porc", "id": "agneau-porc"},
+        { "label": "Charcuterie", "id": "charcuterie"},
+        { "label": "Boisson", "id": "boisson"},
+        { "label": "Epicerie", "id": "epicerie"},
+        { "label": "Fromage", "id": "fromage"},
+        { "label": "Pâtes / Légumineuses", "id": "pates-leg"},
+        { "label": "Glace", "id": "glace"},
+        { "label": "Fruit / Légume", "id": "fruit-leg"},
+        { "label": "Fruit / Légume", "id": "fruit-leg"},
+        { "label": "Mer", "id": "mer"},
+        { "label": "Miel", "id": "miel"},
+        { "label": "Crèmerie", "id": "cremerie"}
+    ]
+}]
