@@ -4,7 +4,7 @@ export interface Product{
     price:number;
     description?:string;
     ref:string;
-    category:string;
+    categoryId:string;
     weight?:number;
     volume?:number;
     maxInBasket?:number;

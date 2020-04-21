@@ -1,8 +1,11 @@
+import { Item } from "../models/item";
+
 interface APIS{
     partners:any;
     products:any;
 }
 
 export interface Configuration{
-    API: APIS
+    API: APIS,
+    categories: Item[]
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -18,11 +18,10 @@ import InfoIcon from '@material-ui/icons/Info';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Badge from '@material-ui/core/Badge';
-//import { useHistory } from 'react-router-dom'
-import IciDriveTypoIcon from '../../assets/images/icon.png';
+import IciDriveTypoIcon from '../../assets/images/ici-drive-icon.png';
+import IciDriveBannerIcon from '../../assets/images/ici-drive-banner.png';
 import './MenuApp.scss';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { matchPath } from "react-router-dom";
 
 
 
@@ -52,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const MenuApp = (props: any) => {
   const classes = useStyles();
-  const [mode, setMode] = useState(props.mode);
+  const [mode] = useState(props.mode);
   const [auth] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -119,8 +118,7 @@ const MenuApp = (props: any) => {
 
           {mode === 'full' && (
             <Typography variant="h6" className={classes.title}>
-              {/*mettre la bannière*/}
-            ICI DRIVE
+             <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveBannerIcon} />
             </Typography>
           )}
           {['light', 'catalog'].indexOf(mode) > -1 && (
