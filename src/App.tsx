@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
 import {
+  BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
 
-import pink from '@material-ui/core/colors/pink';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -19,34 +19,27 @@ import httpClientService from './services/http-client.service';
 
 
 // @see https://material-ui.com/customization/palette/
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#448aff',
-    },
-    secondary: pink,
-  },
-});
+const theme = createMuiTheme({ "palette": { "common": { "black": "#000", "white": "#fff" }, "background": { "paper": "#fff", "default": "#fafafa" }, "primary": { "light": "rgba(48, 49, 49, 0.84)", "main": "rgba(48, 49, 49, 1)", "dark": "rgba(38, 39, 39, 1)", "contrastText": "#fff" }, "secondary": { "light": "rgba(118, 143, 255, 1)", "main": "rgba(41, 98, 255, 1)", "dark": "rgba(0, 57, 203, 1)", "contrastText": "#fff" }, "error": { "light": "#e57373", "main": "#f44336", "dark": "#d32f2f", "contrastText": "#fff" }, "text": { "primary": "rgba(0, 0, 0, 0.87)", "secondary": "rgba(0, 0, 0, 0.54)", "disabled": "rgba(0, 0, 0, 0.38)", "hint": "rgba(0, 0, 0, 0.38)" } } });
 
 
 class App extends React.Component<{}, { concurrentCalls: number }>{
 
-  state = {concurrentCalls:0};
+  state = { concurrentCalls: 0 };
   subHttpClientRequest: Subscription | null = null;
   subHttpClientResponse: Subscription | null = null;
 
-  componentDidMount(){
-      this.subHttpClientRequest = httpClientService.subOnRequest(() => {
-        this.setState({concurrentCalls: this.state.concurrentCalls+1});
-      });
-      this.subHttpClientResponse = httpClientService.subOnResponse(() => {
-        if(this.state.concurrentCalls > 0){
-          this.setState({concurrentCalls: this.state.concurrentCalls-1});
-        }
-      });
+  componentDidMount() {
+    this.subHttpClientRequest = httpClientService.subOnRequest(() => {
+      this.setState({ concurrentCalls: this.state.concurrentCalls + 1 });
+    });
+    this.subHttpClientResponse = httpClientService.subOnResponse(() => {
+      if (this.state.concurrentCalls > 0) {
+        this.setState({ concurrentCalls: this.state.concurrentCalls - 1 });
+      }
+    });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.subHttpClientRequest?.unsubscribe();
     this.subHttpClientResponse?.unsubscribe();
   }
@@ -58,28 +51,21 @@ class App extends React.Component<{}, { concurrentCalls: number }>{
         <Backdrop className="backdrop" open={this.state.concurrentCalls !== 0}>
           <CircularProgress color="inherit" />
         </Backdrop>
+        <Router>
+          <Switch>
+            {/*<Route exact path="/" render={(routeProps) => <Partners {...routeProps} />} />*/}
 
-        <Switch>
-          <Route exact path="/">
-            <Partners />
-          </Route>
+            <Route exact path="/" component={Partners} />
+            <Route path="/partners/:id" component={Partner} />
 
-          <Route path="/login">
-            <Login />
-          </Route>
+            <Route path="/login" component={Login} />
+            <PrivateRoute exact path="/partners" component={Partners} />
 
-          <PrivateRoute exact path="/partners">
-            <Partners />
-          </PrivateRoute>
+            
 
-          <Route path="/partners/:id">
-            <Partner />
-          </Route>
-
-          <Route path="*">
-            <NoMatch />
-          </Route>
-        </Switch>
+            <Route path="*" component={NoMatch} />
+          </Switch>
+        </Router>
       </MuiThemeProvider>
     );
   }

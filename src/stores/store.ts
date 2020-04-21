@@ -2,7 +2,6 @@ import { Partner } from "../models/partner";
 import { Subscription } from "rxjs";
 
 export interface Store<T>{
-    set(partners: Partner[]): void;
+    set(entity: T): void;
     subscribe(func:any): Subscription;
-    refresh():void;
 }

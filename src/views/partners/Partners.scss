@@ -1,6 +1,26 @@
-.partners{
-    .tabs{
-        color: #515860;
-        background-color: white;
+.partner-banner{
+    height: auto;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 4px;
+}
+
+.partner-cardmedia{
+   height:140px;
+   background-size: 100%;
+}
+
+.partner-card{
+    max-width: 500px;
+    width: 98%;
+    min-width: 300px;
+}
+
+.partner-cardcontent{
+    display: flex;
+    align-items: center;
+
+    h2{
+        flex:1;
     }
 }

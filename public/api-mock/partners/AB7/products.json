@@ -1,0 +1,12 @@
+[{
+    "label": "Pomme de terre BIO",
+    "image": "https://icidrive.b-cdn.net/large.jpg",
+    "category": "fruit-leg",
+    "ref":"GTN_PDT_01",
+    "price": 1.3,
+    "description":"Pomme de terre Standard. Filet de 5 kg",
+    "weight":5000,
+
+    "available": true,
+    "maxInBasket": 10
+}]

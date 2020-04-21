@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Route,
   Redirect,
@@ -9,12 +9,16 @@ import authService from '../../services/auth.service';
 
 const PrivateRoute = (props: RouteProps) => {
   const {children, ...rest} = props;
+  const component:any = props.component;
   return (
     <Route
     {...rest}
-    render={({ location }) =>
+    render={({ location, history, match }) =>
         authService.isAuth ? (
-          children
+          /*React.Children.map(children, (child:any) =>
+            React.createElement(child, {history,location})
+          ) */
+          React.createElement(component, {location, history, match})
         ) : (
                 <Redirect
                     to={{

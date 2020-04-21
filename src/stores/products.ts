@@ -4,21 +4,22 @@ import { Store } from './store';
 import {AxiosResponse} from 'axios';
 import httpClientService from '../services/http-client.service';
 import conf from '../confs';
+import { Product } from '../models/product';
 
-class PartnersStore implements Store<Partner[]>{
-    private sub = new BehaviorSubject<Partner[]>([]);
+class ProductStore implements Store<Product[]>{
+    private sub = new BehaviorSubject<Product[]>([]);
 
-    public set(partners: Partner[]): void{
-        this.sub.next(partners);
+    public set(products: Product[]): void{
+        this.sub.next(products);
     }
 
     public subscribe(func:any): Subscription{
         return this.sub.subscribe(func);
     }
 
-    public refresh():void{
-        httpClientService.axios.get(conf.API.partners())
-        .then((response: AxiosResponse<Partner[]>) => {
+    public refresh(partnerId:string):void{
+        httpClientService.axios.get(conf.API.products(partnerId))
+        .then((response: AxiosResponse<Product[]>) => {
             this.set(response.data);
         }).catch((e:any) => {
             console.error(e);
@@ -26,4 +27,4 @@ class PartnersStore implements Store<Partner[]>{
     }
 }
 
-export default new PartnersStore() ;
+export default new ProductStore() ;

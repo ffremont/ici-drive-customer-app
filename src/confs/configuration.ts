@@ -1,5 +1,6 @@
 interface APIS{
-    partners:string;
+    partners:any;
+    products:any;
 }
 
 export interface Configuration{

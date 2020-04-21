@@ -4,5 +4,8 @@ import { Item } from "./item";
 
 export interface Partner extends User{
     place: Place,
-    categories: Item[]
+    categories: Item[],
+    image: string;
+    name: string;
+    id:string;
 }

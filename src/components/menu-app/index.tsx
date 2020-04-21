@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -18,9 +18,11 @@ import InfoIcon from '@material-ui/icons/Info';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Badge from '@material-ui/core/Badge';
-import SearchIcon from '@material-ui/icons/Search';
-//import IciDriveTypoIcon from '../../assets/images/ici-drive-typo.png';
+//import { useHistory } from 'react-router-dom'
+import IciDriveTypoIcon from '../../assets/images/icon.png';
 import './MenuApp.scss';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { matchPath } from "react-router-dom";
 
 
 
@@ -29,10 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
     },
-    menuButton: {
+    firstButton: {
       marginRight: theme.spacing(2),
     },
-    appBar:{
+    appBar: {
       color: theme.palette.grey[900],
       background: theme.palette.common.white
     },
@@ -48,10 +50,32 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const MenuApp = () => {
+const MenuApp = (props: any) => {
   const classes = useStyles();
+  const [mode, setMode] = useState(props.mode);
   const [auth] = useState(false);
   const [open, setOpen] = useState(false);
+
+  /*// définition des modes
+  const refreshMode = (pathname:string) =>{
+    if (matchPath(pathname, { path: `/partners/:id` })) {
+      setMode('catalog');
+    } else if (matchPath(pathname, { path: `/` }) || matchPath(pathname, { path: `/partners` })) {
+      setMode('full');
+    } else {
+      setMode('light');
+    }
+  }
+
+  useEffect(() => {
+    return props.history?.listen((location: any) => {
+      if (location) {
+        refreshMode(location.pathname);
+      }
+
+      console.log(`You changed the page to: ${location?.pathname}`)
+    })
+  }, [props.history]);*/
 
   return (
     <div className={classes.root}>
@@ -81,23 +105,40 @@ const MenuApp = () => {
       </Drawer>
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton}  onClick={() => setOpen(true)} color="inherit" aria-label="menu">
-            <MenuIcon />
+          {mode === 'full' && (
+            <IconButton edge="start" className={classes.firstButton} onClick={() => setOpen(true)} color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+          )}
+          {mode !== 'full' && (
+            <IconButton edge="start" className={classes.firstButton} onClick={() => props.history.goBack()} color="inherit" aria-label="précédent">
+            <ArrowBackIosIcon />
           </IconButton>
-          
-          <Typography variant="h6" className={classes.title}>
-            {/*<img alt="logo ici drive" className="ici-drive-type" src={IciDriveTypoIcon} />*/}
-            ICI DRIVE
-          </Typography>
+          )}
 
-          <IconButton aria-label="search" color="inherit">
-            <SearchIcon />
-          </IconButton>
-          <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="primary">
+
+          {mode === 'full' && (
+            <Typography variant="h6" className={classes.title}>
+              {/*mettre la bannière*/}
+            ICI DRIVE
+            </Typography>
+          )}
+          {['light', 'catalog'].indexOf(mode) > -1 && (
+            <Typography variant="h6" align="center" className={classes.title}>
+              <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveTypoIcon} />
+
+            </Typography>
+          )}
+
+          {['full', 'catalog'].indexOf(mode) > -1 && (
+            <IconButton aria-label="show 4 new mails" color="inherit">
+              <Badge badgeContent={4} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
+          )}
+
+
 
           {auth && (
             <div>

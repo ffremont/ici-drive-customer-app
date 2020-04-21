@@ -2,7 +2,7 @@ import React from 'react';
 import './NoMatch.scss';
 
 
-function NoMatch() {
+function NoMatch(props:any) {
   return (
     <div className="no-match">
       no-match
