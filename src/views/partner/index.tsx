@@ -18,19 +18,23 @@ import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Modal from '@material-ui/core/Modal';
 import Grid from '@material-ui/core/Grid';
 import Discover from '../../components/discover';
 import { Item } from '../../models/item';
 import conf from '../../confs';
+import Paper from '@material-ui/core/Paper';
+import Fab from '@material-ui/core/Fab';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import MapIcon from '@material-ui/icons/Map';
 
 interface GraphicProduct extends Product {
   category?: Item
 }
 
-class Partner extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], partner: P.Partner | null, activeIndex: number }>{
+class Partner extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, partner: P.Partner | null, activeIndex: number }>{
 
-  state = { products: [], activeIndex: 0, partner: null };
+  state = { products: [], activeIndex: -1, partner: null, openPreview: '' };
   subProducts: Subscription | null = null;
   subPartners: Subscription | null = null;
 
@@ -72,6 +76,21 @@ class Partner extends React.Component<{ history: any, match: any }, { products: 
       <div className="partner">
         <MenuApp mode="catalog" history={this.props.history} />
 
+        <Fab className="place-btn" size="medium" color="primary" aria-label="add">
+        <MapIcon />
+      </Fab>
+
+        <Modal
+          open={!!this.state.openPreview}
+          onClose={() => this.setState({openPreview:''})}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+           <Paper className="preview-paper">
+              <img src={this.state.openPreview} alt="preview" />
+             </Paper>
+        </Modal>
+
         {this.state.partner && (<Grid container alignContent="center" alignItems="center" justify="center">
           <Grid item>
             <Discover image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />
@@ -79,14 +98,15 @@ class Partner extends React.Component<{ history: any, match: any }, { products: 
         </Grid>)}
 
 
-        <Grid container alignContent="center" alignItems="center" justify="center">
+        <Grid className="products-grid" container alignContent="center" alignItems="center" justify="center" spacing={0}>
           {this.state.products.map((p: GraphicProduct, i: number) => (
-            <Card className="partner-card" key={i}>
+            <Grid item key={i}>
+                <Card className="product-card" >
               <CardHeader
                 title={p.label}
                 subheader={p.category?.label}
               />
-              <CardMedia
+              <CardMedia onClick={ () => this.setState({openPreview: p.image})}
                 component="img"
                 alt="Contemplative Reptile"
                 height="140"
@@ -94,19 +114,23 @@ class Partner extends React.Component<{ history: any, match: any }, { products: 
                 image={p.image}
                 title={p.label}
               />
-              <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  This impressive paella is a perfect party dish and a fun meal to cook together with your
-                  guests. Add 1 cup of frozen peas along with the mussels, if you like.
-        </Typography>
+              <CardContent className="content-price">
+                <Typography className="typo-price" variant="h5" color="textSecondary">
+                  <div className="price">
+                  {parseFloat(`${p.price}`).toFixed(2)}<sup>€</sup>
+                  </div>
+                  <Fab size="large" color="secondary" aria-label="add to cart">
+          <AddShoppingCartIcon />
+        </Fab>
+                </Typography>
               </CardContent>
-              <CardActions disableSpacing>
+              <CardActions disableSpacing className="cardaction-product">
                 <IconButton aria-label="share">
                   <ShareIcon />
                 </IconButton>
                 <IconButton
                   className={(this.state.activeIndex === i ? 'expandOpen' : 'expanded')}
-                  onClick={() => this.setState({activeIndex: i})}
+                  onClick={() => this.state.activeIndex === i ? this.setState({ activeIndex: -1 }) : this.setState({ activeIndex: i })}
                   aria-expanded={this.state.activeIndex === i}
                   aria-label="voir plus"
                 >
@@ -115,22 +139,17 @@ class Partner extends React.Component<{ history: any, match: any }, { products: 
               </CardActions>
               <Collapse in={this.state.activeIndex === i} timeout="auto" unmountOnExit>
                 <CardContent>
-                  <Typography paragraph>Method:</Typography>
-                  <Typography paragraph>
-                    Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-                    minutes.
-          </Typography>
-                  <Typography paragraph>
-                    Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-                    heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-                    browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-                    and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-                    pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-                    saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
+                  {p.volume && (<Typography className="my-p" paragraph>Volume: {parseFloat(`${p.volume}`).toFixed(2)}L</Typography>)}
+                  {p.weight && (<Typography className="my-p" paragraph>Poids: {p.weight > 1000 ? parseFloat(`${p.weight / 1000}`).toFixed(1)+'k' : parseFloat(`${p.weight}`).toFixed(0)}g</Typography>)}
+
+                  {p.description && (<Typography className="my-p" paragraph>
+                    {p.description}
+                  </Typography>)}
+
                 </CardContent>
               </Collapse>
             </Card>
+              </Grid>
 
           ))}
 

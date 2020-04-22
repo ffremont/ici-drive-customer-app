@@ -13,7 +13,7 @@ const other: Configuration = {
         { "label": "Volaille / Lapin", "id": "volaille-lapin"},
         { "label": "Agneau / Porc", "id": "agneau-porc"},
         { "label": "Charcuterie", "id": "charcuterie"},
-        { "label": "Boisson", "id": "boisson"},
+        { "label": "Boisson / Vin", "id": "boisson-vin"},
         { "label": "Epicerie", "id": "epicerie"},
         { "label": "Fromage", "id": "fromage"},
         { "label": "Pâtes / Légumineuses", "id": "pates-leg"},

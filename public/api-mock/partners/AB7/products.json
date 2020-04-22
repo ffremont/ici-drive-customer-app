@@ -9,4 +9,26 @@
 
     "available": true,
     "maxInBasket": 10
+},{
+    "label": "Carotte BIO",
+    "image": "https://icidrive.b-cdn.net/carotte.jpg",
+    "categoryId": "fruit-leg",
+    "ref":"GTN_CAR_01",
+    "price": 1.3,
+    "description":"Carotte Standard. Filet de 2 kg",
+    "weight":2000,
+
+    "available": true,
+    "maxInBasket": 10
+},{
+    "label": "Chateau la terre noire 2016",
+    "image": "https://icidrive.b-cdn.net/aperitif-1246311_1280.jpg",
+    "categoryId": "boisson-vin",
+    "ref":"GTN_VIN_01",
+    "price": 1.3,
+    "description":"Sépage merlot, année excellente 2016",
+    "volume":0.75,
+
+    "available": true,
+    "maxInBasket": 10
 }]
