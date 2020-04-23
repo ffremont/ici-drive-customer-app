@@ -25,7 +25,7 @@ class Login extends React.Component {
   state = {
     loading: true, // waiting onAuthStateChanged
     isSignedIn: false, // Local signed-in state.
-    navigateTo: '/partners'
+    navigateTo: '/makers'
   };
 
   private sign(provider:any){

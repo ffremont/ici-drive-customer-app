@@ -10,8 +10,8 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Login from './views/login';
-import Partners from './views/partners';
-import Partner from './views/partner';
+import Makers from './views/makers';
+import Maker from './views/maker';
 import PrivateRoute from './components/private-route';
 import NoMatch from './views/no-match';
 import { Subscription } from 'rxjs';
@@ -53,13 +53,13 @@ class App extends React.Component<{}, { concurrentCalls: number }>{
         </Backdrop>
         <Router>
           <Switch>
-            {/*<Route exact path="/" render={(routeProps) => <Partners {...routeProps} />} />*/}
+            {/*<Route exact path="/" render={(routeProps) => <Makers {...routeProps} />} />*/}
 
-            <Route exact path="/" component={Partners} />
-            <Route path="/partners/:id" component={Partner} />
+            <Route exact path="/" component={Makers} />
+            <Route path="/makers/:id" component={Maker} />
 
             <Route path="/login" component={Login} />
-            <PrivateRoute exact path="/partners" component={Partners} />
+            <PrivateRoute exact path="/makers" component={Makers} />
 
             
 

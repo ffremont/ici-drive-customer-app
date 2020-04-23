@@ -4,9 +4,11 @@ import { Configuration } from "./configuration";
 
 const DEV_API_BASEURL = '/api-mock';
 const other: Configuration = {
+    cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
+    cgv: '',
     API: {
-        partners: () => `${DEV_API_BASEURL}/partners.json`,
-        products: (partnerId:string) => `${DEV_API_BASEURL}/partners/${partnerId}/products.json`
+        markers: () => `${DEV_API_BASEURL}/markers.json`,
+        products: (makerId:string) => `${DEV_API_BASEURL}/markers/${makerId}/products.json`
     },
     categories:[
         { "label": "Boeuf / Veau", "id": "boeuf-veau"},
@@ -27,9 +29,11 @@ const other: Configuration = {
 
 const API_BASEURL = '/api';
 const prod: Configuration = {
+    cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
+    cgv: '',
     API: {
-        partners: () => `${API_BASEURL}/partners`,
-        products: (partnerId:string) => `${DEV_API_BASEURL}/partners/${partnerId}/products`
+        markers: () => `${API_BASEURL}/markers`,
+        products: (makerId:string) => `${DEV_API_BASEURL}/markers/${makerId}/products`
     },
     categories:[]
 } ;

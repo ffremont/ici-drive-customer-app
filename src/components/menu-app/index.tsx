@@ -57,9 +57,9 @@ const MenuApp = (props: any) => {
 
   /*// définition des modes
   const refreshMode = (pathname:string) =>{
-    if (matchPath(pathname, { path: `/partners/:id` })) {
+    if (matchPath(pathname, { path: `/makers/:id` })) {
       setMode('catalog');
-    } else if (matchPath(pathname, { path: `/` }) || matchPath(pathname, { path: `/partners` })) {
+    } else if (matchPath(pathname, { path: `/` }) || matchPath(pathname, { path: `/makers` })) {
       setMode('full');
     } else {
       setMode('light');

@@ -1,15 +1,15 @@
 import {BehaviorSubject, Subscription} from 'rxjs';
-import { Partner } from '../models/partner';
+import { Maker } from '../models/marker';
 import { Store } from './store';
 import {AxiosResponse} from 'axios';
 import httpClientService from '../services/http-client.service';
 import conf from '../confs';
 
-class PartnersStore implements Store<Partner[]>{
-    private sub = new BehaviorSubject<Partner[]>([]);
+class MakersStore implements Store<Maker[]>{
+    private sub = new BehaviorSubject<Maker[]>([]);
 
-    public set(partners: Partner[]): void{
-        this.sub.next(partners);
+    public set(markers: Maker[]): void{
+        this.sub.next(markers);
     }
 
     public subscribe(func:any): Subscription{
@@ -17,8 +17,8 @@ class PartnersStore implements Store<Partner[]>{
     }
 
     public refresh():void{
-        httpClientService.axios.get(conf.API.partners())
-        .then((response: AxiosResponse<Partner[]>) => {
+        httpClientService.axios.get(conf.API.markers())
+        .then((response: AxiosResponse<Maker[]>) => {
             this.set(response.data);
         }).catch((e:any) => {
             console.error(e);
@@ -26,4 +26,4 @@ class PartnersStore implements Store<Partner[]>{
     }
 }
 
-export default new PartnersStore() ;
+export default new MakersStore() ;

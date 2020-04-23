@@ -16,8 +16,8 @@ class ProductStore implements Store<Product[]>{
         return this.sub.subscribe(func);
     }
 
-    public refresh(partnerId:string):void{
-        httpClientService.axios.get(conf.API.products(partnerId))
+    public refresh(makerId:string):void{
+        httpClientService.axios.get(conf.API.products(makerId))
         .then((response: AxiosResponse<Product[]>) => {
             this.set(response.data);
         }).catch((e:any) => {

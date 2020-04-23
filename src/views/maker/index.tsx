@@ -1,11 +1,11 @@
 import React from 'react';
-import './Partner.scss';
+import './Maker.scss';
 import MenuApp from '../../components/menu-app';
 import { Subscription } from 'rxjs';
 import productStore from '../../stores/products';
-import partnerStore from '../../stores/partners';
+import makerStore from '../../stores/makers';
 import { Product } from '../../models/product';
-import * as P from '../../models/partner';
+import * as P from '../../models/marker';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -15,7 +15,6 @@ import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Modal from '@material-ui/core/Modal';
@@ -32,19 +31,19 @@ interface GraphicProduct extends Product {
   category?: Item
 }
 
-class Partner extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, partner: P.Partner | null, activeIndex: number }>{
+class Maker extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, maker: P.Maker | null, activeIndex: number }>{
 
-  state = { products: [], activeIndex: -1, partner: null, openPreview: '' };
+  state = { products: [], activeIndex: -1, maker: null, openPreview: '' };
   subProducts: Subscription | null = null;
-  subPartners: Subscription | null = null;
+  subMakers: Subscription | null = null;
 
   componentWillUnmount() {
     this.subProducts?.unsubscribe();
-    this.subPartners?.unsubscribe();
+    this.subMakers?.unsubscribe();
   }
 
   componentDidMount() {
-    const partnerId = this.props.match.params.id;
+    const makerId = this.props.match.params.id;
 
     this.subProducts = productStore.subscribe((products: Product[]) => {
       this.setState({
@@ -55,25 +54,25 @@ class Partner extends React.Component<{ history: any, match: any }, { products: 
       });
     });
 
-    this.subPartners = partnerStore.subscribe((partners: P.Partner[]) => {
-      const partner = partners.find((p: P.Partner) => p.id === partnerId) || null;
-      if (!partner) {
+    this.subMakers = makerStore.subscribe((markers: P.Maker[]) => {
+      const maker = markers.find((p: P.Maker) => p.id === makerId) || null;
+      if (!maker) {
         this.props.history.push('/');
       }
 
       this.setState({
-        partner
+        maker
       })
     })
 
-    productStore.refresh(partnerId);
+    productStore.refresh(makerId);
   }
 
   render() {
-    const myPart: any = this.state.partner;
+    const myPart: any = this.state.maker;
 
     return (
-      <div className="partner">
+      <div className="maker">
         <MenuApp mode="catalog" history={this.props.history} />
 
         <Fab className="place-btn" size="medium" color="primary" aria-label="add">
@@ -91,7 +90,7 @@ class Partner extends React.Component<{ history: any, match: any }, { products: 
              </Paper>
         </Modal>
 
-        {this.state.partner && (<Grid container alignContent="center" alignItems="center" justify="center">
+        {this.state.maker && (<Grid container alignContent="center" alignItems="center" justify="center">
           <Grid item>
             <Discover image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />
           </Grid>
@@ -110,7 +109,7 @@ class Partner extends React.Component<{ history: any, match: any }, { products: 
                 component="img"
                 alt="Contemplative Reptile"
                 height="140"
-                className="partner-media"
+                className="maker-media"
                 image={p.image}
                 title={p.label}
               />
@@ -163,5 +162,5 @@ class Partner extends React.Component<{ history: any, match: any }, { products: 
   }
 }
 
-export default Partner;
+export default Maker;
 
