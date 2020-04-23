@@ -3,6 +3,10 @@
   padding-top: 0.5rem !important;
 }
 
+.maker-container{
+  margin-top:70px !important;
+}
+
 .my-p {
   margin-bottom: 5px !important;
 }
@@ -17,7 +21,7 @@
 
   img {
     max-height: 75vh;
-    max-width: 80vw;
+    width: 100%;
   }
 }
 .product-card{
@@ -33,11 +37,7 @@
 .products-grid{
   margin-top: 20px !important;
 }
-.place-btn{
-  position: fixed !important;
-  bottom: 80px;
-  right: 52px;
-}
+
 
 .typo-price{
   display: flex;

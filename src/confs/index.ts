@@ -7,7 +7,7 @@ const other: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
     cgv: '',
     API: {
-        markers: () => `${DEV_API_BASEURL}/markers.json`,
+        markers: (makerId?:string) => `${DEV_API_BASEURL}/markers.json`,
         products: (makerId:string) => `${DEV_API_BASEURL}/markers/${makerId}/products.json`
     },
     categories:[
@@ -32,7 +32,7 @@ const prod: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
     cgv: '',
     API: {
-        markers: () => `${API_BASEURL}/markers`,
+        markers: (makerId?:string) => `${API_BASEURL}/markers?id=${makerId}`,
         products: (makerId:string) => `${DEV_API_BASEURL}/markers/${makerId}/products`
     },
     categories:[]

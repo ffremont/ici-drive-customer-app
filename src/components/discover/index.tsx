@@ -7,6 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import RoomIcon from '@material-ui/icons/Room';
 
 const useStyles = makeStyles({
     root: {
@@ -19,7 +20,6 @@ const useStyles = makeStyles({
 
 
 const Discover = (props: any) => {
-
     const classes = useStyles();
 
     return (
@@ -41,8 +41,11 @@ const Discover = (props: any) => {
           </Typography>
                 </CardContent>
             </CardActionArea>
-            <CardActions onClick={() => window.open((props.learnMore))} className={classes.actions}>
-                <Button size="small" color="primary">
+            <CardActions  className={classes.actions}>
+            <Button onClick={props.goToPlace} startIcon={<RoomIcon></RoomIcon>} size="small" color="primary">
+                    Lieu du Drive
+                </Button>
+                <Button onClick={() => window.open((props.learnMore))} size="small" color="primary">
                     En savoir plus
                 </Button>
             </CardActions>

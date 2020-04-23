@@ -16,8 +16,8 @@ class MakersStore implements Store<Maker[]>{
         return this.sub.subscribe(func);
     }
 
-    public refresh():void{
-        httpClientService.axios.get(conf.API.markers())
+    public refresh(makerId?:string):void{
+        httpClientService.axios.get(conf.API.markers(makerId))
         .then((response: AxiosResponse<Maker[]>) => {
             this.set(response.data);
         }).catch((e:any) => {

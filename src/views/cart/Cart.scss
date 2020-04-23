@@ -1,0 +1,21 @@
+.cart-container{
+    margin-top: 70px !important;
+}
+
+.empty{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .icon{
+        font-size: 10rem;
+        opacity: 0.5;
+        padding: 40px;
+    }
+}
+
+.card-info{
+    width:300px;
+}
+

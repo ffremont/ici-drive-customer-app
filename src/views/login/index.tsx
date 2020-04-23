@@ -18,14 +18,14 @@ import {FirebaseStub} from '../../stubs/firebase';
 
 const firebase:any = process.env.REACT_APP_STAGE === 'prod' ? (window as any).firebase : (new FirebaseStub()).init();
 
-class Login extends React.Component {
+class Login extends React.Component<{location:any}, {loading:boolean, isSignedIn:boolean, from:string}> {
   unregisterAuthObserver: any;
 
   // The component's Local state.
   state = {
     loading: true, // waiting onAuthStateChanged
     isSignedIn: false, // Local signed-in state.
-    navigateTo: '/makers'
+    from: '/makers'
   };
 
   private sign(provider:any){
@@ -59,8 +59,9 @@ class Login extends React.Component {
         }        
       }
     );
-    
-    console.log(this.state.navigateTo);
+    if(this.props.location){
+      this.setState({from: this.props.location.state.fromPathname});
+    }
   }
 
   // Make sure we un-register Firebase observers when the component unmounts.
@@ -82,7 +83,7 @@ class Login extends React.Component {
       if (this.state.isSignedIn) {
         return <Redirect
           to={{
-            pathname: this.state.navigateTo,
+            pathname: this.state.from,
             state: { from: '/login' }
           }}
         />;

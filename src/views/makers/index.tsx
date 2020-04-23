@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
-import RoomIcon from '@material-ui/icons/Room';
+import RoomIcon from '@material-ui/icons/Room'; 
 import { Item } from '../../models/item';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';

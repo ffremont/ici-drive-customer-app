@@ -22,6 +22,7 @@ import IciDriveTypoIcon from '../../assets/images/ici-drive-icon.png';
 import IciDriveBannerIcon from '../../assets/images/ici-drive-banner.png';
 import './MenuApp.scss';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import cartStore from '../../stores/cart';
 import { Order } from '../../models/order';
 
@@ -53,14 +54,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const MenuApp = (props: any) => {
   const classes = useStyles();
-  const [mode] = useState(props.mode);
+  const [mode, setMode] = useState('full');
   const [auth] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
 
+  React.useEffect(() => {
+    setMode(props.mode);
+  }, [props.mode])
+
   useEffect(() => {
-    const subscription = cartStore.subscribe( (order:Order)=>{
-      setQuantity(order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc+cv,0));
+    const subscription = cartStore.subscribe((order: Order) => {
+      setQuantity(order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0));
     });
     return () => {
       // Nettoyage de l'abonnement
@@ -94,7 +99,7 @@ const MenuApp = (props: any) => {
           </ListItem>
         </List>
       </Drawer>
-      <AppBar position="static" className={classes.appBar}>
+      <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           {mode === 'full' && (
             <IconButton edge="start" className={classes.firstButton} onClick={() => setOpen(true)} color="inherit" aria-label="menu">
@@ -103,14 +108,14 @@ const MenuApp = (props: any) => {
           )}
           {mode !== 'full' && (
             <IconButton edge="start" className={classes.firstButton} onClick={() => props.history.goBack()} color="inherit" aria-label="précédent">
-            <ArrowBackIosIcon />
-          </IconButton>
+              <ArrowBackIosIcon />
+            </IconButton>
           )}
 
 
           {mode === 'full' && (
             <Typography variant="h6" className={classes.title}>
-             <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveBannerIcon} />
+              <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveBannerIcon} />
             </Typography>
           )}
           {['light', 'catalog'].indexOf(mode) > -1 && (
@@ -119,15 +124,25 @@ const MenuApp = (props: any) => {
 
             </Typography>
           )}
+          {['cart'].indexOf(mode) > -1 && (
+            <Typography variant="h6" align="center" className={classes.title}>
+              Mon panier
+            </Typography>
+          )}
 
           {['full', 'catalog'].indexOf(mode) > -1 && (
-            <IconButton aria-label="nb. de produits" color="inherit">
+            <IconButton aria-label="nb. de produits" onClick={() => props.history.push('/cart')} color="inherit">
               <Badge badgeContent={quantity} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
           )}
 
+          {['cart'].indexOf(mode) > -1 && (
+            <IconButton aria-label="vider le panier" onClick={() => props.history.push('/cart')} color="inherit">
+              <RemoveShoppingCartIcon />
+            </IconButton>
+          )}
 
 
           {auth && (

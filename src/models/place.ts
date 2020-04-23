@@ -5,7 +5,8 @@ export interface Place{
     label:string;
     address?: string;
     image?: string;
-    slotsDescription?: string
+    slotsDescription?: string;
+    description?:string;
     capacityPerSlot?: number;
     hebdoSlot: HebdoSlot,
 

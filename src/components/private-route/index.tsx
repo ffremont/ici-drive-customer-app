@@ -8,8 +8,8 @@ import authService from '../../services/auth.service';
 
 
 const PrivateRoute = (props: RouteProps) => {
-  const {children, ...rest} = props;
-  const component:any = props.component;
+  const {children, component, ...rest} = props;
+  const realCmp:any = props.component;
   return (
     <Route
     {...rest}
@@ -18,12 +18,12 @@ const PrivateRoute = (props: RouteProps) => {
           /*React.Children.map(children, (child:any) =>
             React.createElement(child, {history,location})
           ) */
-          React.createElement(component, {location, history, match})
+          React.createElement(realCmp, {location, history, match})
         ) : (
                 <Redirect
                     to={{
                         pathname: '/login',
-                        state: { from: location, navigateTo: location }
+                        state: { fromPathname: location.pathname }
                     }}
                 />
             )

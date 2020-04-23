@@ -35,9 +35,9 @@ interface GraphicProduct extends Product {
   category?: Item
 }
 
-class Catalog extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanCart: boolean, cart: Order | null }>{
+class Catalog extends React.Component<{ history: any, match: any }, { products: GraphicProduct[],showSnackAdd:boolean, snackAddText:string, openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanCart: boolean, cart: Order | null }>{
 
-  state = { products: [], openCleanCart: false, activeIndex: -1, maker: null, openPreview: '', cart: null, wantToAdd: null };
+  state = { products: [], snackAddText:'',openCleanCart: false, activeIndex: -1, showSnackAdd:false, maker: null, openPreview: '', cart: null, wantToAdd: null };
   subProducts: Subscription | null = null;
   subMakers: Subscription | null = null;
   subOrder: Subscription | null = null;
@@ -68,21 +68,18 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
       const maker = markers.find((p: Maker) => p.id === makerId) || null;
       if (!maker) {
         console.error("maker not found : " + makerId);
-        this.props.history.push('/');
+        //this.props.history.push('/');
       } else {
         this.setState({
           maker
         })
       }
-
-
     })
 
     productStore.refresh(makerId);
   }
 
   addCart(p: Product) {
-    debugger;
     if (this.state.cart !== null && this.state.maker !== null) {
       const cart: Order = (this.state.cart as any) as Order;
       const maker: Maker = (this.state.maker as any) as Maker;
@@ -90,20 +87,32 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
       if (cart?.maker?.id !== maker.id) {
         // cas, panier commencé sur un autre maker
         this.setState({ openCleanCart: true, wantToAdd: p })
+        this.setState({showSnackAdd:true});
       } else {
         //cas panier commencé avec le même maker
-        cartStore.addProduct(p);
+        cartStore.addProduct(p)
+          .then(() => this.setState({showSnackAdd:true}))
+          .catch((err:any) => {
+            if(err?.badQuantity){
+              this.setState({showSnackAdd:true, snackAddText:'Quantité max atteinte'});
+            }
+          });        
       }
     } else {
-
       if (this.state.maker !== null) {
         cartStore.addFirstProductWithMaker(this.state.maker as any, {product:p, quantity:1});
+        this.setState({showSnackAdd:true});
       } else {
         console.error("add cart where maker is null");
         this.props.history.push('/');
       }
 
     }
+  }
+
+  cleanAndAdd(){
+    cartStore.addFirstProductWithMaker(this.state.maker as any, { product: this.state.wantToAdd, quantity: 1 } as any)
+    this.setState({showSnackAdd:true});
   }
 
   render() {
@@ -113,12 +122,10 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
       <div className="maker">
         <MenuApp mode="catalog" history={this.props.history} />
 
-        <SnackAdd/>
-        <Fab className="place-btn" size="medium" color="primary" aria-label="add">
-          <MapIcon />
-        </Fab>
+        <SnackAdd show={this.state.showSnackAdd} text={this.state.snackAddText}/>
 
-        <CartConflit open={this.state.openCleanCart} onCleanAndAdd={() => cartStore.addFirstProductWithMaker(this.state.maker as any, { product: this.state.wantToAdd, quantity: 1 } as any)} />
+
+        <CartConflit open={this.state.openCleanCart} onCleanAndAdd={() => this.cleanAndAdd()} />
 
         <Modal
           open={!!this.state.openPreview}
@@ -131,9 +138,9 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
           </Paper>
         </Modal>
 
-        {this.state.maker && (<Grid container alignContent="center" alignItems="center" justify="center">
+        {this.state.maker && (<Grid container className="maker-container" alignContent="center" alignItems="center" justify="center">
           <Grid item>
-            <Discover image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />
+            <Discover goToPlace={() => this.props.history.push(`/makers/${myPart.id}/place`)} image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />
           </Grid>
         </Grid>)}
 
@@ -148,7 +155,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
                 />
                 <CardMedia onClick={() => this.setState({ openPreview: p.image })}
                   component="img"
-                  alt="Contemplative Reptile"
+                  alt="product"
                   height="140"
                   className="maker-media"
                   image={p.image}
@@ -195,9 +202,6 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
 
 
         </Grid>
-
-
-
       </div>
     );
   }

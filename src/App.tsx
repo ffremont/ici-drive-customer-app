@@ -17,6 +17,8 @@ import { Subscription } from 'rxjs';
 import httpClientService from './services/http-client.service';
 import Catalog from './views/catalog';
 import * as moment from 'moment';
+import Cart from './views/cart';
+import Place from './views/place';
 
 
 // @see https://material-ui.com/customization/palette/
@@ -58,11 +60,12 @@ class App extends React.Component<{}, { concurrentCalls: number }>{
             {/*<Route exact path="/" render={(routeProps) => <Makers {...routeProps} />} />*/}
 
             <Route exact path="/" component={Makers} />
+            <Route exact path="/makers" component={Makers} />
             <Route path="/makers/:id/catalog" component={Catalog} />
-            
+            <Route path="/makers/:id/place" component={Place} />
 
             <Route path="/login" component={Login} />
-            <PrivateRoute exact path="/makers" component={Makers} />
+            <PrivateRoute exact path="/cart" component={Cart} />
 
             
 
