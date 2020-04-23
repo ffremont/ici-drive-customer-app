@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const BasketConflit = (props: any) => {
+const CartConflit = (props: any) => {
     const [open, setOpen] = React.useState(props.open);
   
     const handleClose = () => {
@@ -39,4 +39,4 @@ const BasketConflit = (props: any) => {
 
 }
 
-export default BasketConflit;
+export default CartConflit;

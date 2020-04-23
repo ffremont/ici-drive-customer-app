@@ -4,7 +4,7 @@ import MenuApp from '../../components/menu-app';
 import { Subscription } from 'rxjs';
 import productStore from '../../stores/products';
 import makerStore from '../../stores/makers';
-import basketStore from '../../stores/basket';
+import cartStore from '../../stores/cart';
 import { Product } from '../../models/product';
 
 import Card from '@material-ui/core/Card';
@@ -28,16 +28,16 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import MapIcon from '@material-ui/icons/Map';
 import { Maker } from '../../models/marker';
 import { Order } from '../../models/order';
-import BasketConflit from './basket-conflit';
+import CartConflit from './cart-conflit';
 import SnackAdd from '../../components/snack-add';
 
 interface GraphicProduct extends Product {
   category?: Item
 }
 
-class Catalog extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanBasket: boolean, basket: Order | null }>{
+class Catalog extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanCart: boolean, cart: Order | null }>{
 
-  state = { products: [], openCleanBasket: false, activeIndex: -1, maker: null, openPreview: '', basket: null, wantToAdd: null };
+  state = { products: [], openCleanCart: false, activeIndex: -1, maker: null, openPreview: '', cart: null, wantToAdd: null };
   subProducts: Subscription | null = null;
   subMakers: Subscription | null = null;
   subOrder: Subscription | null = null;
@@ -59,8 +59,8 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
         })
       });
     });
-    this.subOrder = basketStore.subscribe((order: Order) => {
-      this.setState({ basket: order.ref ? order : null });
+    this.subOrder = cartStore.subscribe((order: Order) => {
+      this.setState({ cart: order.ref ? order : null });
     });
 
 
@@ -83,21 +83,21 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
 
   addCart(p: Product) {
     debugger;
-    if (this.state.basket !== null && this.state.maker !== null) {
-      const basket: Order = (this.state.basket as any) as Order;
+    if (this.state.cart !== null && this.state.maker !== null) {
+      const cart: Order = (this.state.cart as any) as Order;
       const maker: Maker = (this.state.maker as any) as Maker;
 
-      if (basket?.maker?.id !== maker.id) {
+      if (cart?.maker?.id !== maker.id) {
         // cas, panier commencé sur un autre maker
-        this.setState({ openCleanBasket: true, wantToAdd: p })
+        this.setState({ openCleanCart: true, wantToAdd: p })
       } else {
         //cas panier commencé avec le même maker
-        basketStore.addProduct(p);
+        cartStore.addProduct(p);
       }
     } else {
 
       if (this.state.maker !== null) {
-        basketStore.addFirstProductWithMaker(this.state.maker as any, {product:p, quantity:1});
+        cartStore.addFirstProductWithMaker(this.state.maker as any, {product:p, quantity:1});
       } else {
         console.error("add cart where maker is null");
         this.props.history.push('/');
@@ -118,7 +118,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
           <MapIcon />
         </Fab>
 
-        <BasketConflit open={this.state.openCleanBasket} onCleanAndAdd={() => basketStore.addFirstProductWithMaker(this.state.maker as any, { product: this.state.wantToAdd, quantity: 1 } as any)} />
+        <CartConflit open={this.state.openCleanCart} onCleanAndAdd={() => cartStore.addFirstProductWithMaker(this.state.maker as any, { product: this.state.wantToAdd, quantity: 1 } as any)} />
 
         <Modal
           open={!!this.state.openPreview}

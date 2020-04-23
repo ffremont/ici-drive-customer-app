@@ -1,13 +1,13 @@
 import React from 'react';
-import './Basket.scss';
+import './Cart.scss';
 
 
-function Basket() {
+function Cart() {
   return (
-    <div className="basket">
-      basket
+    <div className="cart">
+      cart
     </div>
   );
 }
 
-export default Basket;
+export default Cart;

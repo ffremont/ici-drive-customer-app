@@ -7,6 +7,6 @@ export interface Product{
     categoryId:string;
     weight?:number;
     volume?:number;
-    maxInBasket?:number;
+    maxInCart?:number;
     available:boolean
 }

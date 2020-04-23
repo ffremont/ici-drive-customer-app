@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import basketStore from '../../stores/basket';
+import cartStore from '../../stores/cart';
 import { Order } from '../../models/order';
 
 const SnackAdd = (props: any) => {
@@ -11,7 +11,7 @@ const SnackAdd = (props: any) => {
     const [qty, setQty] = React.useState(0);
 
     useEffect(() => {
-        const subscription = basketStore.subscribe((order: Order) => {
+        const subscription = cartStore.subscribe((order: Order) => {
             const newQty = order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0);
             if (newQty !== qty) {
                 setOpen(true);

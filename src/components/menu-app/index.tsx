@@ -22,7 +22,7 @@ import IciDriveTypoIcon from '../../assets/images/ici-drive-icon.png';
 import IciDriveBannerIcon from '../../assets/images/ici-drive-banner.png';
 import './MenuApp.scss';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import basketStore from '../../stores/basket';
+import cartStore from '../../stores/cart';
 import { Order } from '../../models/order';
 
 
@@ -59,7 +59,7 @@ const MenuApp = (props: any) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const subscription = basketStore.subscribe( (order:Order)=>{
+    const subscription = cartStore.subscribe( (order:Order)=>{
       setQuantity(order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc+cv,0));
     });
     return () => {

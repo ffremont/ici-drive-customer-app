@@ -5,7 +5,7 @@ import { Maker } from "../models/marker";
 import * as moment from 'moment';
 import { Product } from "../models/product";
 
-class BasketStore implements Store<Order>{
+class CartStore implements Store<Order>{
 
     private order: Order|null = null;
     private sub = new BehaviorSubject<Order>({choices:[], created: (new Date()).getTime(), total:0, ref:''});
@@ -77,4 +77,4 @@ class BasketStore implements Store<Order>{
 
 }
 
-export default new BasketStore() ;
+export default new CartStore() ;

@@ -8,7 +8,7 @@
     "weight":5000,
 
     "available": true,
-    "maxInBasket": 10
+    "maxInCart": 10
 },{
     "label": "Carotte BIO",
     "image": "https://icidrive.b-cdn.net/carotte.jpg",
@@ -19,7 +19,7 @@
     "weight":2000,
 
     "available": true,
-    "maxInBasket": 10
+    "maxInCart": 10
 },{
     "label": "Chateau la terre noire 2016",
     "image": "https://icidrive.b-cdn.net/aperitif-1246311_1280.jpg",
@@ -30,5 +30,5 @@
     "volume":0.75,
 
     "available": true,
-    "maxInBasket": 10
+    "maxInCart": 10
 }]
