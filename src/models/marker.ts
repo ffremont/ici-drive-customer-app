@@ -3,11 +3,21 @@ import { Place } from "./place";
 import { Item } from "./item";
 
 export interface Maker extends User{
-    place: Place,
-    categories: Item[],
-    description:string,
+    id:string;
+    name: string;
     image: string;
     webPage:string;
-    name: string;
-    id:string;
+    description:string;
+    phone?: string;
+    //maxOrdersByDay:number;
+    //maintenance:boolean;
+    prefixOrderRef: string;
+
+    place: Place;
+    categories: Item[];
+
+    
+    
+    
+    
 }

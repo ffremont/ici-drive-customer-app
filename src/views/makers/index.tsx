@@ -112,7 +112,7 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
               else return p.categories.some((c: Item) => c.id === this.state.filterCat)
             }).map((p: Maker, i) => {
               return (
-                <Card key={i} onClick={() => this.props.history.push(`/makers/${p.id}`)}
+                <Card key={i} onClick={() => this.props.history.push(`/makers/${p.id}/catalog`)}
                 className="maker-card">
                   <CardActionArea>
                     <CardMedia

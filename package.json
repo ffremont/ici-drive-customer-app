@@ -16,6 +16,7 @@
     "@types/react-router-dom": "^5.1.4",
     "axios": "^0.19.2",
     "firebase": "^7.14.0",
+    "moment": "^2.24.0",
     "node-sass": "^4.13.1",
     "npm-watch": "^0.6.0",
     "react": "^16.13.1",

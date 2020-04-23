@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -22,6 +22,8 @@ import IciDriveTypoIcon from '../../assets/images/ici-drive-icon.png';
 import IciDriveBannerIcon from '../../assets/images/ici-drive-banner.png';
 import './MenuApp.scss';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import basketStore from '../../stores/basket';
+import { Order } from '../../models/order';
 
 
 
@@ -53,28 +55,18 @@ const MenuApp = (props: any) => {
   const classes = useStyles();
   const [mode] = useState(props.mode);
   const [auth] = useState(false);
+  const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
 
-  /*// définition des modes
-  const refreshMode = (pathname:string) =>{
-    if (matchPath(pathname, { path: `/makers/:id` })) {
-      setMode('catalog');
-    } else if (matchPath(pathname, { path: `/` }) || matchPath(pathname, { path: `/makers` })) {
-      setMode('full');
-    } else {
-      setMode('light');
-    }
-  }
-
   useEffect(() => {
-    return props.history?.listen((location: any) => {
-      if (location) {
-        refreshMode(location.pathname);
-      }
-
-      console.log(`You changed the page to: ${location?.pathname}`)
-    })
-  }, [props.history]);*/
+    const subscription = basketStore.subscribe( (order:Order)=>{
+      setQuantity(order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc+cv,0));
+    });
+    return () => {
+      // Nettoyage de l'abonnement
+      subscription.unsubscribe();
+    };
+  });
 
   return (
     <div className={classes.root}>
@@ -129,8 +121,8 @@ const MenuApp = (props: any) => {
           )}
 
           {['full', 'catalog'].indexOf(mode) > -1 && (
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
+            <IconButton aria-label="nb. de produits" color="inherit">
+              <Badge badgeContent={quantity} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
