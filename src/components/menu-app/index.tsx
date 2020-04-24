@@ -139,7 +139,7 @@ const MenuApp = (props: any) => {
           )}
 
           {['cart'].indexOf(mode) > -1 && (
-            <IconButton aria-label="vider le panier" onClick={() => props.history.push('/cart')} color="inherit">
+            <IconButton aria-label="vider le panier" onClick={props?.onResetCart} color="inherit">
               <RemoveShoppingCartIcon />
             </IconButton>
           )}

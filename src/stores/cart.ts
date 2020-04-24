@@ -45,6 +45,17 @@ class CartStore implements Store<Order>{
     }
 
     /**
+     * Reset du panier
+     */
+    resetCart() : Promise<void>{
+        return new Promise((resolve) => {
+            const newOrder = { choices: [], created: (new Date()).getTime(), total: 0, ref: '' };
+            this.set(newOrder);
+            resolve();
+        });
+    }
+
+    /**
      * Ajout d'un produit qu'il existe ou non dans le panier
      * @param p 
      */

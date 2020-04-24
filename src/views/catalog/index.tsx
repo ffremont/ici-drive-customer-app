@@ -25,7 +25,6 @@ import conf from '../../confs';
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import MapIcon from '@material-ui/icons/Map';
 import { Maker } from '../../models/marker';
 import { Order } from '../../models/order';
 import CartConflit from './cart-conflit';

@@ -26,7 +26,7 @@ const SnackAdd = (props: any) => {
             open={open}
             autoHideDuration={800}
             onClose={handleClose}
-            message={text ? text : "Action réalisée"}
+            message={text ? text : "Panier actualisé"}
             action={
                 <React.Fragment>
                     <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
