@@ -15,7 +15,7 @@ class MakerService{
      * @param maker 
      */
     public getSlots(maker : Maker): Date[]{
-        const slots : Date[] = [];
+        const results : Date[] = [];
         const now = moment.default();
         now.add(1, 'd');
         
@@ -37,6 +37,8 @@ class MakerService{
 
             nowDate.setHours(parseInt(officeSlot.openAt.split(':')[0],10));
             nowDate.setMinutes(parseInt(officeSlot.openAt.split(':')[1],10));
+            nowDate.setSeconds(0);
+            nowDate.setMilliseconds(0);
             
             const closeAt = new Date(nowDate);
             closeAt.setHours(parseInt(officeSlot.closeAt.split(':')[0],10));
@@ -50,16 +52,16 @@ class MakerService{
             }
 
             //on parcours tous les créneaux pour le jour "ouvert"
-            const slotsQty = parseInt(`${(closeAt.getTime() - nowDate.getTime())/MakerService.SLOT_QTY}`,10);
+            const slotsQty = parseInt(`${(closeAt.getTime() - nowDate.getTime())/MakerService.SLOT_QTY}`,10)+1;
             for(let j =0; j<slotsQty;j++){
-                nowDate = new Date(nowDate.getTime() + MakerService.SLOT_QTY);
-                slots.push(new Date(nowDate));
+                nowDate = new Date(nowDate.getTime() + ((j > 0) ? MakerService.SLOT_QTY:0));
+                results.push(new Date(nowDate));
             }
 
             now.add(1, 'd');
         }
         
-        return slots;
+        return results;
     }
 }
 

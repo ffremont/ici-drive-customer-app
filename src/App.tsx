@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 import httpClientService from './services/http-client.service';
 import Catalog from './views/catalog';
 import * as moment from 'moment';
+import 'moment/locale/fr';
 import Cart from './views/cart';
 import Place from './views/place';
 import Slots from './views/slots';

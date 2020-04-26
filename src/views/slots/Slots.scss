@@ -2,6 +2,23 @@
     margin-top:70px !important;
 }
 
-.slots-tabs{
-    background:white; 
+
+.slots-desc{
+    margin: 30px 10px 19px 10px !important;
+}
+
+.slot{
+    padding:15px;
+}
+
+.slots-in-group{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+button.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-disableElevation.Mui-disabled.Mui-disabled {
+    color: orange;
+    border-color: orange;
+    border: 1px solid orange;
 }

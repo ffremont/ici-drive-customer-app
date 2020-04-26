@@ -14,13 +14,13 @@
         "image":"https://icidrive.b-cdn.net/normandie-ferme-bio-grande-suardiere.jpg",
         "slotsDescription": "Ouvert habituellement la semaine et le week-end",
         "hebdoSlot": {
-            "monday:": {"openAt": "8:00", "closeAt": "12:00"},
-            "tuesday:": {"openAt": "8:00", "closeAt": "12:00"},
-            "webnesday:": {"openAt": "8:00", "closeAt": "12:00"},
-            "thursday:": {"openAt": "8:00", "closeAt": "12:00"},
-            "friday:": {"openAt": "8:00", "closeAt": "12:00"},
-            "saturday:": {"openAt": "8:00", "closeAt": "12:00"},
-            "sunday:": {"openAt": "8:00", "closeAt": "18:00"}
+            "lundi": {"openAt": "8:00", "closeAt": "12:00"},
+            "mardi": {"openAt": "8:00", "closeAt": "12:00"},
+            "mercredi": {"openAt": "8:00", "closeAt": "12:00"},
+            "jeudi": {"openAt": "8:00", "closeAt": "12:00"},
+            "vendredi": {"openAt": "8:00", "closeAt": "12:00"},
+            "samedi": {"openAt": "8:00", "closeAt": "12:00"},
+            "dimanche": {"openAt": "8:00", "closeAt": "18:00"}
         }
     },
     "categories": [

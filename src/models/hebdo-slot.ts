@@ -10,11 +10,11 @@ export interface OfficeSlot{
 }
 
 export interface HebdoSlot{
-    monday: OfficeSlot,
-    tuesday: OfficeSlot,
-    webnesday: OfficeSlot,
-    thursday: OfficeSlot,
-    friday: OfficeSlot,
-    saturday: OfficeSlot,
-    sunday: OfficeSlot    
+    lundi: OfficeSlot,
+    mardi: OfficeSlot,
+    mercredi: OfficeSlot,
+    jeudi: OfficeSlot,
+    vendredi: OfficeSlot,
+    samedi: OfficeSlot,
+    dimanche: OfficeSlot    
 }
