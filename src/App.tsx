@@ -19,6 +19,7 @@ import Catalog from './views/catalog';
 import * as moment from 'moment';
 import Cart from './views/cart';
 import Place from './views/place';
+import Slots from './views/slots';
 
 
 // @see https://material-ui.com/customization/palette/
@@ -66,6 +67,7 @@ class App extends React.Component<{}, { concurrentCalls: number }>{
 
             <Route path="/login" component={Login} />
             <PrivateRoute exact path="/cart" component={Cart} />
+            <PrivateRoute exact path="/cart/slots" component={Slots} />
 
             
 

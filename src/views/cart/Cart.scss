@@ -33,6 +33,7 @@
 .my-product{
     display:flex;
     flex-direction: row;
+    padding: 8px 0px;
 
     .product-preview{
         width:100px;
@@ -46,13 +47,32 @@
         display: flex;
         flex-direction: column;
 
+        .product-title{
+            padding: 5px 15px;
+        }
+
         .product-main{
             display: flex;
             flex-direction: row;
 
+            .product-price{
+                display: flex;
+                align-items: center;
+                font-size: 1.5rem;
+                padding: 3px 5px;
+            }
+
             .product-qty{
                 flex:1;
+                padding: 0px 15px;
+                display: flex;
+                align-items: center;
+                justify-content: left;
             }
         }
+    }
+
+    .formcontrol-qty{
+        width:80%;
     }
 }

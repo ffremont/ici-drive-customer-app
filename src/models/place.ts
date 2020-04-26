@@ -7,7 +7,6 @@ export interface Place{
     image?: string;
     slotsDescription?: string;
     description?:string;
-    capacityPerSlot?: number;
     hebdoSlot: HebdoSlot,
 
     point?: GeoPoint

@@ -3,15 +3,26 @@ import React, { useEffect } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import notifStore from '../../stores/notif';
+import { Notif, NotifType } from '../../models/notif';
 
 const SnackAdd = (props: any) => {
     const [open, setOpen] = React.useState(false);
-    const [text, setText] = React.useState(-1);
+    const [text, setText] = React.useState('');
 
-    React.useEffect(() => {
-        setOpen(props.show);
-        setText(props.text);
-      }, [props.show, props.text])
+    useEffect(() => {
+        const subscription = notifStore.subscribe((notif: Notif) => {
+            if (notif.type === NotifType.SNACK_CART){
+                setOpen(true);
+                setText(notif.message);
+            }
+        });
+        return () => {
+            // Nettoyage de l'abonnement
+            subscription.unsubscribe();
+        };
+    });
+
 
     const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
         if (reason === 'clickaway') {

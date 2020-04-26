@@ -129,6 +129,11 @@ const MenuApp = (props: any) => {
               Mon panier
             </Typography>
           )}
+          {['slots'].indexOf(mode) > -1 && (
+            <Typography variant="h6" align="center" className={classes.title}>
+              Heure du retrait
+            </Typography>
+          )}
 
           {['full', 'catalog'].indexOf(mode) > -1 && (
             <IconButton aria-label="nb. de produits" onClick={() => props.history.push('/cart')} color="inherit">
@@ -137,7 +142,7 @@ const MenuApp = (props: any) => {
               </Badge>
             </IconButton>
           )}
-
+          
           {['cart'].indexOf(mode) > -1 && (
             <IconButton aria-label="vider le panier" onClick={props?.onResetCart} color="inherit">
               <RemoveShoppingCartIcon />

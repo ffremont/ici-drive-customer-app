@@ -10,7 +10,7 @@ export interface Maker extends User{
     description:string;
     phone?: string;
     //maxOrdersByDay:number;
-    //maintenance:boolean;
+    //active:boolean;
     prefixOrderRef: string;
 
     place: Place;

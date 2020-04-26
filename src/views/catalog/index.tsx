@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import productStore from '../../stores/products';
 import makerStore from '../../stores/makers';
 import cartStore from '../../stores/cart';
+import notifStore from '../../stores/notif';
 import { Product } from '../../models/product';
 
 import Card from '@material-ui/core/Card';
@@ -29,14 +30,15 @@ import { Maker } from '../../models/marker';
 import { Order } from '../../models/order';
 import CartConflit from './cart-conflit';
 import SnackAdd from '../../components/snack-add';
+import { NotifType, Notif } from '../../models/notif';
 
 interface GraphicProduct extends Product {
   category?: Item
 }
 
-class Catalog extends React.Component<{ history: any, match: any }, { products: GraphicProduct[],showSnackAdd:boolean, snackAddText:string, openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanCart: boolean, cart: Order | null }>{
+class Catalog extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanCart: boolean, cart: Order | null }>{
 
-  state = { products: [], snackAddText:'',openCleanCart: false, activeIndex: -1, showSnackAdd:false, maker: null, openPreview: '', cart: null, wantToAdd: null };
+  state = { products: [], openCleanCart: false, activeIndex: -1, maker: null, openPreview: '', cart: null, wantToAdd: null };
   subProducts: Subscription | null = null;
   subMakers: Subscription | null = null;
   subOrder: Subscription | null = null;
@@ -86,32 +88,31 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
       if (cart?.maker?.id !== maker.id) {
         // cas, panier commencé sur un autre maker
         this.setState({ openCleanCart: true, wantToAdd: p })
-        this.setState({showSnackAdd:true});
+        notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
       } else {
         //cas panier commencé avec le même maker
         cartStore.addProduct(p)
-          .then(() => this.setState({showSnackAdd:true}))
+          .then(() => notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'}))
           .catch((err:any) => {
             if(err?.badQuantity){
-              this.setState({showSnackAdd:true, snackAddText:'Quantité max atteinte'});
+              notifStore.set({type: NotifType.SNACK_CART, message:'Quantité max atteinte'});
             }
           });        
       }
     } else {
       if (this.state.maker !== null) {
         cartStore.addFirstProductWithMaker(this.state.maker as any, {product:p, quantity:1});
-        this.setState({showSnackAdd:true});
+        notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
       } else {
         console.error("add cart where maker is null");
         this.props.history.push('/');
       }
-
     }
   }
 
   cleanAndAdd(){
     cartStore.addFirstProductWithMaker(this.state.maker as any, { product: this.state.wantToAdd, quantity: 1 } as any)
-    this.setState({showSnackAdd:true});
+    notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
   }
 
   render() {
@@ -121,7 +122,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
       <div className="maker">
         <MenuApp mode="catalog" history={this.props.history} />
 
-        <SnackAdd show={this.state.showSnackAdd} text={this.state.snackAddText}/>
+        <SnackAdd />
 
 
         <CartConflit open={this.state.openCleanCart} onCleanAndAdd={() => this.cleanAndAdd()} />

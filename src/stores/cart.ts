@@ -25,7 +25,7 @@ class CartStore implements Store<Order>{
      * @param p 
      * @param newQty 
      */
-    setQuantityOf(p: Product, newQty: number): Promise<{ badQuantity?: boolean }> {
+    setQuantityOf(p: Product, newQty: number): Promise<{ reason?:string,badQuantity?: boolean }> {
         return new Promise((resolve, reject) => {
             const newOrder: Order = { ...this.order } as Order;
             const alreadyProductChoice = newOrder.choices.find(pc => pc.product.ref === p.ref);
@@ -33,13 +33,18 @@ class CartStore implements Store<Order>{
                 if (p.maxInCart || 99999 > newQty) {
                     alreadyProductChoice.quantity = newQty;
 
+                    if(alreadyProductChoice.quantity === 0){
+                        newOrder.choices = newOrder.choices.filter(pc => pc.product.ref !== alreadyProductChoice.product.ref);
+                    }
                     newOrder.total = newOrder.choices.map(pc => pc.quantity * pc.product.price).reduce((acc, cv) => acc + cv, 0)
-                    this.set(newOrder);
-                    resolve({});
+                        this.set(newOrder);
+                        resolve({});             
                 } else {
                     // mauvaise quantité
-                    reject({ badQuantity: true });
+                    reject({ reason: 'trop de produit',badQuantity: true });
                 }
+            }else{
+                reject({reason:'produit non trouvé'});
             }
         });
     }
@@ -65,7 +70,7 @@ class CartStore implements Store<Order>{
             const alreadyProductChoice = newOrder.choices.find(pc => pc.product.ref === p.ref);
             if (alreadyProductChoice) {
                 // by ref
-                if (p.maxInCart || 99999 > (alreadyProductChoice.quantity+1)) {
+                if ((p.maxInCart || 99999) > (alreadyProductChoice.quantity+1)) {
                     alreadyProductChoice.quantity = alreadyProductChoice.quantity + 1;
                 }else{
                     // mauvaise quantité
