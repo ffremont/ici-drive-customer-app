@@ -9,7 +9,7 @@ const other: Configuration = {
     API: {
         markers: (makerId?:string) => `${DEV_API_BASEURL}/markers.json`,
         products: (makerId:string) => `${DEV_API_BASEURL}/markers/${makerId}/products.json`,
-        orders: () => `${DEV_API_BASEURL}/orders.json`,
+        orders: (ref?:string) => `${DEV_API_BASEURL}/my-orders.json?ref=${ref}`,
         myProfil: () => `${DEV_API_BASEURL}/my-profil.json`,
     },
     categories:[
@@ -37,7 +37,7 @@ const prod: Configuration = {
     API: {
         markers: (makerId?:string) => `${API_BASEURL}/markers?id=${makerId}`,
         products: (makerId:string) => `${API_BASEURL}/markers/${makerId}/products`,
-        orders: () => `${API_BASEURL}/orders`,
+        orders: (ref?:string) => `${API_BASEURL}/my-orders?ref=${ref}`,
         myProfil: () => `${DEV_API_BASEURL}/my-profil`,
     },
     categories:[],

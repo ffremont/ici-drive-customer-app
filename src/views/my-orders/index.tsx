@@ -67,13 +67,13 @@ class MyOrders extends React.Component<{ history: any, classes: any }, { orders:
       <div className="orders">
         <List>
           {this.state.orders.map((order: Order, i) => (
-            <ListItem key={`li_${i}`}>
+            <ListItem key={`li_${i}`} onClick={() => this.props.history.push(`/my-orders/${order.ref}`)}>
               <ListItemAvatar>
                 <Avatar className={this.statusLabel[(order.status as any)].color}>
                   <ReceiptIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={this.statusLabel[(order.status as any)].label} secondary={moment.default(order.created).format('ddd D MMM à HH:mm')} />
+              <ListItemText primary={this.statusLabel[(order.status as any)].label+` (${order.total}€)`} secondary={moment.default(order.created).format('ddd D MMM à HH:mm')} />
               <ListItemSecondaryAction>
                     <IconButton edge="end" aria-label="next">
                       <ArrowForwardIosIcon />

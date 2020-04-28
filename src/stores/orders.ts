@@ -6,7 +6,7 @@ import httpClientService from '../services/http-client.service';
 import conf from '../confs';
 import { Order } from '../models/order';
 
-class OrdersStore implements Store<Order[]>{
+export class OrdersStore implements Store<Order[]>{
     private sub = new BehaviorSubject<Order[]>([]);
 
     public set(orders: Order[]): void{
@@ -17,11 +17,14 @@ class OrdersStore implements Store<Order[]>{
         return this.sub.subscribe(func);
     }
 
+    static async update(order: Order){
+        await httpClientService.axios.put(conf.API.orders(order.ref), order);
+    }
     /**
      * 
      */
-    public load():Promise<Order[]>{
-        return httpClientService.axios.get(conf.API.orders())
+    public load(ref?:string):Promise<Order[]>{
+        return httpClientService.axios.get(conf.API.orders(ref))
         .then((response: AxiosResponse<Order[]>) => {
             this.set(response.data);
             return response.data;

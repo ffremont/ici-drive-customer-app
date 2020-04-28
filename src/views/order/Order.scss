@@ -1,0 +1,23 @@
+.order{
+    margin-top:50px !important;
+    padding:30px;
+}
+
+.my-group{
+    margin:15px 0px !important;
+}
+
+.my-speed-dial{
+    position: fixed;
+    bottom:30px;
+    right:40px;
+}
+
+@media print {
+    .my-speed-dial, .MuiAppBar-root{
+        display:none !important;
+    }
+    .order{
+        margin-top:0px !important;
+    }
+}
