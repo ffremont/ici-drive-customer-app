@@ -68,7 +68,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
     this.subMakers = makerStore.subscribe((markers: Maker[]) => {
       const maker = markers.find((p: Maker) => p.id === makerId) || null;
       if (!maker) {
-        console.error("maker not found : " + makerId);
+        console.info("maker not found : " + makerId);
         //this.props.history.push('/');
       } else {
         this.setState({

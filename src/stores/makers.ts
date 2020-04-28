@@ -1,9 +1,9 @@
 import {BehaviorSubject, Subscription} from 'rxjs';
 import { Maker } from '../models/marker';
 import { Store } from './store';
-import {AxiosResponse} from 'axios';
 import httpClientService from '../services/http-client.service';
 import conf from '../confs';
+import {AxiosResponse} from 'axios';
 
 class MakersStore implements Store<Maker[]>{
     private sub = new BehaviorSubject<Maker[]>([]);

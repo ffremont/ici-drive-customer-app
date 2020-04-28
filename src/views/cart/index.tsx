@@ -11,6 +11,7 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import { Order, ProductChoice } from '../../models/order';
 import { Subscription } from 'rxjs';
 import cartStore from '../../stores/cart';
+import makerService from '../../services/maker.service';
 import notifStore from '../../stores/notif';
 import Button from '@material-ui/core/Button';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
@@ -31,26 +32,41 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import { Item } from '../../models/item';
+import * as moment from 'moment';
 import CONF from '../../confs';
+import Alert from '@material-ui/lab/Alert';
+import Checkbox from '@material-ui/core/Checkbox';
 import { NotifType } from '../../models/notif';
 import { Product } from '../../models/product';
+import myProfilStore from '../../stores/my-profil';
+import { Customer } from '../../models/customer';
 
 interface CategoryProductChoice {
   products: ProductChoice[],
   category: Item
 }
 
-class Cart extends React.Component<{ history: any, match: any }, { order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct:Product|null }>{
+class Cart extends React.Component<{ history: any, location: any, match: any }, { myProfil:Customer, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
 
-  state = { order: null, wantResetCard: false, groups: [], eraseProduct:null };
+  state = { order: null, myProfil: {email:''}, checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
   subOrder: Subscription | null = null;
+  subMyProfil: Subscription | null = null;
   categories: Item[] = CONF.categories;
 
   componentWillUnmount() {
     this.subOrder?.unsubscribe();
+    this.subMyProfil?.unsubscribe();
   }
 
   componentDidMount() {
+    this.setState({ summaryMode: window.location.pathname.indexOf('/summary') > -1 });
+
+    this.subMyProfil = myProfilStore.subscribe((myProfil:Customer) => {
+      if(myProfil.email){
+        this.setState({myProfil});
+      }
+    });
+
     this.subOrder = cartStore.subscribe((order: Order) => {
       if (order?.ref) {
         const groups = this.categories.map((cat: Item) => {
@@ -60,28 +76,51 @@ class Cart extends React.Component<{ history: any, match: any }, { order: Order 
           }
         }).filter(group => group && group.products?.length);
 
-        this.setState({ order, groups });
+        const slots: Date[] = makerService.getSlots((order.maker as any), 1);
+        let newFirstSlot = '';
+        if (slots && slots.length) {
+          newFirstSlot = moment.default(slots[0]).format('ddd D MMM à HH:mm');
+        }
+        this.setState({ order, groups, firstSlot: newFirstSlot });
       } else {
-        this.setState({ order: null, groups:[] });
+        this.setState({ order: null, groups: [] });
       }
     });
   }
-  handleChangeQty(event: React.ChangeEvent<{ value: unknown }>, pc:ProductChoice) {
-    const newQty = parseInt(event.target.value as string,10);
-    if(newQty === 0){
-      this.setState({eraseProduct:pc.product});
-    }else{
-      cartStore.setQuantityOf(pc.product, newQty)      
-      .catch((err:{badQuantity?:boolean}) => {
-        if(err && err.badQuantity){
-          notifStore.set({type: NotifType.SNACK_CART, message: 'Quantité trop élevé'});
-        }
-      })
+  handleChangeQty(event: React.ChangeEvent<{ value: unknown }>, pc: ProductChoice) {
+    const newQty = parseInt(event.target.value as string, 10);
+    if (newQty === 0) {
+      this.setState({ eraseProduct: pc.product });
+    } else {
+      cartStore.setQuantityOf(pc.product, newQty)
+        .catch((err: { badQuantity?: boolean }) => {
+          if (err && err.badQuantity) {
+            notifStore.set({ type: NotifType.SNACK_CART, message: 'Quantité trop élevé' });
+          }
+        })
     }
   }
 
-  goToSlots(){
-    this.props.history.push('/cart/slots');
+  continue() {
+    if (this.state.summaryMode) {
+      const newOrder:Order = {...(this.state.order as any)};
+      newOrder.customer = this.state.myProfil;
+
+      cartStore.save(newOrder)
+      .then(() => {
+        // navigue vers la liste des commandes
+        this.props.history.push(`/my-orders`);
+      }).catch( () => {
+        this.props.history.push('/error');
+      });
+     
+    } else {
+      if (this.state.checkCgr) {
+        this.props.history.push('/cart/slots');
+      } else {
+        (window as any).scrollTo(0, document.body.scrollHeight);
+      }
+    }
   }
 
   render() {
@@ -93,16 +132,16 @@ class Cart extends React.Component<{ history: any, match: any }, { order: Order 
       handleClose();
     }
     const eraseProduct = () => {
-      const p : any = this.state.eraseProduct;
+      const p: any = this.state.eraseProduct;
       cartStore.setQuantityOf(p, 0);
-      notifStore.set({type: NotifType.SNACK_CART, message: 'Produit retiré'})
-      
+      notifStore.set({ type: NotifType.SNACK_CART, message: 'Produit retiré' })
+
       handleCloseEraseProduct();
     };
 
     return (
       <div className="cart">
-        <MenuApp mode="cart" onResetCart={() => this.setState({ wantResetCard: true })} history={this.props.history} />
+        <MenuApp mode={this.state.summaryMode ? 'summary' : 'cart'} onResetCart={() => this.setState({ wantResetCard: true })} history={this.props.history} />
 
         {!this.state.order && (<div className="cart-container empty">
           <RemoveShoppingCartIcon className="icon" />
@@ -181,7 +220,8 @@ class Cart extends React.Component<{ history: any, match: any }, { order: Order 
               />
             </Card>
           </Grid>
-          <Grid item>
+
+          {this.state.firstSlot && (<Grid item>
             <Card className="card-info">
               <CardHeader
                 avatar={
@@ -189,12 +229,17 @@ class Cart extends React.Component<{ history: any, match: any }, { order: Order 
                     <AccessTimeIcon />
                   </Avatar>
                 }
-                title="Shrimp and Chorizo Paella"
-                subheader="September 14, 2016"
+                title={this.state.summaryMode ? moment.default(order.slot).format('ddd D MMM à HH:mm') : `dès ${this.state.firstSlot}`}
+                subheader="Horaire"
               />
             </Card>
-          </Grid>
+          </Grid>)}
+
         </Grid>)}
+
+        {this.state.order && (<div className="info-area">
+          <Alert severity="info">Tous les prix sont indicatifs et en TTC. La réservation via ici-drive.fr ne tient pas compte des stocks épuisés ou éventuels du producteur.</Alert>
+        </div>)}
 
         {/* les categories avec les produits */}
         <div className="groups"> {this.state.groups.map((group: CategoryProductChoice, i) => (
@@ -227,7 +272,7 @@ class Cart extends React.Component<{ history: any, match: any }, { order: Order 
                                   value={pc.quantity}
                                   onChange={(evt) => this.handleChangeQty(evt, pc)}
                                 >
-                                  {Array.from(Array(15).keys()).map((v,k)=>(
+                                  {Array.from(Array(15).keys()).map((v, k) => (
                                     <MenuItem key={`mi_${j}_${k}`} value={v}>{v}</MenuItem>
                                   ))}
                                 </Select>
@@ -246,8 +291,16 @@ class Cart extends React.Component<{ history: any, match: any }, { order: Order 
         ))}
         </div>
 
+        {this.state.order && !this.state.summaryMode && (<div className="reglementation">
+          <Checkbox
+            checked={this.state.checkCgr}
+            onChange={(e) => this.setState({ checkCgr: e.target.checked })}
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          /> <Typography variant="body1">Accepter les <a href={CONF.cgr} target="_blank">Conditions Générales de Réservation</a></Typography>
+        </div>)}
+
         {this.state.order && (
-          <CartFooter onClickContinue={() => this.goToSlots()} quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total} />
+          <CartFooter text={this.state.summaryMode ? 'Confirmer' : 'Réserver'} onClickContinue={() => this.continue()} quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total} />
         )}
       </div>
     );

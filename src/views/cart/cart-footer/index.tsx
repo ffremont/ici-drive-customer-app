@@ -16,7 +16,7 @@ const CartFooter = (props: any) => {
         <div className="qantity">{props.quantity}</div>
       </div>
       <div className="actions">
-        <Button className="main-action" variant="contained" onClick={props.onClickContinue} color="secondary">Réserver</Button>
+        <Button className="main-action" variant="contained" onClick={props.onClickContinue} color="secondary">{props.text}</Button>
       </div>
     </div>
   );

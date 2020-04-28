@@ -4,5 +4,5 @@ export interface Notif{
 }
 
 export enum NotifType{
-    SNACK_CART
+    SNACK_CART, MY_CARD_SAVED
 }

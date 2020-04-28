@@ -77,7 +77,7 @@ const MenuApp = (props: any) => {
     <div className={classes.root}>
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
         <List className="drawer-list">
-          <ListItem button key="orders">
+          <ListItem button key="orders" onClick={() => props.history.push('/my-orders')}>
             <ListItemIcon><ReceiptIcon /></ListItemIcon>
             <ListItemText primary="Mes commandes" secondary="En cours et passées" />
           </ListItem>
@@ -132,6 +132,16 @@ const MenuApp = (props: any) => {
           {['slots'].indexOf(mode) > -1 && (
             <Typography variant="h6" align="center" className={classes.title}>
               Heure du retrait
+            </Typography>
+          )}
+          {['summary'].indexOf(mode) > -1 && (
+            <Typography variant="h6" align="center" className={classes.title}>
+              Récapitulatif
+            </Typography>
+          )}
+          {['my-orders'].indexOf(mode) > -1 && (
+            <Typography variant="h6" align="center" className={classes.title}>
+              Mes commandes
             </Typography>
           )}
 

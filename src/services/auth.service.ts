@@ -1,7 +1,8 @@
 import { User } from "../models/user";
+import myProfilStore from '../stores/my-profil';
 import { BehaviorSubject } from "rxjs";
 
-class AuthService{
+export class AuthService{
     public subToken = new BehaviorSubject<string|null>(null);
     public subUser = new BehaviorSubject<User|null>(null);
     public isAuth = false;
@@ -9,6 +10,9 @@ class AuthService{
     public authenticate(user:User): void {
         this.isAuth = true;
         this.subUser.next(user);
+
+        // provoque la récupération du profil dès qu'on est connecté
+        myProfilStore.load();
     }
 
     public setIdToken(idToken:string){
@@ -21,6 +25,5 @@ class AuthService{
         this.subToken.next(null);
     }
 }
-
 
 export default new AuthService() ;

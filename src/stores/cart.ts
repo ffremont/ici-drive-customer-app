@@ -4,20 +4,43 @@ import { BehaviorSubject, Subscription } from "rxjs";
 import { Maker } from "../models/marker";
 import * as moment from 'moment';
 import { Product } from "../models/product";
+import httpClientService from '../services/http-client.service';
+import conf from '../confs';
+import {AxiosResponse} from 'axios';
 
 class CartStore implements Store<Order>{
 
+    private static SESSION_STORAGE_KEY='ici-drive-cart';
+
     private order: Order | null = null;
-    private sub = new BehaviorSubject<Order>({ choices: [], created: (new Date()).getTime(), total: 0, ref: '' });
+    private sub:BehaviorSubject<Order>;
+
+    constructor(){
+        let defaultOrder = { choices: [], created: (new Date()).getTime(), total: 0, ref: '' };
+        if(window.sessionStorage && window.sessionStorage.getItem(CartStore.SESSION_STORAGE_KEY)){
+            defaultOrder = JSON.parse(window.sessionStorage.getItem(CartStore.SESSION_STORAGE_KEY) as any);
+        }
+        this.sub = new BehaviorSubject<Order>(defaultOrder);
+    }
 
     set(order: Order): void {
         this.order = order;
+        if(window.sessionStorage){
+            window.sessionStorage.setItem(CartStore.SESSION_STORAGE_KEY, JSON.stringify(order));
+        }
         this.sub.next(order);
     }
 
 
     subscribe(func: any): Subscription {
         return this.sub.subscribe(func);
+    }
+
+    /**
+     * Mémorise le cart
+     */
+    save(myCart: Order): Promise<AxiosResponse<Order>>{
+        return httpClientService.axios.post(conf.API.orders(), myCart);
     }
 
     /**

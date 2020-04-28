@@ -14,7 +14,9 @@ class HttpClientService{
     public axios:any;
 
     constructor(){
-        authService.subToken.subscribe( token => this.idToken = token );
+        setTimeout(() => {
+            authService.subToken.subscribe( (token:any) => this.idToken = token );
+        },0);
 
         this.config = {
             responseType: 'json',

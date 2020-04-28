@@ -1,5 +1,6 @@
 import { Maker } from "./marker";
 import { Product } from "./product";
+import { Customer } from "./customer";
 
 export interface ProductChoice{
     product:Product;
@@ -23,4 +24,5 @@ export interface Order{
    total:number;
    slot?: number;
    reasonOf?:string;
+   customer?: Customer;
 }

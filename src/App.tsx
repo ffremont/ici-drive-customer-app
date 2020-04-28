@@ -21,6 +21,7 @@ import 'moment/locale/fr';
 import Cart from './views/cart';
 import Place from './views/place';
 import Slots from './views/slots';
+import MyOrders from './views/my-orders';
 
 
 // @see https://material-ui.com/customization/palette/
@@ -69,8 +70,9 @@ class App extends React.Component<{}, { concurrentCalls: number }>{
             <Route path="/login" component={Login} />
             <PrivateRoute exact path="/cart" component={Cart} />
             <PrivateRoute exact path="/cart/slots" component={Slots} />
+            <PrivateRoute exact path="/cart/summary" component={Cart} />
+            <PrivateRoute exact path="/my-orders" component={MyOrders} />            
 
-            
 
             <Route path="*" component={NoMatch} />
           </Switch>
@@ -83,4 +85,5 @@ export default App;
 
 
 // @see https://reacttraining.com/react-router/web/guides/primary-components
+
 

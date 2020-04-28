@@ -22,3 +22,21 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-disableEle
     border-color: orange;
     border: 1px solid orange;
 }
+
+.slot-footer{
+    position: fixed;
+    bottom: 0;
+    background: white;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    .main-action{
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

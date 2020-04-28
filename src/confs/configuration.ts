@@ -4,6 +4,8 @@ import { Url } from "url";
 interface APIS{
     markers:any;
     products:any;
+    orders:any;
+    myProfil:any;
 }
 
 export interface Configuration{
@@ -12,5 +14,5 @@ export interface Configuration{
 
     publicHolidays:{date:string, public_holiday:boolean, label:string}[],
     cgu:string;
-    cgv:string;
+    cgr:string;
 }

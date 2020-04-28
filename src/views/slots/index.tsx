@@ -66,6 +66,22 @@ class Slots extends React.Component<{ history: any, match: any }, { order: Order
     });
   }
 
+  validate(){
+    const newOrder :Order = {...(this.state.order as any)};
+
+    const group:any = this.state.groups.find((g:SlotGroup) => g.slots.some((s:SlotButton) => s.selected));
+    if(group){
+      newOrder.slot = (group.slots.find((s:SlotButton) => s.selected) as any).at.getTime();
+      cartStore.set(newOrder);
+  
+      this.props.history.push('/cart/summary');
+    }else{
+      this.props.history.push('/error');
+    }
+
+   
+  }
+
   /**
    * Choisi un créneau sur un jour
    * @param g 
@@ -121,7 +137,7 @@ class Slots extends React.Component<{ history: any, match: any }, { order: Order
 
         <div className="slot-footer">
           <div className="main-action">
-            <Button>Valider le créneau</Button>
+            <Button variant="contained" onClick={() => this.validate()} color="secondary" disabled={!this.state.groups.some((g:SlotGroup) => g.slots.some((s:SlotButton) => s.selected))}>Valider le créneau</Button>
           </div>
         </div>
 

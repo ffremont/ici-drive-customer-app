@@ -14,7 +14,7 @@ class MakerService{
      * 
      * @param maker 
      */
-    public getSlots(maker : Maker): Date[]{
+    public getSlots(maker : Maker, limit = -1): Date[]{
         const results : Date[] = [];
         const now = moment.default();
         now.add(1, 'd');
@@ -59,6 +59,10 @@ class MakerService{
             }
 
             now.add(1, 'd');
+
+            if((limit > 0) && (i >=limit)){
+                break;
+            }
         }
         
         return results;
