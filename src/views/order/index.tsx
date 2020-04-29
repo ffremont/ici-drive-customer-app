@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import { deepOrange, grey, green } from '@material-ui/core/colors';
 import Chip from '@material-ui/core/Chip';
-import { Maker } from '../../models/marker';
+import { Maker } from '../../models/maker';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';

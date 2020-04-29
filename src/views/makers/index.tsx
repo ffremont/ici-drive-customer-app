@@ -2,7 +2,7 @@ import React from 'react';
 import './Makers.scss';
 import { Subscription } from 'rxjs';
 import makerStore from '../../stores/makers';
-import { Maker } from '../../models/marker';
+import { Maker } from '../../models/maker';
 import MenuApp from '../../components/menu-app';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -18,6 +18,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import {History} from 'history';
 import TabPanel from '../../components/tab-panel';
+import conf from '../../confs';
 
 
 //https://github.com/typescript-cheatsheets/react-typescript-cheatsheet
@@ -38,16 +39,15 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
         const part = newMakers[ip];
         if (part.categories) {
           for (let ic in part.categories) {
-            const cat = part.categories[ic];
-            if (!cats[cat.id]) {
-              cats[cat.id] = cat;
+            const cat:string = part.categories[ic];
+            if (!cats[cat] && conf.categories.some(c => c.id === cat)) {
+              cats[cat] = conf.categories.find(c => c.id===cat);
             }
           }
         }
       }
 
       // calculer la distance du smartphone
-      // 
 
       this.setState({
         makers: newMakers,
@@ -60,6 +60,7 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
 
   changeTab(newValue: number) {
     const cat: any = this.state.categories.find((c, i) => i === newValue);
+    
     if (cat) {
       this.setState({ value: newValue, filterCat: cat.id });
     } else {
@@ -77,8 +78,9 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
       <div className="makers">
         <MenuApp mode="full" history={this.props.history}/>
         <AppBar position="static">
+          
           <Tabs value={this.state.value} onChange={handleChange} variant="scrollable" className="tabs" aria-label="catégories de produits">
-            {this.state.categories.map((cat: Item, i: number) => <Tab key={i} label={cat.label} value={i} />)}
+            {this.state.categories.map((cat: Item, i: number) => <Tab key={'tab'+i} label={cat.label} value={i} />)}
           </Tabs>
         </AppBar>
 
@@ -87,7 +89,7 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
 
             {this.state.makers.filter((p: Maker) => {
               if (this.state.filterCat === 'all') return true;
-              else return p.categories.some((c: Item) => c.id === this.state.filterCat)
+              else return p.categories.some((c: string) => c === this.state.filterCat)
             }).map((p: Maker, i) => {
               return (
                 <Card key={i} onClick={() => this.props.history.push(`/makers/${p.id}/catalog`)}

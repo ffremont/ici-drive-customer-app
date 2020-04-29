@@ -2,7 +2,7 @@ import { Item } from "../models/item";
 import { Url } from "url";
 
 interface APIS{
-    markers:any;
+    makers:any;
     products:any;
     orders:any;
     myProfil:any;

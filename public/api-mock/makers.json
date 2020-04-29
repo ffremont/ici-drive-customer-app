@@ -23,19 +23,5 @@
             "dimanche": {"openAt": "8:00", "closeAt": "18:00"}
         }
     },
-    "categories": [
-        { "label": "Boeuf / Veau", "id": "boeuf-veau"},
-        { "label": "Volaille / Lapin", "id": "volaille-lapin"},
-        { "label": "Agneau / Porc", "id": "agneau-porc"},
-        { "label": "Charcuterie", "id": "charcuterie"},
-        { "label": "Boisson / Vin", "id": "boisson-vin"},
-        { "label": "Epicerie", "id": "epicerie"},
-        { "label": "Fromage", "id": "fromage"},
-        { "label": "Pâtes / Légumineuses", "id": "pates-leg"},
-        { "label": "Glace", "id": "glace"},
-        { "label": "Fruit / Légume", "id": "fruit-leg"},
-        { "label": "Mer", "id": "mer"},
-        { "label": "Miel", "id": "miel"},
-        { "label": "Crèmerie", "id": "cremerie"}
-    ]
+    "categories": [ "boisson-vin", "fruit-leg"]
 }]

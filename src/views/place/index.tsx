@@ -3,7 +3,7 @@ import './Place.scss';
 import { Subscription } from 'rxjs';
 import Grid from '@material-ui/core/Grid';
 import makerStore from '../../stores/makers';
-import { Maker } from '../../models/marker';
+import { Maker } from '../../models/maker';
 import MenuApp from '../../components/menu-app';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -21,8 +21,8 @@ class Place extends React.Component<{ history: any, match: any }, { maker: Maker
 
   componentDidMount() {
     const makerId = this.props.match.params.id;
-    this.subMakers = makerStore.subscribe((markers: Maker[]) => {
-      const maker = markers.find((p: Maker) => p.id === makerId) || null;
+    this.subMakers = makerStore.subscribe((makers: Maker[]) => {
+      const maker = makers.find((p: Maker) => p.id === makerId) || null;
       if (!maker) {
         console.error("maker not found : " + makerId);
         //this.props.history.push('/');

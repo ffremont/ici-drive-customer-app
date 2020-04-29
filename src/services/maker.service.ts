@@ -1,4 +1,4 @@
-import { Maker } from "../models/marker";
+import { Maker } from "../models/maker";
 import conf from '../confs';
 import * as moment from 'moment';
 import { OfficeSlot } from "../models/hebdo-slot";

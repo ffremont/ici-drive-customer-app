@@ -1,7 +1,7 @@
 import { Order, ProductChoice, OrderState } from "../models/order";
 import { Store } from "./store";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { Maker } from "../models/marker";
+import { Maker } from "../models/maker";
 import * as moment from 'moment';
 import { Product } from "../models/product";
 import httpClientService from '../services/http-client.service';

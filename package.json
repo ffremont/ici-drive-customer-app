@@ -38,7 +38,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "cp -r functions/src/models/* src/models/ && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serve": "serve build",
@@ -60,6 +60,7 @@
     ]
   },
   "devDependencies": {
+    "firebase-tools": "^8.2.0",
     "serve": "^11.3.0"
   }
 }

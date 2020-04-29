@@ -26,7 +26,7 @@ import conf from '../../confs';
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import { Maker } from '../../models/marker';
+import { Maker } from '../../models/maker';
 import { Order } from '../../models/order';
 import CartConflit from './cart-conflit';
 import SnackAdd from '../../components/snack-add';
@@ -65,8 +65,8 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
     });
 
 
-    this.subMakers = makerStore.subscribe((markers: Maker[]) => {
-      const maker = markers.find((p: Maker) => p.id === makerId) || null;
+    this.subMakers = makerStore.subscribe((makers: Maker[]) => {
+      const maker = makers.find((p: Maker) => p.id === makerId) || null;
       if (!maker) {
         console.info("maker not found : " + makerId);
         //this.props.history.push('/');

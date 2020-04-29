@@ -1,5 +1,4 @@
 import {BehaviorSubject, Subscription} from 'rxjs';
-import { Maker } from '../models/marker';
 import { Store } from './store';
 import {AxiosResponse} from 'axios';
 import httpClientService from '../services/http-client.service';
