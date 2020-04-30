@@ -7,8 +7,7 @@ const other: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
     cgr: 'http://google.fr',
     API: {
-        makers: (makerId?:string) => `${DEV_API_BASEURL}/makers.json`,
-        products: (makerId:string) => `${DEV_API_BASEURL}/makers/${makerId}/products.json`,
+        makers: (makerId:any = null) => `${DEV_API_BASEURL}/makers${makerId === null ? '.json': '/'+makerId+'/index.json'}`,
         orders: (ref?:string) => `${DEV_API_BASEURL}/my-orders.json?ref=${ref}`,
         myProfil: () => `${DEV_API_BASEURL}/my-profil.json`,
     },
@@ -35,8 +34,8 @@ const prod: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
     cgr: '',
     API: {
-        makers: (makerId?:string) => `${API_BASEURL}/makers?id=${makerId}`,
-        products: (makerId:string) => `${API_BASEURL}/makers/${makerId}/products`,
+        makers: (makerId:any = '') => `${API_BASEURL}/makers/${makerId}`,
+        //products: (makerId:string) => `${API_BASEURL}/makers/${makerId}/products`,
         orders: (ref?:string) => `${API_BASEURL}/my-orders/${ref}`,
         myProfil: () => `${DEV_API_BASEURL}/my-profil`,
     },

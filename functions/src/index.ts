@@ -1,6 +1,8 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import testResource from './resources/test.resource';
+import makerResource from './resources/maker.resource';
+import myOrderResource from './resources/myorder.resource';
 import context from './context';
 
 const customCreds: any = process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -23,5 +25,10 @@ context.db(admin.firestore());
 //
 export const testAdd = functions.https.onRequest(testResource.add.bind(testResource));
 export const testFindAll = functions.https.onRequest(testResource.findAll.bind(testResource));
+
+export const makerSearch = functions.https.onRequest(makerResource.search.bind(makerResource));
+export const makerGetFull = functions.https.onRequest(makerResource.getFullMaker.bind(makerResource));
+
+export const myOrderNewCart = functions.https.onRequest(myOrderResource.newCart.bind(myOrderResource));
 
 

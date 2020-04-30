@@ -1,9 +1,10 @@
 import { User } from "./user";
 import { Place } from "./place";
-import { Item } from "./item";
+import { Product } from "./product";
 
 export interface Maker extends User{
     id:string;
+    created: number,
     name: string;
     image: string;
     webPage:string;
@@ -14,10 +15,6 @@ export interface Maker extends User{
     prefixOrderRef: string;
 
     place: Place;
-    categories: Item[];
-
-    
-    
-    
-    
+    categories: string[];
+    products?: Product[];
 }

@@ -2,7 +2,6 @@ import React from 'react';
 import './Catalog.scss';
 import MenuApp from '../../components/menu-app';
 import { Subscription } from 'rxjs';
-import productStore from '../../stores/products';
 import makerStore from '../../stores/makers';
 import cartStore from '../../stores/cart';
 import notifStore from '../../stores/notif';
@@ -30,7 +29,7 @@ import { Maker } from '../../models/maker';
 import { Order } from '../../models/order';
 import CartConflit from './cart-conflit';
 import SnackAdd from '../../components/snack-add';
-import { NotifType, Notif } from '../../models/notif';
+import { NotifType } from '../../models/notif';
 
 interface GraphicProduct extends Product {
   category?: Item
@@ -39,12 +38,10 @@ interface GraphicProduct extends Product {
 class Catalog extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanCart: boolean, cart: Order | null }>{
 
   state = { products: [], openCleanCart: false, activeIndex: -1, maker: null, openPreview: '', cart: null, wantToAdd: null };
-  subProducts: Subscription | null = null;
   subMakers: Subscription | null = null;
   subOrder: Subscription | null = null;
 
   componentWillUnmount() {
-    this.subProducts?.unsubscribe();
     this.subMakers?.unsubscribe();
     this.subOrder?.unsubscribe();
   }
@@ -52,14 +49,6 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
   componentDidMount() {
     const makerId = this.props.match.params.id;
 
-    this.subProducts = productStore.subscribe((products: Product[]) => {
-      this.setState({
-        products: products.map((p: GraphicProduct) => {
-          p.category = conf.categories.find(c => c.id === p.categoryId);
-          return p;
-        })
-      });
-    });
     this.subOrder = cartStore.subscribe((order: Order) => {
       this.setState({ cart: order.ref ? order : null });
     });
@@ -69,15 +58,19 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
       const maker = makers.find((p: Maker) => p.id === makerId) || null;
       if (!maker) {
         console.info("maker not found : " + makerId);
-        //this.props.history.push('/');
       } else {
+        const products = (maker.products || []).map((p: GraphicProduct) => {
+          p.category = conf.categories.find(c => c.id === p.categoryId);
+          return p;
+        })
+
         this.setState({
-          maker
+          maker, products
         })
       }
     })
 
-    productStore.refresh(makerId);
+    makerStore.refresh(makerId);
   }
 
   addCart(p: Product) {

@@ -55,6 +55,7 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
       });
     });
 
+    
     makerStore.refresh();
   }
 

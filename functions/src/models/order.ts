@@ -1,6 +1,6 @@
 import { Maker } from "./maker";
 import { Product } from "./product";
-import { Customer } from "./customer";
+import { User } from "./user";
 
 export interface ProductChoice{
     product:Product;
@@ -17,6 +17,7 @@ export enum OrderState{
 export interface Order{
    created:number;
    ref:string;
+   id?:string;
    status?:OrderState; // ATTENTE_VALIDATION, VALIDEE, REFUSEE, ANNULEE
    
    choices: ProductChoice[],
@@ -24,5 +25,5 @@ export interface Order{
    total:number;
    slot?: number;
    reasonOf?:string;
-   customer?: Customer;
+   customer?: User;
 }

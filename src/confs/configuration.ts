@@ -3,7 +3,6 @@ import { Url } from "url";
 
 interface APIS{
     makers:any;
-    products:any;
     orders:any;
     myProfil:any;
 }

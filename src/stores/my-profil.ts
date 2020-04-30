@@ -3,13 +3,13 @@ import { Store } from './store';
 import {AxiosResponse} from 'axios';
 import httpClientService from '../services/http-client.service';
 import conf from '../confs';
-import { Customer } from '../models/customer';
+import { User } from '../models/user';
 
-class MyProfilStore implements Store<Customer>{
-    private sub = new BehaviorSubject<Customer>({email:''});
+class MyProfilStore implements Store<User>{
+    private sub = new BehaviorSubject<User>({email:''});
 
-    public set(customer: Customer): void{
-        this.sub.next(customer);
+    public set(user: User): void{
+        this.sub.next(user);
     }
 
     public subscribe(func:any): Subscription{
@@ -19,9 +19,9 @@ class MyProfilStore implements Store<Customer>{
     /**
      * 
      */
-    public load():Promise<Customer>{
+    public load():Promise<User>{
         return httpClientService.axios.get(conf.API.myProfil())
-        .then((response: AxiosResponse<Customer>) => {
+        .then((response: AxiosResponse<User>) => {
             this.set(response.data);
             return response.data;
         });

@@ -39,14 +39,14 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { NotifType } from '../../models/notif';
 import { Product } from '../../models/product';
 import myProfilStore from '../../stores/my-profil';
-import { Customer } from '../../models/customer';
+import { User } from '../../models/user';
 
 interface CategoryProductChoice {
   products: ProductChoice[],
   category: Item
 }
 
-class Cart extends React.Component<{ history: any, location: any, match: any }, { myProfil:Customer, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
+class Cart extends React.Component<{ history: any, location: any, match: any }, { myProfil:User, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
 
   state = { order: null, myProfil: {email:''}, checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
   subOrder: Subscription | null = null;
@@ -61,7 +61,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
   componentDidMount() {
     this.setState({ summaryMode: window.location.pathname.indexOf('/summary') > -1 });
 
-    this.subMyProfil = myProfilStore.subscribe((myProfil:Customer) => {
+    this.subMyProfil = myProfilStore.subscribe((myProfil:User) => {
       if(myProfil.email){
         this.setState({myProfil});
       }

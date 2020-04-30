@@ -16,10 +16,15 @@ class MakersStore implements Store<Maker[]>{
         return this.sub.subscribe(func);
     }
 
-    public refresh(makerId?:string):void{
+    public refresh(makerId = null):void{
+        
         httpClientService.axios.get(conf.API.makers(makerId))
-        .then((response: AxiosResponse<Maker[]>) => {
-            this.set(response.data);
+        .then((response: AxiosResponse<any>) => {
+            if(Array.isArray(response.data)){
+                this.set(response.data);
+            }else{
+                this.set([response.data]);
+            }            
         }).catch((e:any) => {
             console.error(e);
         });
