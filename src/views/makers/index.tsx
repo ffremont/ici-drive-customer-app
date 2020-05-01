@@ -71,8 +71,6 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
         categories: Object.values(cats)
       });
     });
-    
-    makerStore.refresh();
   }
 
   private computeGeoDistance(makers:GraphicMaker[], geoPoint : GeoPoint): GraphicMaker[]{
@@ -87,6 +85,12 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
         geoPoint.latitude, geoPoint.longitude,
         m.place.point?.latitude || 0, m.place.point?.longitude || 0
         )}
+    }).sort( (a: GraphicMaker,b: GraphicMaker)=>{
+      if(a.distance){
+        return (a.distance as any) < (b.distance as any) ? -1 : 1;
+      }else{
+        return (a.name > b.name) ? 1 : (b.name > a.name) ? -1 : 0
+      }
     });
   }
 

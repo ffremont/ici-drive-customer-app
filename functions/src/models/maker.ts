@@ -17,4 +17,6 @@ export interface Maker extends User{
     place: Place;
     categories: string[];
     products?: Product[];
+
+    paypalMeUrl?:string;
 }

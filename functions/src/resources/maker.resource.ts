@@ -43,10 +43,6 @@ class MakerResource {
      * @param response 
      */
     public async search(request: Request, response: Response) {
-        if (request.method.toUpperCase() !== 'GET') {
-            AppUtil.methodNotAllowed(response); return;
-        }
-
         const near: any = request.query.near || null;
         let snapshot;
         try {
@@ -81,12 +77,7 @@ class MakerResource {
      */
     public async getFullMaker(request: Request, response: Response) {
         try {
-            if (request.method.toUpperCase() !== 'GET') {
-                AppUtil.methodNotAllowed(response); return;
-            }
-
-            const urlPieces = request.path.split('/');
-            const markerId = urlPieces[urlPieces.length - 1];
+            const markerId = request.params.id;
             if(!markerId){ throw 'Identifiant invalide'}
             
             const maker = await this.makerDao.getFull(markerId);

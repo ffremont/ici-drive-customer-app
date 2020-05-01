@@ -11,15 +11,16 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import GoogleIcon from '../../assets/images/google.svg';
-import FacebookIcon from '../../assets/images/facebook.svg';
 import MailIcon from '../../assets/images/mail.svg';
 import authService from '../../services/auth.service';
 import {FirebaseStub} from '../../stubs/firebase';
 
-const firebase:any = process.env.REACT_APP_STAGE === 'prod' ? (window as any).firebase : (new FirebaseStub()).init();
+if(process.env.REACT_APP_STAGE !== 'prod'){
+  (window as any).firebase = (new FirebaseStub()).init();
+}
 
-class Login extends React.Component<{location:any}, {loading:boolean, isSignedIn:boolean, from:string}> {
-  unregisterAuthObserver: any;
+class Login extends React.Component<{history:any,location:any}, {loading:boolean, isSignedIn:boolean, from:string}> {
+  unregisterAuthObserver: any = null;
 
   // The component's Local state.
   state = {
@@ -31,42 +32,48 @@ class Login extends React.Component<{location:any}, {loading:boolean, isSignedIn
   private sign(provider:any){
     provider.addScope('profile');
     provider.addScope('email');
-    firebase.auth().signInWithRedirect(provider);
-  }
-
-  signFacebook(){
-    this.sign(process.env.REACT_APP_STAGE === 'prod' ? 
-      new firebase.auth.FacebookAuthProvider() : new (firebase.auth.FacebookAuthProvider()) );
+    (window as any).firebase.auth().signInWithRedirect(provider);
   }
 
   signEmail(){
-    this.sign(process.env.REACT_APP_STAGE === 'prod' ? new firebase.auth.EmailAuthProvider() : new (firebase.auth.EmailAuthProvider()));
+    this.sign(process.env.REACT_APP_STAGE === 'prod' ? new (window as any).firebase.auth.EmailAuthProvider() : new ((window as any).firebase.auth.EmailAuthProvider()));
   }
 
   signGoogle(){
-    this.sign(process.env.REACT_APP_STAGE === 'prod' ?  new firebase.auth.GoogleAuthProvider() : new (firebase.auth.GoogleAuthProvider()));    
+    this.sign(process.env.REACT_APP_STAGE === 'prod' ?  new (window as any).firebase.auth.GoogleAuthProvider() : new ((window as any).firebase.auth.GoogleAuthProvider()));    
   }
 
   componentDidMount() {
-    this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
+    this.registerOnFirebase();
+
+    if(this.props.location){
+      if(this.props.location.state){
+        this.setState({from: this.props.location.state.fromPathname});
+      }else{
+        this.setState({from: '/'});
+      }      
+    }
+  }
+
+  private registerOnFirebase(){
+    this.unregisterAuthObserver = (window as any).firebase.auth().onAuthStateChanged(
       (user:any) => {
         this.setState({ loading: false, isSignedIn: !!user })
         if(user){
-          firebase.auth().currentUser.getIdToken().then((token:string) => authService.setIdToken(token));
+          (window as any).firebase.auth().currentUser.getIdToken().then((token:string) => authService.setIdToken(token));
           authService.authenticate({email: user.email});
         }else{
           // no authenticated, noop show buttons
         }        
       }
     );
-    if(this.props.location){
-      this.setState({from: this.props.location.state.fromPathname});
-    }
   }
 
   // Make sure we un-register Firebase observers when the component unmounts.
   componentWillUnmount() {
-    this.unregisterAuthObserver();
+    if(this.unregisterAuthObserver){
+      this.unregisterAuthObserver();
+    }
   }
 
   render() {
@@ -109,18 +116,6 @@ class Login extends React.Component<{location:any}, {loading:boolean, isSignedIn
                 className="provider google"
               >
                 <img alt="google" src={GoogleIcon} /> Connexion par Google
-            </Button>
-  
-            <Button
-                type="button"
-                fullWidth
-                color="primary"
-                size="large"
-                variant="contained"
-                onClick={() => this.signFacebook()}
-                className="provider fb"
-              >
-                <img alt="facebook" src={FacebookIcon} /> Connexion par Facebook
             </Button>
             <Button
                 type="button"

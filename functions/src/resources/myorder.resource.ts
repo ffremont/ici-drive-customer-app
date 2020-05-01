@@ -23,9 +23,6 @@ class MyOrderResource {
      */
     public async getAll(request: Request, response: Response) {
         try{
-            if (request.method.toUpperCase() !== 'GET') {
-                AppUtil.methodNotAllowed(response); return;
-            }
             const currentUserEmail = await AppUtil.authorized(request);
             if (currentUserEmail === null) {
                 AppUtil.notAuthorized(response); return;
@@ -45,16 +42,12 @@ class MyOrderResource {
      */
     public async get(request: Request, response: Response) {
         try{
-            if (request.method.toUpperCase() !== 'GET') {
-                AppUtil.methodNotAllowed(response); return;
-            }
             const currentUserEmail = await AppUtil.authorized(request);
             if (currentUserEmail === null) {
                 AppUtil.notAuthorized(response); return;
             }
 
-            const urlPieces = request.path.split('/');
-            const orderId = urlPieces[urlPieces.length - 1];
+            const orderId = request.params.id;
             if(!orderId){ throw 'Identifiant invalide'}
 
             const order = await this.myOrderDao.get(orderId) as Order;
@@ -79,16 +72,12 @@ class MyOrderResource {
      */
     public async update(request: Request, response: Response) {
         try{
-            if (request.method.toUpperCase() !== 'PUT') {
-                AppUtil.methodNotAllowed(response); return;
-            }
             const currentUserEmail = await AppUtil.authorized(request);
             if (currentUserEmail === null) {
                 AppUtil.notAuthorized(response); return;
             }
 
-            const urlPieces = request.path.split('/');
-            const orderId = urlPieces[urlPieces.length - 1];
+            const orderId = request.params.id;
             if(!orderId){ throw 'Identifiant invalide'}
 
             const order = request.body as Order;
@@ -119,10 +108,6 @@ class MyOrderResource {
      */
     public async newCart(request: Request, response: Response) {
         try {
-            if (request.method.toUpperCase() !== 'POST') {
-                AppUtil.methodNotAllowed(response); return;
-            }
-
             const currentUserEmail = await AppUtil.authorized(request);
             if (currentUserEmail === null) {
                 AppUtil.notAuthorized(response); return;

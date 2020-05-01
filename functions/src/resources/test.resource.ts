@@ -8,7 +8,7 @@ import * as geohash from "ngeohash";
 
 class TestResource {
 
-    private static categories: any = ['boeuf-veau', 'charcuterie', 'fruit-leg'];
+    private static categories: any = ['viande', 'mer', 'fruit-leg'];
     private static placeNames: any = ['Place de la mairie', 'Parking du Super U', 'A notre ferme', 'Près de école A', 'Sous le pont B'];
 
     private static productImages: any = [

@@ -16,9 +16,6 @@ class MyProfilResource{
      */
     public async get(request:Request, response:Response){ 
         try{
-            if (request.method.toUpperCase() !== 'GET') {
-                AppUtil.methodNotAllowed(response); return;
-            }
             const currentUserEmail = await AppUtil.authorized(request);
             if (currentUserEmail === null) {
                 AppUtil.notAuthorized(response); return;
@@ -45,9 +42,6 @@ class MyProfilResource{
      */
     public async update(request:Request, response:Response){ 
         try{
-            if (request.method.toUpperCase() !== 'PUT') {
-                AppUtil.methodNotAllowed(response); return;
-            }
             const currentUserEmail = await AppUtil.authorized(request);
             if (currentUserEmail === null) {
                 AppUtil.notAuthorized(response); return;

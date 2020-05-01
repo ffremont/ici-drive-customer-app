@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       flexGrow: 1,
+      paddingRight:50,
     },
     list: {
       width: 250,
@@ -151,6 +152,11 @@ const MenuApp = (props: any) => {
           {['my-orders'].indexOf(mode) > -1 && (
             <Typography variant="h6" align="center" className={classes.title}>
               Mes commandes
+            </Typography>
+          )}
+          {['my-profil'].indexOf(mode) > -1 && (
+            <Typography variant="h6" align="center" className={classes.title}>
+              Mon compte
             </Typography>
           )}
 

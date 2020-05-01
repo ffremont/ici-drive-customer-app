@@ -5,6 +5,7 @@ import makerResource from './resources/maker.resource';
 import myOrderResource from './resources/myorder.resource';
 import myProfilResource from './resources/myprofil.resource';
 import context from './context';
+import express = require('express');
 
 const customCreds: any = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 if (customCreds) {
@@ -24,18 +25,23 @@ context.db(admin.firestore());
 // https://firebase.google.com/docs/functions/config-env
 // https://medium.com/@tacomanator/environments-with-create-react-app-7b645312c09d
 //
+
+const app = express();
+
+app.get('/api/makers', makerResource.search.bind(makerResource));
+app.get('/api/makers/:id', makerResource.getFullMaker.bind(makerResource));
+
+app.post('/api/carts', myOrderResource.newCart.bind(myOrderResource));
+
+app.get('/api/my-orders', myOrderResource.getAll.bind(myOrderResource));
+app.get('/api/my-orders/:id', myOrderResource.get.bind(myOrderResource));
+app.put('/api/my-orders/:id', myOrderResource.update.bind(myOrderResource));
+
+app.get('/api/my-profil', myProfilResource.get.bind(myProfilResource));
+app.put('/api/my-profil', myProfilResource.update.bind(myProfilResource));
+
+export const api = functions.https.onRequest(app);
 export const testAdd = functions.https.onRequest(testResource.add.bind(testResource));
-export const testFindAll = functions.https.onRequest(testResource.findAll.bind(testResource));
-
-export const makerSearch = functions.https.onRequest(makerResource.search.bind(makerResource));
-export const makerGetFull = functions.https.onRequest(makerResource.getFullMaker.bind(makerResource));
-
-export const myOrderNewCart = functions.https.onRequest(myOrderResource.newCart.bind(myOrderResource));
-export const myOrderFindAll = functions.https.onRequest(myOrderResource.getAll.bind(myOrderResource));
-export const myOrderGet = functions.https.onRequest(myOrderResource.get.bind(myOrderResource));
-export const myOrderUpdate = functions.https.onRequest(myOrderResource.update.bind(myOrderResource));
-
-export const myProfilGet = functions.https.onRequest(myProfilResource.get.bind(myProfilResource));
-export const myProfilUpdate = functions.https.onRequest(myProfilResource.update.bind(myProfilResource));
+export const testFind = functions.https.onRequest(testResource.findAll.bind(testResource));
 
 
