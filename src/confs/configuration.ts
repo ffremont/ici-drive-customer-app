@@ -5,6 +5,7 @@ interface APIS{
     makers:any;
     orders:any;
     myProfil:any;
+    searchMakers:any;
 }
 
 export interface Configuration{
@@ -14,4 +15,5 @@ export interface Configuration{
     publicHolidays:{date:string, public_holiday:boolean, label:string}[],
     cgu:string;
     cgr:string;
+    support:string;
 }

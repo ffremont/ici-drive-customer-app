@@ -26,17 +26,25 @@ export class AppUtil{
         }
     }
 
+    public static expires(res:Response, delay:number){
+        res.setHeader('Cache-Control', `public,max-age=${delay}`);
+    }
 
+    public static noCache(res:Response){
+        res.setHeader('Cache-Control', `no-cache,no-store`);
+    }
 
-    public static ok(res: Response, data:any){
+    public static ok(res: Response, data:any = null){
         res.status(200);
         res.setHeader('Content-Type', 'application/json');
         
         if(data instanceof QuerySnapshot){
             res.send(JSON.stringify(AppUtil.arrOfSnap(data)));
-        }else{
+        }else if(data !== null){
             res.send(JSON.stringify(data));
-        }        
+        }else{
+            res.send('{}');
+        }
     }
 
     public static async authorized(request:Request) : Promise<string|null>{
@@ -55,8 +63,8 @@ export class AppUtil{
     public static notAuthorized(res:Response){
         res.status(403).send('Unauthorized');
     }
-    public static badRequest(res:Response){
-        res.status(400).send(JSON.stringify({ message: 'Bad request'}));
+    public static badRequest(res:Response, message : string = 'Bad request'){
+        res.status(400).send(JSON.stringify({ message}));
     }
     public static notFound(res:Response){
         res.status(404).send(JSON.stringify({ message: 'Not found'}));

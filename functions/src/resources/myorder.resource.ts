@@ -15,6 +15,7 @@ class MyOrderResource {
     private myOrderDao = new OrderDao();
     private userDao = new UserDao();
 
+
     /**
      * Retourne la liste de mes commandes
      * @param request 
@@ -30,7 +31,7 @@ class MyOrderResource {
                 AppUtil.notAuthorized(response); return;
             }
 
-            AppUtil.ok(response, this.myOrderDao.getAllByCustomer(currentUserEmail));
+            AppUtil.ok(response, await this.myOrderDao.getAllByCustomer(currentUserEmail));
         }catch(e){
             AppUtil.internalError(response, e);
         }
@@ -57,6 +58,8 @@ class MyOrderResource {
             if(!orderId){ throw 'Identifiant invalide'}
 
             const order = await this.myOrderDao.get(orderId) as Order;
+
+            // vérifie que la commande est bien celle faite par le client
             if(!order || (order.customer?.email !== currentUserEmail)){
                 AppUtil.badRequest(response); return;
             }
@@ -68,13 +71,43 @@ class MyOrderResource {
     }
 
     /**
+     * MAJ d'une commande
      * /my-orders/aaaaaa
      * 
      * @param request 
      * @param response 
      */
     public async update(request: Request, response: Response) {
+        try{
+            if (request.method.toUpperCase() !== 'PUT') {
+                AppUtil.methodNotAllowed(response); return;
+            }
+            const currentUserEmail = await AppUtil.authorized(request);
+            if (currentUserEmail === null) {
+                AppUtil.notAuthorized(response); return;
+            }
 
+            const urlPieces = request.path.split('/');
+            const orderId = urlPieces[urlPieces.length - 1];
+            if(!orderId){ throw 'Identifiant invalide'}
+
+            const order = request.body as Order;
+            const modification :any = {};
+            if(order.reasonOf){
+                modification.reasonOf = order.reasonOf;
+            }
+            if(order.status){
+                modification.status = order.status;
+            }else{
+                AppUtil.badRequest(response, 'Contenu de modification invalide');
+            }
+
+            await this.myOrderDao.update(orderId, modification);
+
+            AppUtil.ok(response);
+        }catch(e){
+            AppUtil.internalError(response, e);
+        }
     }
 
     /**
@@ -98,13 +131,13 @@ class MyOrderResource {
             const order:Order = request.body as Order;
             const dbMaker = await this.makerDao.getFull(order.maker?.id || '') as Maker;
             const dbUser = await this.userDao.get(order.customer?.email || '');
-            if (!dbMaker || !dbUser) {
+            if (!dbMaker) {
                 AppUtil.badRequest(response); return;
             }
             
             // override
             order.id = uuid();
-            order.customer = dbUser;
+            order.customer = dbUser || {email:currentUserEmail};
             order.ref = `${dbMaker.prefixOrderRef}_${(new Date()).getTime()}`;
             if(order.maker?.email !== dbMaker.email){
                 AppUtil.badRequest(response); return;

@@ -3,6 +3,7 @@ import * as admin from 'firebase-admin';
 import testResource from './resources/test.resource';
 import makerResource from './resources/maker.resource';
 import myOrderResource from './resources/myorder.resource';
+import myProfilResource from './resources/myprofil.resource';
 import context from './context';
 
 const customCreds: any = process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -30,5 +31,11 @@ export const makerSearch = functions.https.onRequest(makerResource.search.bind(m
 export const makerGetFull = functions.https.onRequest(makerResource.getFullMaker.bind(makerResource));
 
 export const myOrderNewCart = functions.https.onRequest(myOrderResource.newCart.bind(myOrderResource));
+export const myOrderFindAll = functions.https.onRequest(myOrderResource.getAll.bind(myOrderResource));
+export const myOrderGet = functions.https.onRequest(myOrderResource.get.bind(myOrderResource));
+export const myOrderUpdate = functions.https.onRequest(myOrderResource.update.bind(myOrderResource));
+
+export const myProfilGet = functions.https.onRequest(myProfilResource.get.bind(myProfilResource));
+export const myProfilUpdate = functions.https.onRequest(myProfilResource.update.bind(myProfilResource));
 
 

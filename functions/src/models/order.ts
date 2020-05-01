@@ -11,7 +11,7 @@ export enum OrderState{
     PENDING = 'pending',
     VALIDATED = 'validate',
     REFUSED = 'refused',
-    CANCELLED = 'CANCELLED'
+    CANCELLED = 'cancelled'
 }
 
 export interface Order{

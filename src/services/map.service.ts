@@ -1,5 +1,5 @@
 import { GeoPoint } from "../models/geo-point";
-
+import * as geohash from "ngeohash";
 
 
 class MapService{
@@ -13,7 +13,8 @@ class MapService{
                 navigator.geolocation.getCurrentPosition((pos) =>{
                     resolve({
                         latitude: pos.coords.latitude,
-                        longitude: pos.coords.longitude
+                        longitude: pos.coords.longitude,
+                        geohash: geohash.encode(pos.coords.latitude, pos.coords.longitude)
                     })
                 }, err => reject(err), {
                     enableHighAccuracy: true,
@@ -34,7 +35,7 @@ class MapService{
      * @param lon2 
      */
     public distance(lat1:number, lon1: number, lat2: number, lon2: number): number{
-        if ((lat1 == lat2) && (lon1 == lon2)) {
+        if ((lat1 === lat2) && (lon1 === lon2)) {
             return 0;
         }
         else {

@@ -1,13 +1,16 @@
 
 import { Configuration } from "./configuration";
+import { GeoPoint } from "../models/geo-point";
 
 
 const DEV_API_BASEURL = '/api-mock';
 const other: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
     cgr: 'http://google.fr',
+    support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     API: {
         makers: (makerId:any = null) => `${DEV_API_BASEURL}/makers${makerId === null ? '.json': '/'+makerId+'/index.json'}`,
+        searchMakers: (geoPoint:GeoPoint) => `${DEV_API_BASEURL}/makers-2.json`,
         orders: (ref?:string) => `${DEV_API_BASEURL}/my-orders.json?ref=${ref}`,
         myProfil: () => `${DEV_API_BASEURL}/my-profil.json`,
     },
@@ -33,8 +36,10 @@ const API_BASEURL = '/api';
 const prod: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
     cgr: '',
+    support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     API: {
-        makers: (makerId:any = '') => `${API_BASEURL}/makers/${makerId}`,
+        makers: (makerId:any = '') => `${API_BASEURL}/makers${makerId ? '/'+makerId: ''}`,
+        searchMakers: (geoPoint:GeoPoint) => `${API_BASEURL}/makers?near=${geoPoint.latitude},${geoPoint.longitude}`,
         //products: (makerId:string) => `${API_BASEURL}/makers/${makerId}/products`,
         orders: (ref?:string) => `${API_BASEURL}/my-orders/${ref}`,
         myProfil: () => `${DEV_API_BASEURL}/my-profil`,

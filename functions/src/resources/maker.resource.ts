@@ -65,6 +65,7 @@ class MakerResource {
                     .limit(MakerResource.SEARCH_LIMIT).get();
             }
 
+            AppUtil.expires(response, 1800);
             AppUtil.ok(response, snapshot);
         } catch (e) {
             AppUtil.internalError(response, e);
@@ -90,12 +91,12 @@ class MakerResource {
             
             const maker = await this.makerDao.getFull(markerId);
             if(maker){
+                AppUtil.expires(response, 1800);
                 AppUtil.ok(response, maker);
             }else{
                 AppUtil.notFound(response);
             }
         } catch (e) {
-            console.log(e);
             AppUtil.internalError(response, e);
         }
     }

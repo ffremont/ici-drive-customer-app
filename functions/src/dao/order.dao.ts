@@ -3,6 +3,13 @@ import context, { Context } from "../context";
 import { AppUtil } from "../apputil";
 
 export class OrderDao{
+    public async update(id:string, order:any): Promise<Order>{
+        if(!id || !order){ throw "update invalide"}
+
+        await context.db().collection(Context.ORDERS_COLLECTION).doc(id).update(order);
+        return order;        
+    }
+
     public async get(id:string): Promise<Order|null>{
         if(!id){ return null;}
 

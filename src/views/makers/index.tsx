@@ -19,18 +19,37 @@ import CardMedia from '@material-ui/core/CardMedia';
 import {History} from 'history';
 import TabPanel from '../../components/tab-panel';
 import conf from '../../confs';
+import mapService from '../../services/map.service';
+import { GeoPoint } from '../../models/geo-point';
 
+
+interface GraphicMaker extends Maker{
+  // en km
+  distance?:number;
+}
 
 //https://github.com/typescript-cheatsheets/react-typescript-cheatsheet
-class Makers extends React.Component<{history:History}, { makers: Maker[], filterCat: string, value: number, categories: Item[] }>{
-  state = { makers: [], value: 0, categories: [], filterCat: 'all' };
+class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
+  state = { makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: {latitude:0, longitude:0} };
   sub: Subscription | null = null;
+
 
   componentWillUnmount() {
     this.sub?.unsubscribe();
   }
 
   componentDidMount() {
+    mapService.getCurrentPosition()
+    .then( (geoPoint: GeoPoint) =>{
+      
+      makerStore.search(geoPoint);
+
+      this.setState({geoPoint, makers: this.computeGeoDistance(this.state.makers, geoPoint)});
+    }).catch(e=>{
+      alert('La géolocation est nécessaire pour ici-drive.fr, merci de l\'activer.');
+      (window as any).location.reload();
+    });
+
     this.sub = makerStore.subscribe((newMakers: Maker[]) => {
       const cats: any = {
         'all': { label: 'Tout', id: 'all' }
@@ -47,16 +66,28 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
         }
       }
 
-      // calculer la distance du smartphone
-
       this.setState({
-        makers: newMakers,
+        makers: this.computeGeoDistance(newMakers, this.state.geoPoint),
         categories: Object.values(cats)
       });
     });
-
     
     makerStore.refresh();
+  }
+
+  private computeGeoDistance(makers:GraphicMaker[], geoPoint : GeoPoint): GraphicMaker[]{
+    if(!geoPoint || (geoPoint.latitude === 0)){
+      return makers;
+    }
+
+    return makers.map( (m:Maker) => {
+      if(!m.place.point){ return m}
+
+      return {...m, distance : mapService.distance(
+        geoPoint.latitude, geoPoint.longitude,
+        m.place.point?.latitude || 0, m.place.point?.longitude || 0
+        )}
+    });
   }
 
   changeTab(newValue: number) {
@@ -91,7 +122,7 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
             {this.state.makers.filter((p: Maker) => {
               if (this.state.filterCat === 'all') return true;
               else return p.categories.some((c: string) => c === this.state.filterCat)
-            }).map((p: Maker, i) => {
+            }).map((p: GraphicMaker, i) => {
               return (
                 <Card key={i} onClick={() => this.props.history.push(`/makers/${p.id}/catalog`)}
                 className="maker-card">
@@ -105,7 +136,7 @@ class Makers extends React.Component<{history:History}, { makers: Maker[], filte
                       <Typography gutterBottom variant="h5" component="h2">
                         {p.name}
                       </Typography>
-                      <Chip label="10km" className="distance-maker" color="default" icon={<RoomIcon />} />
+                      <Chip label={p.distance ? `${p.distance.toFixed(1)}km` : 'inconnue'} className="distance-maker" color="default" icon={<RoomIcon />} />
                     </CardContent>
                   </CardActionArea>
                 </Card>

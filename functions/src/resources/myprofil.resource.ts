@@ -1,7 +1,11 @@
 import {Request,Response} from 'express';
-//import context, {Context} from './context';
+import { AppUtil } from '../apputil';
+import { UserDao } from '../dao/user.dao';
+import { User } from '../models/user';
 
 class MyProfilResource{
+
+    private userDao = new UserDao();
 
     /**
      * /my-profil
@@ -11,8 +15,26 @@ class MyProfilResource{
      * @param response 
      */
     public async get(request:Request, response:Response){ 
-        
-        response.send("Hello from Firebase!");
+        try{
+            if (request.method.toUpperCase() !== 'GET') {
+                AppUtil.methodNotAllowed(response); return;
+            }
+            const currentUserEmail = await AppUtil.authorized(request);
+            if (currentUserEmail === null) {
+                AppUtil.notAuthorized(response); return;
+            }
+
+            const urlPieces = request.path.split('/');
+            const orderId = urlPieces[urlPieces.length - 1];
+            if(!orderId){ throw 'Identifiant invalide'}
+
+            const user: User = (await this.userDao.get(currentUserEmail)) || {email: currentUserEmail};
+
+            AppUtil.expires(response, 15);
+            AppUtil.ok(response, user);
+        }catch(e){
+            AppUtil.internalError(response, e);
+        }
     }
 
     /**
@@ -22,7 +44,24 @@ class MyProfilResource{
      * @param response 
      */
     public async update(request:Request, response:Response){ 
-        response.send("Hello from Firebase!");
+        try{
+            if (request.method.toUpperCase() !== 'PUT') {
+                AppUtil.methodNotAllowed(response); return;
+            }
+            const currentUserEmail = await AppUtil.authorized(request);
+            if (currentUserEmail === null) {
+                AppUtil.notAuthorized(response); return;
+            }
+
+            const user = request.body as User;
+            user.email = currentUserEmail;
+
+            await this.userDao.update(currentUserEmail, user);
+
+            AppUtil.ok(response);
+        }catch(e){
+            AppUtil.internalError(response, e);
+        }
     }
 
 }

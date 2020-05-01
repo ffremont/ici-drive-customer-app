@@ -14,6 +14,10 @@
         "description": "Situé près de la rocade Sud de Niort, au calme.",
         "image":"https://icidrive.b-cdn.net/normandie-ferme-bio-grande-suardiere.jpg",
         "slotsDescription": "Ouvert habituellement la semaine et le week-end",
+        "point": {
+            "latitude": 46.361943,
+            "longitude":-0.299205
+        },
         "hebdoSlot": {
             "lundi": {"openAt": "8:00", "closeAt": "12:00"},
             "mardi": {"openAt": "8:00", "closeAt": "12:00"},

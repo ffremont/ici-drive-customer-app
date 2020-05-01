@@ -25,6 +25,8 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import cartStore from '../../stores/cart';
 import { Order } from '../../models/order';
+import conf from '../../confs';
+import authService from '../../services/auth.service';
 
 
 
@@ -73,6 +75,13 @@ const MenuApp = (props: any) => {
     };
   });
 
+  const logout = () => {
+    if(window.confirm('Voulez-vous déconnecter votre appareil de votre compte ?')){
+      authService.signout();
+      props.history.push('/');
+    }
+  }
+
   return (
     <div className={classes.root}>
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
@@ -81,11 +90,11 @@ const MenuApp = (props: any) => {
             <ListItemIcon><ReceiptIcon /></ListItemIcon>
             <ListItemText primary="Mes commandes" secondary="En cours et passées" />
           </ListItem>
-          <ListItem button key="account">
+          <ListItem button key="account" onClick={() => props.history.push('/my-profil')}>
             <ListItemIcon><PersonIcon /></ListItemIcon>
             <ListItemText primary="Mon compte" secondary="Informations personnelles" />
           </ListItem>
-          <ListItem button key="support">
+          <ListItem button key="support" onClick={() => window.open(conf.support)}>
             <ListItemIcon><BugReportIcon /></ListItemIcon>
             <ListItemText primary="Support" secondary="Déclarer un incident" />
           </ListItem>
@@ -93,7 +102,7 @@ const MenuApp = (props: any) => {
             <ListItemIcon><InfoIcon /></ListItemIcon>
             <ListItemText primary="A propos" secondary="De l'application" />
           </ListItem>
-          <ListItem button key="logout">
+          <ListItem button key="logout" onClick={logout}>
             <ListItemIcon><ExitToAppIcon /></ListItemIcon>
             <ListItemText primary="Se déconnecter" secondary="Dissocier cet appareil" />
           </ListItem>
