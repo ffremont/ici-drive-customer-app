@@ -27,6 +27,7 @@ import cartStore from '../../stores/cart';
 import { Order } from '../../models/order';
 import conf from '../../confs';
 import authService from '../../services/auth.service';
+import About from '../about';
 
 
 
@@ -61,6 +62,7 @@ const MenuApp = (props: any) => {
   const [auth] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
+  const [openAbout, setOpenAbout] = useState(false);
 
   React.useEffect(() => {
     setMode(props.mode);
@@ -99,7 +101,7 @@ const MenuApp = (props: any) => {
             <ListItemIcon><BugReportIcon /></ListItemIcon>
             <ListItemText primary="Support" secondary="Déclarer un incident" />
           </ListItem>
-          <ListItem button key="about">
+          <ListItem button key="about" onClick={() =>setOpenAbout(true)}>
             <ListItemIcon><InfoIcon /></ListItemIcon>
             <ListItemText primary="A propos" secondary="De l'application" />
           </ListItem>
@@ -174,6 +176,7 @@ const MenuApp = (props: any) => {
             </IconButton>
           )}
 
+          <About open={openAbout} onClose={() => setOpenAbout(false)}/>
 
           {auth && (
             <div>

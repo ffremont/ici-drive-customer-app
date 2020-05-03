@@ -23,6 +23,7 @@ import mapService from '../../services/map.service';
 import { GeoPoint } from '../../models/geo-point';
 
 
+
 interface GraphicMaker extends Maker{
   // en km
   distance?:number;

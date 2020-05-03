@@ -31,6 +31,7 @@ import CartConflit from './cart-conflit';
 import SnackAdd from '../../components/snack-add';
 import { NotifType } from '../../models/notif';
 
+
 interface GraphicProduct extends Product {
   category?: Item
 }
@@ -103,13 +104,22 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
     }
   }
 
+  shareProduct(p:GraphicProduct){
+    if((window as any).navigator.share){
+      (window as any).navigator.share({
+        title: `ici-drive.fr : ${p.label}`,
+        text: `Découvrez ce produit local "${p.label}" sur ${conf.baseURL}/makers/${(this.state.maker as any).id}`,
+      }); // partage l'URL de MDN
+    }
+  }
+
   cleanAndAdd(){
     cartStore.addFirstProductWithMaker(this.state.maker as any, { product: this.state.wantToAdd, quantity: 1 } as any)
     notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
   }
 
   render() {
-    const myPart: any = this.state.maker;
+    const myPart = (this.state.maker as any)as Maker;
 
     return (
       <div className="maker">
@@ -133,7 +143,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
 
         {this.state.maker && (<Grid container className="maker-container" alignContent="center" alignItems="center" justify="center">
           <Grid item>
-            <Discover goToPlace={() => this.props.history.push(`/makers/${myPart.id}/place`)} image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />
+            <Discover payments={myPart.payments} goToPlace={() => this.props.history.push(`/makers/${myPart.id}/place`)} image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />
           </Grid>
         </Grid>)}
 
@@ -165,7 +175,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
                   </Typography>
                 </CardContent>
                 <CardActions disableSpacing className="cardaction-product">
-                  <IconButton aria-label="share">
+                  <IconButton aria-label="share" onClick={() => this.shareProduct(p)}>
                     <ShareIcon />
                   </IconButton>
                   <IconButton

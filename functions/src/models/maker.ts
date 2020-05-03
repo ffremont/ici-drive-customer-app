@@ -2,6 +2,14 @@ import { User } from "./user";
 import { Place } from "./place";
 import { Product } from "./product";
 
+export interface PaymentMaker{
+    acceptCoins: boolean;
+    acceptCards: boolean;
+
+    acceptPaypal: boolean;
+    paypalMeUrl?:string;
+}
+
 export interface Maker extends User{
     id:string;
     created: number,
@@ -18,5 +26,6 @@ export interface Maker extends User{
     categories: string[];
     products?: Product[];
 
-    paypalMeUrl?:string;
+    payments?:PaymentMaker;
+
 }

@@ -40,6 +40,7 @@ export default function Confirm(props:any) {
             id="remarque"
             label="Remarque"
             type="text"
+            inputProps={{ maxLength: 100 }}
             fullWidth
           />
         </DialogContent>

@@ -62,10 +62,11 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
   }
 
   componentDidMount() {
-    this.status[O.OrderState.PENDING] = { label: 'En cours de validation', color: this.props.classes.orange };
-    this.status[O.OrderState.CANCELLED] = { label: 'Annulée', color: this.props.classes.grey };
-    this.status[O.OrderState.VALIDATED] = { label: 'Validée', color: this.props.classes.green };
-    this.status[O.OrderState.CANCELLED] = { label: 'Refusée', color: this.props.classes.grey }
+    this.status[O.OrderState.PENDING] = {label: 'En cours de validation', color: this.props.classes.orange};
+    this.status[O.OrderState.CANCELLED] = {label: 'Annulée', color: this.props.classes.grey};
+    this.status[O.OrderState.VERIFIED] = {label: 'Vérifiée, en attente de confirmation', color: this.props.classes.orange};
+    this.status[O.OrderState.CONFIRMED] = {label: 'Confirmée', color: this.props.classes.green};
+    this.status[O.OrderState.REFUSED] = {label:'Refusée', color: this.props.classes.grey};
 
     const ref: string = this.props.match.params.id;
     this.sub = ordersStore.subscribe((orders: O.Order[]) => {

@@ -48,6 +48,10 @@ class MyProfilResource{
             }
 
             const user = request.body as User;
+            if(user.email && user.email !== currentUserEmail){
+                AppUtil.badRequest(response, 'Email invalide');return;
+            }
+            
             user.email = currentUserEmail;
 
             await this.userDao.update(currentUserEmail, user);

@@ -42,8 +42,13 @@
     "categories": ["viande", "fruit-leg"],
     "phone": "4696311703",
     "created": 1588358269139,
-    "description": "washmtVzfwj6yODOWqCVXKR1LnBMT89r8t7C9mld9n4upCNNFz"
-}, {
+    "description": "washmtVzfwj6yODOWqCVXKR1LnBMT89r8t7C9mld9n4upCNNFz",
+    "payments":{
+        "acceptCoins":true,
+        "acceptCards":true,
+        "acceptPaypal": true,
+        "paypalMeUrl": "http"
+}}  , {
     "place": {
         "description": "9kikUD82ywkI7ujtemhogjoYjGuaW3Vq61MBe2qlq8tupGpQm5",
         "address": "13 rue de la of6Lk2S 02144 à Zi6reX",

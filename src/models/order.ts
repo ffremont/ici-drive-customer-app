@@ -9,8 +9,11 @@ export interface ProductChoice{
 
 export enum OrderState{
     PENDING = 'pending',
-    VALIDATED = 'validate',
+
+    VERIFIED = 'verified',
     REFUSED = 'refused',
+
+    CONFIRMED = 'confirmed',
     CANCELLED = 'cancelled'
 }
 

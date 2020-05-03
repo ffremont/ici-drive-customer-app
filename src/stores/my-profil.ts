@@ -5,7 +5,7 @@ import httpClientService from '../services/http-client.service';
 import conf from '../confs';
 import { User } from '../models/user';
 
-class MyProfilStore implements Store<User>{
+export class MyProfilStore implements Store<User>{
     private sub = new BehaviorSubject<User>({email:''});
 
     public set(user: User): void{
@@ -14,6 +14,10 @@ class MyProfilStore implements Store<User>{
 
     public subscribe(func:any): Subscription{
         return this.sub.subscribe(func);
+    }
+
+    static async update(user: User){
+        await httpClientService.axios.put(conf.API.myProfil(), user);
     }
 
     /**

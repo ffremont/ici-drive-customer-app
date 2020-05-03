@@ -24,6 +24,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Paper from '@material-ui/core/Paper';
@@ -34,11 +35,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import { Item } from '../../models/item';
 import * as moment from 'moment';
 import CONF from '../../confs';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import Checkbox from '@material-ui/core/Checkbox';
 import { NotifType } from '../../models/notif';
 import { Product } from '../../models/product';
-import myProfilStore from '../../stores/my-profil';
+import myProfilStore, { MyProfilStore } from '../../stores/my-profil';
 import { User } from '../../models/user';
 
 interface CategoryProductChoice {
@@ -46,9 +47,9 @@ interface CategoryProductChoice {
   category: Item
 }
 
-class Cart extends React.Component<{ history: any, location: any, match: any }, { myProfil:User, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
+class Cart extends React.Component<{ history: any, location: any, match: any }, { showPhone:boolean, myProfil: User, phone: string, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
 
-  state = { order: null, myProfil: {email:''}, checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
+  state = { order: null, myProfil: { email: '' }, showPhone:false, phone: '', checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
   subOrder: Subscription | null = null;
   subMyProfil: Subscription | null = null;
   categories: Item[] = CONF.categories;
@@ -61,9 +62,9 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
   componentDidMount() {
     this.setState({ summaryMode: window.location.pathname.indexOf('/summary') > -1 });
 
-    this.subMyProfil = myProfilStore.subscribe((myProfil:User) => {
-      if(myProfil.email){
-        this.setState({myProfil});
+    this.subMyProfil = myProfilStore.subscribe((myProfil: User) => {
+      if (myProfil.email) {
+        this.setState({ myProfil, phone: myProfil.phone || '', showPhone: !myProfil.phone});
       }
     });
 
@@ -101,25 +102,47 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
     }
   }
 
-  continue() {
+  private handleContinue() {
     if (this.state.summaryMode) {
-      const newOrder:Order = {...(this.state.order as any)};
+      const newOrder: Order = { ...(this.state.order as any) };
       newOrder.customer = this.state.myProfil;
 
       cartStore.save(newOrder)
-      .then(() => {
-        // navigue vers la liste des commandes
-        this.props.history.push(`/my-orders`);
-      }).catch( () => {
-        this.props.history.push('/error');
-      });
-     
+        .then(() => {
+          // navigue vers la liste des commandes
+          this.props.history.push(`/my-orders`);
+        }).catch(() => {
+          this.props.history.push('/error');
+        });
+
     } else {
       if (this.state.checkCgr) {
         this.props.history.push('/cart/slots');
       } else {
         (window as any).scrollTo(0, document.body.scrollHeight);
       }
+    }
+  }
+
+  continue() {
+    if (!this.state.summaryMode && this.state.showPhone) {
+      if (!(document as any).getElementById('cart-phone').checkValidity()) {
+        (window as any).scrollTo(0, document.body.scrollHeight);
+        return;
+      }
+
+      // update phone /my-profil
+      const newUser = { ...this.state.myProfil } as User;
+      newUser.phone = this.state.phone;
+      MyProfilStore.update(newUser)
+        .then(() => {
+          // refresh my-profil
+          myProfilStore.set(newUser);
+          this.handleContinue();
+        })
+        .catch(() => this.props.history.push('/error'));
+    } else {
+      this.handleContinue();
     }
   }
 
@@ -208,7 +231,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
             </Card>
           </Grid>
           <Grid item>
-            <Card className="card-info">
+            <Card className="card-info" onClick={() => this.props.history.push(`/makers/${order.maker?.id}/place`)}>
               <CardHeader
                 avatar={
                   <Avatar>
@@ -291,6 +314,19 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         ))}
         </div>
 
+        <Alert severity="warning" className="instruction-payments">
+        <AlertTitle>Consignes de paiement</AlertTitle>
+        <strong>Ici drive n'organise aucunement les paiements</strong>, cette activité est à l'entière charge du producteur.
+        <br/> 
+        {this.state.order && order?.maker?.payments && order?.maker?.payments.acceptPaypal && <span>Le paiement PayPal sera initié après confirmation de la réservation de votre part, une fois la demande vérifiée.</span>}
+        {this.state.order && order?.maker?.payments && !order?.maker?.payments.acceptPaypal && <span>Le paiement au Drive se fera lors du retrait de la marchandise.</span>}
+      </Alert>
+
+
+      {!this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">
+          <TextField type="tel" required onChange={(e) => this.setState({ phone: e.target.value })} id="cart-phone" inputProps={{ maxLength: 12 }} label="Téléphone" fullWidth={true} value={this.state.phone} />
+        </form></div>)}
+
         {this.state.order && !this.state.summaryMode && (<div className="reglementation">
           <Checkbox
             checked={this.state.checkCgr}
@@ -299,8 +335,9 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
           /> <Typography variant="body1">Accepter les <a href={CONF.cgr} target="_blank">Conditions Générales de Réservation</a></Typography>
         </div>)}
 
+
         {this.state.order && (
-          <CartFooter text={this.state.summaryMode ? 'Confirmer' : 'Réserver'} onClickContinue={() => this.continue()} quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total} />
+          <CartFooter text={this.state.summaryMode ? 'Envoyer la réservation' : 'Réserver'} onClickContinue={() => this.continue()} quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total} />
         )}
       </div>
     );
