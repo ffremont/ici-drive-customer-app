@@ -12,6 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
 import EuroIcon from '@material-ui/icons/Euro';
 import PaypalIcon from '../../assets/images/paypal.svg';
+import BankCheckIcon from '../../assets/images/bank_check.svg';
 import { PaymentMaker } from '../../models/maker';
 
 
@@ -84,6 +85,7 @@ const Discover = (props: any) => {
                         <div className={`${classes.paymentItem} ${!payments.acceptCards && !payments.acceptCoins ? classes.myDisabled : ''}`}>
                             <CreditCardIcon className={`${classes.moneyIcon} ${!payments.acceptCards ? classes.myDisabled : ''}`} />
                             <EuroIcon className={`${classes.moneyIcon} ${!payments.acceptCoins ? classes.myDisabled : ''}`} />
+                            <img className={`${classes.moneyIcon} ${!payments.acceptBankCheck ? classes.myDisabled : ''}`}  alt="bank_check" src={BankCheckIcon} />
                             <span className={classes.moneyLabel}>Paiement au Drive</span>
                         </div>
                     </div>)}

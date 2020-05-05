@@ -10,6 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import { deepOrange, grey, green } from '@material-ui/core/colors';
 import Chip from '@material-ui/core/Chip';
+import Fab from '@material-ui/core/Fab';
 import { Maker } from '../../models/maker';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -24,13 +25,21 @@ import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 
 import PrintIcon from '@material-ui/icons/Print';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
+import PhoneIcon from '@material-ui/icons/Phone';
+
 import Confirm from './confirm';
 import MenuApp from '../../components/menu-app';
 
 
-const actions = [
+const pendingActions = [
   { icon: <PrintIcon />, name: 'print', label:'Imprimer' },
   { icon: <ClearIcon />, name: 'cancel', label:'Annuler' }
+];
+const actions = [
+  { icon: <PrintIcon />, name: 'print', label:'Imprimer' },
+  { icon: <PhoneIcon />, name: 'phone', label:'Contacter' }
 ];
 
 const useStyles = (theme: Theme) => ({
@@ -46,7 +55,7 @@ const useStyles = (theme: Theme) => ({
     backgroundColor: grey[500],
   },
   green: {
-    color: theme.palette.getContrastText(green[500]),
+    color: theme.palette.common.white,
     backgroundColor: green[500],
   }
 });
@@ -56,6 +65,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
   state = { order: null, open: false, hidden: false, openCancelDialog:false };
   status: any = {};
   sub: Subscription | null = null;
+
 
   componentWillUnmount() {
     this.sub?.unsubscribe();
@@ -79,13 +89,26 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
     ordersStore.load(ref);
   }
 
-  cancel(text:string){
+  onClickConfirmOrder(){
     const newOrder:O.Order = {...(this.state.order as any)};
-    newOrder.reasonOf = text;
+    newOrder.reasonOf = '';
+    newOrder.status = O.OrderState.CONFIRMED;
     OrdersStore.update(newOrder)
       .then(() => this.props.history.push('/my-orders'))
       .catch(() => this.props.history.push('/error'));
   }
+
+
+  cancel(text:string){
+    const newOrder:O.Order = {...(this.state.order as any)};
+    newOrder.reasonOf = text;
+    newOrder.status = O.OrderState.CANCELLED;
+    OrdersStore.update(newOrder)
+      .then(() => this.props.history.push('/my-orders'))
+      .catch(() => this.props.history.push('/error'));
+  }
+
+
 
   onClickDialAction(action:any){
     this.setState({ open: false });
@@ -93,12 +116,17 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
       window.print();
     }else if(action && (action.name === 'cancel')){
       this.setState({openCancelDialog:true});
+    }else if(action && (action.name === 'phone')){
+      window.open(`tel:${(this.state.order as any).maker.phone}`, '_blank');
     }
   }
 
   render() {
     const currentOrder: O.Order = (this.state.order as any) as O.Order;
     const maker: Maker = (currentOrder?.maker as any) as Maker;
+    if(currentOrder){
+      currentOrder.status = O.OrderState.VERIFIED;
+    }
 
     return (<div className="order">
       <MenuApp mode="light" history={this.props.history} />
@@ -107,6 +135,10 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
         <Grid item>
           <Chip label={this.status[(currentOrder.status as any)].label} className={this.status[(currentOrder.status as any)].color} />
         </Grid>
+
+        {currentOrder.reasonOf && (<Grid item>
+          <Alert severity="info">{currentOrder.reasonOf}</Alert>
+        </Grid>)}
 
         <Grid item>
           <Grid container direction="column" justify="center" spacing={1}>
@@ -147,10 +179,6 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
             </Grid>)}
           </Grid>
         </Grid>
-
-        {currentOrder.reasonOf && (<Grid item>
-          <Alert severity="info">{currentOrder.reasonOf}</Alert>
-        </Grid>)}
 
 
         <Grid item>
@@ -199,7 +227,9 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
 
     <Confirm title="Annuler la commande" onClose={() => this.setState({openCancelDialog:false})} onConfirm={(txt:string) => this.cancel(txt)} message="Je souhaite annuler pour le motif :" open={this.state.openCancelDialog}/>
 
-      <SpeedDial
+      {/* Actions en fonction des états */}
+
+      {currentOrder && currentOrder.status !== O.OrderState.VERIFIED && (<SpeedDial
         ariaLabel="SpeedDial tooltip example"
         className="my-speed-dial"
         hidden={this.state.hidden}
@@ -208,7 +238,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
         onOpen={() => this.setState({ open: true })}
         open={this.state.open}
       >
-        {actions.map((action) => (
+        {(currentOrder.status === O.OrderState.PENDING ? pendingActions : actions).map((action) => (
           <SpeedDialAction
             key={action.name}
             icon={action.icon}
@@ -217,7 +247,21 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
             onClick={() => this.onClickDialAction(action)}
           />
         ))}
-      </SpeedDial>
+      </SpeedDial>)}
+
+      { currentOrder && currentOrder.status === O.OrderState.VERIFIED && (
+        <div className="fab-actions">
+          
+        <Fab size="large" color="default" onClick={() => this.setState({openCancelDialog:true})} aria-label="add" className="fab-cancelled">
+            <CloseIcon />
+        </Fab>
+
+        <Fab size="large" color="secondary" onClick={() => this.onClickConfirmOrder()} aria-label="add" className="fab-verified">
+            <CheckIcon />
+        </Fab>
+        
+          </div>
+      )}
 
     </div>);
   }

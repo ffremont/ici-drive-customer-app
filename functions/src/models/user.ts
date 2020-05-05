@@ -5,4 +5,5 @@ export interface User{
     lastname?:string;
     phone?:string;
     address?:string;
+    fcm?:string;
 }

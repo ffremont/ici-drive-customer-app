@@ -1,5 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import * as moment from 'moment';
+import 'moment/locale/fr';
 import testResource from './resources/test.resource';
 import makerResource from './resources/maker.resource';
 import myOrderResource from './resources/myorder.resource';
@@ -18,6 +20,7 @@ if (customCreds) {
     admin.initializeApp();
 }
 context.db(admin.firestore());
+moment.locale('fr');
 
 
 // // Start writing Firebase Functions

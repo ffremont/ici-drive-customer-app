@@ -59,7 +59,12 @@ class TestResource {
             prefixOrderRef: 'REF_',
             image: TestResource.makerImages[Math.floor(Math.random() * TestResource.makerImages.length)],
             categories: cats,
-            
+            payments: {
+                acceptCoins: true,
+                acceptCards: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }),10) % 2 === 0,
+                acceptBankCheck: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }),10) % 3 === 0,
+                acceptPaypal: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }),10) % 2 === 0
+            },
             place: {
                 label: TestResource.placeNames[Math.floor(Math.random() * TestResource.placeNames.length)],
                 address: `13 rue de la ${randomstring.generate(7)} ${randomstring.generate({ length: 5, charset: 'numeric' })} à ${randomstring.generate(6)}`,
@@ -95,6 +100,7 @@ class TestResource {
 
         };
     }
+
 
     public async findAll(request: Request, response: Response) {
         const snapshot = await context.db().collection(Context.MAKERS_COLLECTION).limit(1).get();

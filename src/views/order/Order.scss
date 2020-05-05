@@ -13,6 +13,15 @@
     right:40px;
 }
 
+.fab-actions{
+    position: fixed;
+    bottom: 26px;
+    right: 41px;
+}
+.fab-actions button + button {
+    margin-left: 40px;
+}
+
 @media print {
     .my-speed-dial, .MuiAppBar-root{
         display:none !important;

@@ -17,7 +17,9 @@ class MakerService{
     public getSlots(maker : Maker, limit = -1): Date[]{
         const results : Date[] = [];
         const now = moment.default();
-        now.add(1, 'd');
+
+        // /!\ rdv après 3 jours min
+        now.add(3, 'd');
         
         // on propose au maximum, les 10 prochaines dates
         for(let i = 0; i< 10; i++){

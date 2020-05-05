@@ -8,6 +8,7 @@ import { Maker } from '../models/maker';
 import { MakerDao } from '../dao/maker.dao';
 import { OrderDao } from '../dao/order.dao';
 import { UserDao } from '../dao/user.dao';
+import notifService from '../services/notif.service';
 
 class MyOrderResource {
 
@@ -80,6 +81,7 @@ class MyOrderResource {
             const orderId = request.params.id;
             if(!orderId){ throw 'Identifiant invalide'}
 
+            const originalOrder : any = await this.myOrderDao.get(orderId);
             const order = request.body as Order;
             const modification :any = {};
             if(order.reasonOf){
@@ -90,7 +92,8 @@ class MyOrderResource {
             }else{
                 AppUtil.badRequest(response, 'Contenu de modification invalide');
             }
-
+            
+            await notifService.applyTransition(originalOrder?.status as any, {...originalOrder, ...modification});
             await this.myOrderDao.update(orderId, modification);
 
             AppUtil.ok(response);
@@ -140,6 +143,8 @@ class MyOrderResource {
             
                 const myRef = await context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
                 await myRef.set(order);
+
+                await notifService.applyTransition('init', order);
 
                 AppUtil.ok(response, order);
         } catch (e) {

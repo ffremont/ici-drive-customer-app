@@ -5,9 +5,8 @@ import { Product } from "./product";
 export interface PaymentMaker{
     acceptCoins: boolean;
     acceptCards: boolean;
-
+    acceptBankCheck: boolean;
     acceptPaypal: boolean;
-    paypalMeUrl?:string;
 }
 
 export interface Maker extends User{

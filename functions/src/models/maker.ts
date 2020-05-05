@@ -5,9 +5,8 @@ import { Product } from "./product";
 export interface PaymentMaker{
     acceptCoins: boolean;
     acceptCards: boolean;
-
+    acceptBankCheck: boolean;
     acceptPaypal: boolean;
-    paypalMeUrl?:string;
 }
 
 export interface Maker extends User{
@@ -18,6 +17,7 @@ export interface Maker extends User{
     webPage:string;
     description:string;
     phone?: string;
+    fcm?:string;
     //maxOrdersByDay:number;
     //active:boolean;
     prefixOrderRef: string;

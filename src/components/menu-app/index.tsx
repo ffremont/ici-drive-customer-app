@@ -22,6 +22,8 @@ import IciDriveTypoIcon from '../../assets/images/ici-drive-icon.png';
 import IciDriveBannerIcon from '../../assets/images/ici-drive-banner.png';
 import './MenuApp.scss';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import HelpIcon from '@material-ui/icons/Help';
+import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import cartStore from '../../stores/cart';
 import { Order } from '../../models/order';
@@ -91,11 +93,19 @@ const MenuApp = (props: any) => {
         <List className="drawer-list">
           <ListItem button key="orders" onClick={() => props.history.push('/my-orders')}>
             <ListItemIcon><ReceiptIcon /></ListItemIcon>
-            <ListItemText primary="Mes commandes" secondary="En cours et passées" />
+            <ListItemText primary="Mes réservations" secondary="En cours et passées" />
           </ListItem>
           <ListItem button key="account" onClick={() => props.history.push('/my-profil')}>
             <ListItemIcon><PersonIcon /></ListItemIcon>
             <ListItemText primary="Mon compte" secondary="Informations personnelles" />
+          </ListItem>
+          <ListItem button key="how-to" >
+            <ListItemIcon><HelpIcon /></ListItemIcon>
+            <ListItemText primary="Comment ça marche ?" secondary="Explication des services" />
+          </ListItem>
+          <ListItem button key="concept" >
+            <ListItemIcon><EmojiObjectsIcon /></ListItemIcon>
+            <ListItemText primary="Le concept" secondary="Présentation du concept" />
           </ListItem>
           <ListItem button key="support" onClick={() => window.open(conf.support)}>
             <ListItemIcon><BugReportIcon /></ListItemIcon>
@@ -153,7 +163,7 @@ const MenuApp = (props: any) => {
           )}
           {['my-orders'].indexOf(mode) > -1 && (
             <Typography variant="h6" align="center" className={classes.title}>
-              Mes commandes
+              Mes réservations
             </Typography>
           )}
           {['my-profil'].indexOf(mode) > -1 && (
@@ -181,7 +191,7 @@ const MenuApp = (props: any) => {
           {auth && (
             <div>
               <IconButton
-                aria-label="Mes commandes"
+                aria-label="Mes réservations"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 color="inherit"
