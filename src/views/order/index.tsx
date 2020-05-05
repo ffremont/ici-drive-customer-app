@@ -124,9 +124,6 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
   render() {
     const currentOrder: O.Order = (this.state.order as any) as O.Order;
     const maker: Maker = (currentOrder?.maker as any) as Maker;
-    if(currentOrder){
-      currentOrder.status = O.OrderState.VERIFIED;
-    }
 
     return (<div className="order">
       <MenuApp mode="light" history={this.props.history} />
