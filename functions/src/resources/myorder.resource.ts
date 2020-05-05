@@ -81,7 +81,13 @@ class MyOrderResource {
             const orderId = request.params.id;
             if(!orderId){ throw 'Identifiant invalide'}
 
-            const originalOrder : any = await this.myOrderDao.get(orderId);
+            const data = await Promise.all([
+                this.myOrderDao.get(orderId),
+                this.userDao.get(currentUserEmail)
+                ]);
+            const originalOrder : any = data[0];
+            const currentUser : any = data[1];
+
             const order = request.body as Order;
             const modification :any = {};
             if(order.reasonOf){
@@ -93,7 +99,13 @@ class MyOrderResource {
                 AppUtil.badRequest(response, 'Contenu de modification invalide');
             }
             
-            await notifService.applyTransition(originalOrder?.status as any, {...originalOrder, ...modification});
+            // refresh maker with fcm
+            originalOrder.maker = await this.makerDao.get(originalOrder.maker.id);
+            await notifService.applyTransition(
+                currentUser && currentUser.fcm ? currentUser.fcm : null, 
+                originalOrder?.status as any, 
+                {...originalOrder, ...modification
+            });
             await this.myOrderDao.update(orderId, modification);
 
             AppUtil.ok(response);
@@ -117,8 +129,11 @@ class MyOrderResource {
             }
 
             const order:Order = request.body as Order;
-            const dbMaker = await this.makerDao.getFull(order.maker?.id || '') as Maker;
-            const dbUser = await this.userDao.get(order.customer?.email || '');
+            const data = await Promise.all([
+                this.makerDao.getFull(order.maker?.id || ''), 
+                this.userDao.get(order.customer?.email || '')])
+            const dbMaker = data[0] as Maker;
+            const dbUser = data[1];
             if (!dbMaker) {
                 AppUtil.badRequest(response); return;
             }
@@ -144,7 +159,7 @@ class MyOrderResource {
                 const myRef = await context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
                 await myRef.set(order);
 
-                await notifService.applyTransition('init', order);
+                await notifService.applyTransition(dbUser && dbUser.fcm ? dbUser.fcm : null, 'init', order);
 
                 AppUtil.ok(response, order);
         } catch (e) {

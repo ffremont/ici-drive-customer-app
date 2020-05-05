@@ -17,6 +17,7 @@ export interface Maker extends User{
     webPage:string;
     description:string;
     phone?: string;
+    fcm?:string;
     //maxOrdersByDay:number;
     //active:boolean;
     prefixOrderRef: string;

@@ -15,6 +15,7 @@ import PrivateRoute from './components/private-route';
 import NoMatch from './views/no-match';
 import { Subscription } from 'rxjs';
 import httpClientService from './services/http-client.service';
+import fcmService from './services/fcm.service';
 import Catalog from './views/catalog';
 import * as moment from 'moment';
 import 'moment/locale/fr';
@@ -38,6 +39,7 @@ class App extends React.Component<{}, { concurrentCalls: number }>{
   subHttpClientResponse: Subscription | null = null;
 
   componentDidMount() {
+    fcmService.init();
     moment.locale('fr');
     this.subHttpClientRequest = httpClientService.subOnRequest(() => {
       this.setState({ concurrentCalls: this.state.concurrentCalls + 1 });

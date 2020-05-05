@@ -12,6 +12,7 @@ export interface Configuration{
     API: APIS,
     categories: Item[],
     baseURL: string,
+    fcmPublicVapidKey:string,
 
     publicHolidays:{date:string, public_holiday:boolean, label:string}[],
     cgu:string;

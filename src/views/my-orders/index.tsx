@@ -68,7 +68,7 @@ class MyOrders extends React.Component<{ history: any, classes: any }, { orders:
       <div className="orders">
         <List>
           {this.state.orders.map((order: Order, i) => (
-            <ListItem key={`li_${i}`} onClick={() => this.props.history.push(`/my-orders/${order.ref}`)}>
+            <ListItem key={`li_${i}`} onClick={() => this.props.history.push(`/my-orders/${order.id}`)}>
               <ListItemAvatar>
                 <Avatar className={this.statusLabel[(order.status as any)].color}>
                   <ReceiptIcon />

@@ -9,6 +9,7 @@ const other: Configuration = {
     cgr: 'http://google.fr',
     support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     baseURL: 'https://app.ici-drive.fr',
+    fcmPublicVapidKey: 'BO7yESbBXsx7ddVzYqvkNpWf-3S6sjqQxEoolQQ1OG02D0-nmrpowEsYRHuoGEzT4w5Np6Gdwto5FiLsS--sONw',
     API: {
         makers: (makerId:any = null) => `${DEV_API_BASEURL}/makers${makerId === null ? '.json': '/'+makerId+'/index.json'}`,
         searchMakers: (geoPoint:GeoPoint) => `${DEV_API_BASEURL}/makers-2.json`,
@@ -42,6 +43,7 @@ const prod: Configuration = {
     cgr: '',
     support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     baseURL: 'https://app.ici-drive.fr',
+    fcmPublicVapidKey: 'BO7yESbBXsx7ddVzYqvkNpWf-3S6sjqQxEoolQQ1OG02D0-nmrpowEsYRHuoGEzT4w5Np6Gdwto5FiLsS--sONw',
     API: {
         makers: (makerId:any = '') => `${API_BASEURL}/makers${makerId ? '/'+makerId: ''}`,
         searchMakers: (geoPoint:GeoPoint) => `${API_BASEURL}/makers?near=${geoPoint.latitude},${geoPoint.longitude}`,
