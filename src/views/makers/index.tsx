@@ -47,7 +47,8 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
 
       this.setState({geoPoint, makers: this.computeGeoDistance(this.state.makers, geoPoint)});
     }).catch(e=>{
-      alert('La géolocation est nécessaire pour ici-drive.fr, merci de l\'activer.');
+      console.error(e);
+      //alert('La géolocation est nécessaire pour ici-drive.fr, merci de l\'activer.');
       (window as any).location.reload();
     });
 

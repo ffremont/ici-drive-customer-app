@@ -63,7 +63,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
     this.setState({ summaryMode: window.location.pathname.indexOf('/summary') > -1 });
 
     this.subMyProfil = myProfilStore.subscribe((myProfil: User) => {
-      if (myProfil.email) {
+      if (myProfil && myProfil.email) {
         this.setState({ myProfil, phone: myProfil.phone || '', showPhone: !myProfil.phone});
       }
     });

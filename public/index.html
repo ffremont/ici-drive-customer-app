@@ -54,7 +54,7 @@
         appId: "1:197845039865:web:8c0b37d09dbff116248028",
         measurementId: "G-DWMZEW5DNP"
       });
-      firebase.analytics();
+      //firebase.analytics();
     </script>
     <!--
       This HTML file is a template.
@@ -69,7 +69,11 @@
 
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.register('/sw.js', {
+          scope: '/'
+        })
+        .then(() => console.log('sw registered'))
+        .catch(e => console.error(e));
       }
     </script>
   </body>

@@ -1,5 +1,14 @@
 {
   "projects": {
-    "default": "ici-drive"  
+    "default": "ici-drive"
+  },
+  "targets": {
+    "ici-drive": {
+      "hosting": {
+        "customer-ici-drive-prod": [
+          "customer-ici-drive-prod"
+        ]
+      }
+    }
   }
 }

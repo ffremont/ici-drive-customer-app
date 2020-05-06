@@ -1,8 +1,9 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
+//importScripts('/sw-resources/workbox-sw-4.3.1.js');
 
-importScripts('/__/firebase/7.14.2/firebase-app.js');
-importScripts('/__/firebase/7.14.2/firebase-messaging.js');
+//importScripts('/sw-resources/firebase-app_7.14.2.js');
+//importScripts('/sw-resources/firebase-messaging_7.14.2.js');
 
+/*
 firebase.initializeApp({
     apiKey: "AIzaSyBhKGZb-0hVnWkRhImIaywwJ9eZIXRDzpI",
     authDomain: "app.ici-drive.fr",
@@ -12,11 +13,12 @@ firebase.initializeApp({
     messagingSenderId: "197845039865",
     appId: "1:197845039865:web:8c0b37d09dbff116248028",
     measurementId: "G-DWMZEW5DNP"
-  });
+  });*/
 
 const OFFLINE_PAGE = '/offline.html';
 const FALLBACK_IMAGE_URL = '/default_image.jpg';
 
+/*
 if(firebase){
     const messaging = firebase.messaging();
     messaging.setBackgroundMessageHandler(function(payload) {
@@ -35,7 +37,8 @@ if(firebase){
         return self.registration.showNotification(notificationTitle,
           notificationOptions);
       });
-}
+}*/
+/*
 
 self.addEventListener('notificationclick', event => {
     const url = event.notification.data.url;
@@ -46,7 +49,7 @@ self.addEventListener('notificationclick', event => {
   });
 
 
-if (workbox) {
+if (false) {
     workbox.core.setCacheNameDetails({
         prefix: 'app',
         suffix: 'web',
@@ -54,9 +57,9 @@ if (workbox) {
         runtime: 'run-time'
     });
     workbox.precaching.precacheAndRoute([
-        '/favicon.ico',
-        OFFLINE_PAGE,
-        FALLBACK_IMAGE_URL
+        {url: '/favicon.ico', revision: '1' },
+        {url: OFFLINE_PAGE, revision: '1' },
+        {url: FALLBACK_IMAGE_URL, revision: '1' }
     ]);
 
     // par défaut
@@ -86,4 +89,4 @@ if (workbox) {
 
 } else {
     console.log(`Boo! Workbox didn't load 😬`);
-}
+}*/

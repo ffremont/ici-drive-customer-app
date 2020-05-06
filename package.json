@@ -45,7 +45,9 @@
     "eject": "react-scripts eject",
     "serve": "serve build",
     "emulate": "cd functions && npm run build && cd .. && npm run build && export GOOGLE_APPLICATION_CREDENTIALS=/home/florent/Documents/espace_travail/ici-drive/ici-drive-946b5266ccce.json && npm run build && npx firebase emulators:start",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+
+    "deploy": "npm run build && npx firebase deploy --only hosting:customer-ici-drive-prod"
   },
   "eslintConfig": {
     "extends": "react-app"

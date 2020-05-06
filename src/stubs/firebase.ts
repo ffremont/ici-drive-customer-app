@@ -1,6 +1,8 @@
 function ProviderStub(){}
 ProviderStub.prototype.addProfile = (name: string) => {}
 ProviderStub.prototype.addScope = (name: string) => {}
+ProviderStub.prototype.setCustomParameters = (data: any) => {}
+
 
 export class FirebaseStub {
 
@@ -28,6 +30,14 @@ export class FirebaseStub {
         me.auth.GoogleAuthProvider = () => ProviderStub;
 
         return this;
+    }
+
+    public messaging(){
+        return {
+            usePublicVapidKey: () => {},
+            onMessage: () => {},
+            onTokenRefresh: () => {}
+        };
     }
 
     public auth() {

@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "target": "customer-ici-drive-prod",
     "public": "build",
     "ignore": [
       "firebase.json",

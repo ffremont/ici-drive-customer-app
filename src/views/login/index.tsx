@@ -40,7 +40,11 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
   }
 
   signGoogle(){
-    this.sign(process.env.REACT_APP_STAGE === 'prod' ?  new (window as any).firebase.auth.GoogleAuthProvider() : new ((window as any).firebase.auth.GoogleAuthProvider()));    
+    const provider:any = process.env.REACT_APP_STAGE === 'prod' ?  new (window as any).firebase.auth.GoogleAuthProvider() : new ((window as any).firebase.auth.GoogleAuthProvider());
+    /*provider.setCustomParameters({
+      hd: 'auth.app.ici-drive.fr'
+    });*/
+    this.sign(provider);    
   }
 
   componentDidMount() {
