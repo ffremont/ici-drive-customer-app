@@ -52,8 +52,12 @@ class MyOrders extends React.Component<{ history: any, classes: any }, { orders:
     this.statusLabel[OrderState.CONFIRMED] = {label: 'Confirmée', color: this.props.classes.green};
     this.statusLabel[OrderState.REFUSED] = {label:'Refusée', color: this.props.classes.grey}
 
+    
     this.sub = ordersStore.subscribe((orders: Order[]) => {
-      this.setState({ orders })
+      console.log('MyOrders > ordersStore.sub ',orders);
+      if(orders)
+        (orders as any).sortBy('created',true);
+      this.setState({ orders : orders || [] })
     });
 
     // charge la liste des commandes
@@ -65,13 +69,13 @@ class MyOrders extends React.Component<{ history: any, classes: any }, { orders:
       <MenuApp mode={'my-orders'} history={this.props.history} />
 
 
-      <div className="orders">
+       <div className="orders">
         <List>
           {this.state.orders.map((order: Order, i) => (
             <ListItem key={`li_${i}`} onClick={() => this.props.history.push(`/my-orders/${order.id}`)}>
               <ListItemAvatar>
                 <Avatar className={this.statusLabel[(order.status as any)].color}>
-                  <ReceiptIcon />
+                  {this.statusLabel[(order.status as any)].label.substr(0,1).toUpperCase()}
                 </Avatar>
               </ListItemAvatar>
               <ListItemText primary={this.statusLabel[(order.status as any)].label+` (${order.total}€)`} secondary={moment.default(order.created).format('ddd D MMM à HH:mm')} />

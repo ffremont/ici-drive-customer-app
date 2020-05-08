@@ -63,7 +63,12 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
         const products = (maker.products || []).map((p: GraphicProduct) => {
           p.category = conf.categories.find(c => c.id === p.categoryId);
           return p;
-        })
+        }).filter((p: GraphicProduct) => p.available);
+
+        // SORT
+        /*products.sort((a:GraphicProduct, b:GraphicProduct) =>   
+          a.label - b.label //|| a.glow - b.glow;
+      );*/
 
         this.setState({
           maker, products
@@ -116,6 +121,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
   cleanAndAdd(){
     cartStore.addFirstProductWithMaker(this.state.maker as any, { product: this.state.wantToAdd, quantity: 1 } as any)
     notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
+    this.setState({openCleanCart:false});
   }
 
   render() {

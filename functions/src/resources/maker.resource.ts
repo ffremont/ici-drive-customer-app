@@ -61,8 +61,10 @@ class MakerResource {
                     .limit(MakerResource.SEARCH_LIMIT).get();
             }
 
+            const makers = AppUtil.arrOfSnap(snapshot);
+
             AppUtil.expires(response, 1800);
-            AppUtil.ok(response, snapshot);
+            AppUtil.ok(response, makers);
         } catch (e) {
             AppUtil.internalError(response, e);
         }
@@ -81,6 +83,7 @@ class MakerResource {
             if(!markerId){ throw 'Identifiant invalide'}
             
             const maker = await this.makerDao.getFull(markerId);
+
             if(maker){
                 AppUtil.expires(response, 1800);
                 AppUtil.ok(response, maker);

@@ -10,6 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 export default function Confirm(props:any) {
   const [open, setOpen] = React.useState(false);
   const [text, setText] = React.useState('');
+  
 
   React.useEffect(() => {
     setOpen(props.open);
@@ -32,7 +33,7 @@ export default function Confirm(props:any) {
           <DialogContentText>
             {props.message}
           </DialogContentText>
-          <TextField
+          {props.withText && <TextField
             value={text}
             onChange={(e) => setText(e.target.value)}
             autoFocus
@@ -42,7 +43,7 @@ export default function Confirm(props:any) {
             type="text"
             inputProps={{ maxLength: 100 }}
             fullWidth
-          />
+          />}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

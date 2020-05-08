@@ -25,6 +25,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import HelpIcon from '@material-ui/icons/Help';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import cartStore from '../../stores/cart';
 import { Order } from '../../models/order';
 import conf from '../../confs';
@@ -111,6 +112,11 @@ const MenuApp = (props: any) => {
             <ListItemIcon><BugReportIcon /></ListItemIcon>
             <ListItemText primary="Support" secondary="Déclarer un incident" />
           </ListItem>
+          <ListItem button key="mentions">
+            <ListItemIcon><LibraryBooksIcon /></ListItemIcon>
+            <ListItemText primary="Mentions" secondary="CGU, CGR, ..." />
+          </ListItem>
+          
           <ListItem button key="about" onClick={() =>setOpenAbout(true)}>
             <ListItemIcon><InfoIcon /></ListItemIcon>
             <ListItemText primary="A propos" secondary="De l'application" />

@@ -8,5 +8,6 @@ export interface Product{
     weight?:number;
     volume?:number;
     maxInCart?:number;
-    available:boolean
+    available:boolean;
+    //topOfList:boolean;
 }

@@ -45,11 +45,11 @@ class App extends React.Component<{}, { concurrentCalls: number }>{
     fcmService.init();
     moment.locale('fr');
     this.subHttpClientRequest = httpClientService.subOnRequest(() => {
-      this.setState({ concurrentCalls: this.state.concurrentCalls + 1 });
+      ///this.setState({ concurrentCalls: this.state.concurrentCalls + 1 });
     });
     this.subHttpClientResponse = httpClientService.subOnResponse(() => {
       if (this.state.concurrentCalls > 0) {
-        this.setState({ concurrentCalls: this.state.concurrentCalls - 1 });
+        //this.setState({ concurrentCalls: this.state.concurrentCalls - 1 });
       }
     });
   }

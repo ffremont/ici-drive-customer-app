@@ -61,9 +61,10 @@ export class NotifService {
      * @param newOrder 
      */
     public async applyTransition(fcm: string | null, fromStatus: string, newOrder: Order): Promise<void> {
-        AppUtil.debug('applyTransition', fcm, fromStatus);
+        AppUtil.debug('applyTransition', fcm, fromStatus, newOrder.status);
 
         const transition = this.transitions.find(t => t.from === fromStatus && t.newStatus === newOrder.status);
+        AppUtil.debug('transition ? ',transition);
         if (transition) {
             await transition.notify(newOrder, fcm);
             return;
@@ -72,20 +73,19 @@ export class NotifService {
         }
     }
 
-
     private async createData(): Promise<URLSearchParams> {
         const data = new URLSearchParams();
         data.append('apikey', this.elasticmailApikey);
         data.append('from', 'noreply@ici-drive.fr');
-        data.append('fromName', 'Ici drive');
+        data.append('fromName', 'ici-drive.fr');
         data.append('isTransactional', 'true');
         data.append('sender', 'contact@ici-drive.fr');
-        data.append('senderName', 'App Ici drive');
-        data.append('apikey', this.elasticmailApikey);
+        data.append('senderName', 'app.ici-drive.fr');
         return data;
     }
 
     private async send(templateName: string, to: string, subject: string, data: any): Promise<void> {
+        AppUtil.debug("notif > send ", templateName, to, subject, data);
         const body = await this.createData();
         body.append('template', templateName);
         body.append('to', to);
@@ -95,15 +95,18 @@ export class NotifService {
             body.append(`merge_${key}`, `${value}`);
         }
 
-        return await axios.post(this.elasticmailUrl, body, {
+        AppUtil.debug('notif > send > axios post body',this.elasticmailUrl, body);
+        const resp = await axios.post(this.elasticmailUrl, body, {
             timeout: 10000,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
+        AppUtil.debug('notif > send > axios.post response',resp.status, resp.data);        
     }
 
     public async cancel(order: Order, fcm: string | null): Promise<void> {
+        AppUtil.debug(`notif > cancel ${order.id}`);
         const promises : any = [];
 
         if (fcm) {
@@ -260,7 +263,8 @@ export class NotifService {
             maker_name: order.maker?.name
         }));
         promises.push(this.send('ici_drive_customer_new_cart', order.customer?.email as any, Config.subjectNewOrder, {
-            order_link: `${Config.customerAppUrl}/my-orders/${order.id}`
+            order_link: `${Config.customerAppUrl}/my-orders/${order.id}`,
+            maker_name: order.maker?.name
         }));
     
         await Promise.all(promises);
@@ -311,8 +315,8 @@ export class NotifService {
                 token: fcm,
                 data: { url : `${Config.customerAppUrl}/my-orders/${order.id}`},
                 notification: {
-                    title: `Nouvelle réservation`,
-                    body: `Le producteur va vérifier la réservation ${order.ref} très prochainement`
+                    title: `Réservation confirmée`,
+                    body: `Un email récapitulatif vous a été envoyé pour la réservation ${order.ref}.`
                 }
             } as FirebaseMessage];
             // to maker
@@ -321,8 +325,8 @@ export class NotifService {
                     token: order.maker?.fcm,
                     data: { url : `${Config.makerAppUrl}/orders/${order.id}`},
                     notification: {
-                        title: `Nouvelle réservation`,
-                        body: `Une vérification est nécessaire pour la réservation ${order.ref}`
+                        title: `Une réservation confirmée`,
+                        body: `La réservation ${order.ref} a été confirmée pour le ${moment(order.slot).format('ddd D MMM à HH:mm')}.`
                     }
                 } as FirebaseMessage);
             }
@@ -348,9 +352,9 @@ export class NotifService {
             maker_phone: order.maker?.phone,
             payments_info: order.maker?.payments?.acceptPaypal ? paypalMsg : notPaypalMsg
         }));
-        promises.push(this.send('ici_drive_customer_new_cart', order.customer?.email as any, Config.subjectCancelled, {
+        promises.push(this.send('ici_drive_customer_confirmed', order.customer?.email as any, Config.subjectCancelled, {
             order_link: `${Config.customerAppUrl}/my-orders/${order.id}`,
-            maker_customer_phone: order.customer?.phone,
+            
             when: moment(order.slot).format('ddd D MMM à HH:mm'),
             maker_place_label: order.maker?.place.label,
             maker_place_address: order.maker?.place.address,

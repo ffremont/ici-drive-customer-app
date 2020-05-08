@@ -17,15 +17,19 @@ export class OrdersStore implements Store<Order[]>{
     }
 
     static async update(order: Order){
-        await httpClientService.axios.put(conf.API.orders(order.ref), order);
+        await httpClientService.axios.put(conf.API.orders(order.id), order);
     }
     /**
      * 
      */
-    public load(ref?:string):Promise<Order[]>{
-        return httpClientService.axios.get(conf.API.orders(ref))
-        .then((response: AxiosResponse<Order[]>) => {
-            this.set(response.data);
+    public load(id?:string):Promise<Order[]>{
+        return httpClientService.axios.get(conf.API.orders(id))
+        .then((response: AxiosResponse<any>) => {
+            if(id){
+                this.set([response.data]);
+            }else{
+                this.set(response.data);
+            }            
             return response.data;
         });
     }

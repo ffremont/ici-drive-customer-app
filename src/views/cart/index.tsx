@@ -109,6 +109,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
       cartStore.save(newOrder)
         .then(() => {
+          cartStore.resetCart();
           // navigue vers la liste des commandes
           this.props.history.push(`/my-orders`);
         }).catch(() => {
@@ -124,6 +125,9 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
     }
   }
 
+  /**
+   * FIN DU PROCESSUS PANIER
+   */
   continue() {
     if (!this.state.summaryMode && this.state.showPhone) {
       if (!(document as any).getElementById('cart-phone').checkValidity()) {

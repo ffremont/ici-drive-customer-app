@@ -60,9 +60,9 @@ const useStyles = (theme: Theme) => ({
   }
 });
 
-class Order extends React.Component<{ history: any, classes: any, match: any }, { openCancelDialog:boolean, order: O.Order | null, open: boolean, hidden: boolean }>{
+class Order extends React.Component<{ history: any, classes: any, match: any }, { openInfoConfirmed: boolean, openCancelDialog:boolean, order: O.Order | null, open: boolean, hidden: boolean }>{
 
-  state = { order: null, open: false, hidden: false, openCancelDialog:false };
+  state = { order: null, open: false, hidden: false, openCancelDialog:false, openInfoConfirmed:false };
   status: any = {};
   sub: Subscription | null = null;
 
@@ -78,15 +78,16 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
     this.status[O.OrderState.CONFIRMED] = {label: 'Confirmée', color: this.props.classes.green};
     this.status[O.OrderState.REFUSED] = {label:'Refusée', color: this.props.classes.grey};
 
-    const ref: string = this.props.match.params.id;
+    const id: string = this.props.match.params.id;
     this.sub = ordersStore.subscribe((orders: O.Order[]) => {
-      if (orders.length) {
+      console.log('Order > ordersStore.sub ',orders);
+      if (orders && orders.length) {
         this.setState({ order: orders[0] });
       }
     });
 
     // charge la liste des commandes
-    ordersStore.load(ref || '');
+    ordersStore.load(id || '');
   }
 
   onClickConfirmOrder(){
@@ -94,7 +95,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
     newOrder.reasonOf = '';
     newOrder.status = O.OrderState.CONFIRMED;
     OrdersStore.update(newOrder)
-      .then(() => this.props.history.push('/my-orders'))
+      .then(() => this.setState({openInfoConfirmed:true}))
       .catch(() => this.props.history.push('/error'));
   }
 
@@ -125,6 +126,16 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
     const currentOrder: O.Order = (this.state.order as any) as O.Order;
     const maker: Maker = (currentOrder?.maker as any) as Maker;
 
+    let paymentsLabels = '';
+    if(maker && maker.payments && !maker.payments.acceptPaypal){
+      paymentsLabels = [
+        maker.payments?.acceptCards ? `par carte` : null,
+        maker.payments?.acceptBankCheck ? `par chèque` : null,
+        maker.payments?.acceptCoins ? `en espèce` : null].filter(c => c !== null).join(' / ');
+    }else if(maker && maker.payments && maker.payments.acceptPaypal){
+      paymentsLabels = 'en ligne via Paypal';
+    }
+
     return (<div className="order">
       <MenuApp mode="light" history={this.props.history} />
       {currentOrder && (<Grid container direction="column" justify="center" spacing={1}>
@@ -133,9 +144,16 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
           <Chip label={this.status[(currentOrder.status as any)].label} className={this.status[(currentOrder.status as any)].color} />
         </Grid>
 
+        {currentOrder.status === O.OrderState.CONFIRMED && paymentsLabels && (<Grid item>
+          <Alert severity="warning">
+            <strong>Consignes de paiement : </strong>{paymentsLabels}
+          </Alert>
+        </Grid>)}
+
         {currentOrder.reasonOf && (<Grid item>
           <Alert severity="info">{currentOrder.reasonOf}</Alert>
         </Grid>)}
+        
 
         <Grid item>
           <Grid container direction="column" justify="center" spacing={1}>
@@ -222,7 +240,10 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
         </Table>
       </TableContainer>)}
 
-    <Confirm title="Annuler la commande" onClose={() => this.setState({openCancelDialog:false})} onConfirm={(txt:string) => this.cancel(txt)} message="Je souhaite annuler pour le motif :" open={this.state.openCancelDialog}/>
+    <Confirm title="Annuler la commande" withText={true} onClose={() => this.setState({openCancelDialog:false})} onConfirm={(txt:string) => this.cancel(txt)} message="Je souhaite annuler pour le motif :" open={this.state.openCancelDialog}/>
+    <Confirm title="La suite par email" withText={false} onClose={() => this.setState({openInfoConfirmed:false})} onConfirm={(txt:string) => this.props.history.push('/my-orders')} message="Un email récapitulatif vous a été transmis." open={this.state.openInfoConfirmed}/>
+
+    
 
       {/* Actions en fonction des états */}
 
