@@ -314,13 +314,13 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         ))}
         </div>
 
-        <Alert severity="warning" className="instruction-payments">
+        {this.state.order && (<Alert severity="warning" className="instruction-payments">
         <AlertTitle>Consignes de paiement</AlertTitle>
-        <strong>Ici drive n'organise aucunement les paiements</strong>, cette activité est à l'entière charge du producteur.
+        <strong>ini-drive.fr n'organise aucunement les paiements</strong>, cette activité est à la charge des producteurs.
         <br/> 
         {this.state.order && order?.maker?.payments && order?.maker?.payments.acceptPaypal && <span>Le paiement PayPal sera initié après confirmation de la réservation de votre part, une fois la demande vérifiée.</span>}
         {this.state.order && order?.maker?.payments && !order?.maker?.payments.acceptPaypal && <span>Le paiement au Drive se fera lors du retrait de la marchandise.</span>}
-      </Alert>
+      </Alert>)}
 
 
       {!this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">
@@ -337,7 +337,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
 
         {this.state.order && (
-          <CartFooter text={this.state.summaryMode ? 'Envoyer la réservation' : 'Réserver'} onClickContinue={() => this.continue()} quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total} />
+          <CartFooter text={this.state.summaryMode ? 'Envoyer la réservation' : 'Chosir le créneau'} onClickContinue={() => this.continue()} quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total} />
         )}
       </div>
     );

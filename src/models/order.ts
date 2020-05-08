@@ -19,6 +19,7 @@ export enum OrderState{
 
 export interface Order{
    created:number;
+   updated:number;
    ref:string;
    id?:string;
    status?:OrderState; // ATTENTE_VALIDATION, VALIDEE, REFUSEE, ANNULEE

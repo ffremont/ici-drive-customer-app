@@ -47,7 +47,7 @@ class Place extends React.Component<{ history: any, match: any }, { maker: Maker
           <img className="place-image" src={maker?.place.image} alt="endroit du drive" />
         </Grid>)}
         <Grid item>
-          <div><Typography variant="h4" gutterBottom>{maker.place.label}</Typography>
+          <div className="texts"><Typography variant="h4" gutterBottom>{maker.place.label}</Typography>
             <Typography variant="subtitle1">{maker.place.slotsDescription}</Typography>
             {maker.place.description && (<Typography variant="body1">{maker.place.description}</Typography>)}</div>
         </Grid>

@@ -13,7 +13,7 @@ import EuroIcon from '@material-ui/icons/Euro';
 import PaypalIcon from '../../assets/images/paypal.svg';
 import BankCheckIcon from '../../assets/images/bank_check.svg';
 import { PaymentMaker } from '../../models/maker';
-
+import './Discover.scss';
 
 const useStyles = makeStyles({
     root: {
@@ -59,7 +59,7 @@ const Discover = (props: any) => {
     const payments = props.payments as PaymentMaker;
 
     return (
-        <Card className={classes.root}>
+        <Card className={`${classes.root} discover-card`}>
             <CardActionArea>
                 <CardMedia
                     component="img"

@@ -141,12 +141,9 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
           </Paper>
         </Modal>
 
-        {this.state.maker && (<Grid container className="maker-container" alignContent="center" alignItems="center" justify="center">
-          <Grid item>
-            <Discover payments={myPart.payments} goToPlace={() => this.props.history.push(`/makers/${myPart.id}/place`)} image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />
-          </Grid>
-        </Grid>)}
-
+        <div className="maker-container">
+        {this.state.maker && (<Discover  payments={myPart.payments} goToPlace={() => this.props.history.push(`/makers/${myPart.id}/place`)} image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />)}
+        </div>
 
         <Grid className="products-grid" container alignContent="center" alignItems="center" justify="center" spacing={0}>
           {this.state.products.map((p: GraphicProduct, i: number) => (

@@ -34,8 +34,7 @@ const app = express();
 app.get('/api/makers', makerResource.search.bind(makerResource));
 app.get('/api/makers/:id', makerResource.getFullMaker.bind(makerResource));
 
-app.post('/api/carts', myOrderResource.newCart.bind(myOrderResource));
-
+app.post('/api/my-orders', myOrderResource.newCart.bind(myOrderResource));
 app.get('/api/my-orders', myOrderResource.getAll.bind(myOrderResource));
 app.get('/api/my-orders/:id', myOrderResource.get.bind(myOrderResource));
 app.put('/api/my-orders/:id', myOrderResource.update.bind(myOrderResource));

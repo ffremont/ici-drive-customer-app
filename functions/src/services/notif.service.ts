@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Order, OrderState } from '../models/order';
 import { Config } from '../config';
 import * as moment from 'moment';
+import { AppUtil } from '../apputil';
 
 interface Transition {
     from: string,
@@ -24,6 +25,7 @@ export class NotifService {
 
     elasticmailUrl: string = functions.config().elasticemail.url;
     elasticmailApikey: string = functions.config().elasticemail.apikey;
+
 
     transitions: Transition[] = [{
         from: 'init',
@@ -58,8 +60,10 @@ export class NotifService {
      * @param from 
      * @param newOrder 
      */
-    public async applyTransition(fcm: string | null, from: string, newOrder: Order): Promise<void> {
-        const transition = this.transitions.find(t => t.from === from && t.newStatus === newOrder.status);
+    public async applyTransition(fcm: string | null, fromStatus: string, newOrder: Order): Promise<void> {
+        AppUtil.debug('applyTransition', fcm, fromStatus);
+
+        const transition = this.transitions.find(t => t.from === fromStatus && t.newStatus === newOrder.status);
         if (transition) {
             await transition.notify(newOrder, fcm);
             return;

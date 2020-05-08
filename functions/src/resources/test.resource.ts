@@ -38,6 +38,61 @@ class TestResource {
         'https://icidrive.b-cdn.net/20200421_062257_0000%20(1).png'
     ];
 
+    /*private static products: any = [
+        {
+            label: 'Carotte',
+            ref: 'R+' + randomstring.generate(5),
+            description: 'Taille moyenne et grande',
+            categoryId: 'fruit-leg',
+            image: 'https://icidrive.b-cdn.net/carotte.jpg',
+            maxInCart: 4,
+            available: true,
+            price: 2.4
+        },{
+            label: 'Coulis de la mer',
+            ref: 'R+' + randomstring.generate(5),
+            description: 'Délieux !',
+            categoryId: 'mer',
+            image: 'https://icidrive.b-cdn.net/soupe-de-poissons-coulis-de-homard-bouteille-50cl-produit-terroir-de-la-mer.jpg',
+            maxInCart: 4,
+            volume:0.5,
+            available: true,
+            price: 2.4
+        },{
+            label: 'Pain',
+            ref: 'R+' + randomstring.generate(5),
+            description: 'Croustillant, croustillant !',
+            categoryId: 'boulangerie',
+            image: 'https://icidrive.b-cdn.net/bread-2193537_640.jpg',
+            maxInCart: 4,
+            weight:200,
+            available: true,
+            price: 1.3
+        }, {
+            label: 'Miel liquide',
+            ref: 'R+' + randomstring.generate(5),
+            description: 'Très parfumé et délicieusement sucré',
+            categoryId: 'epicerie',
+            image: 'https://icidrive.b-cdn.net/miel.jpg',
+            maxInCart: 4, available: true, price: 4.1
+        },{
+            label: 'Rillette de saumon',
+            ref: 'R+' + randomstring.generate(5),
+            description: 'Très parfumé et délicieusement sucré',
+            weight: 120,
+            categoryId: 'epicerie',
+            image: 'https://icidrive.b-cdn.net/produit_unite_Rillette_Saumon_90g.jpg',
+            maxInCart: 4, available: true, price: 3
+        }, {
+            label: 'Choux fleur',
+            ref: 'R+' + randomstring.generate(5),
+            description: 'Grosse taille',
+            categoryId: 'fruit-leg',
+            image: 'https://icidrive.b-cdn.net/choux_fleur.jpg',
+            maxInCart: 4, available: true, price: 3.1
+        }
+    ]*/
+
     public randomMaker(): Maker {
         const cats: string[] = [];
         cats.push(TestResource.categories[Math.floor(Math.random() * TestResource.categories.length)]);
@@ -46,7 +101,7 @@ class TestResource {
         const rPoint = randomLocation.randomCircumferencePoint({
             latitude: 46.311472,
             longitude: -0.523594
-        },100*100)
+        }, 100 * 100)
 
         return {
             id: randomstring.generate({ length: 13, readable: true, capitalization: 'uppercase' }),
@@ -61,9 +116,9 @@ class TestResource {
             categories: cats,
             payments: {
                 acceptCoins: true,
-                acceptCards: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }),10) % 2 === 0,
-                acceptBankCheck: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }),10) % 3 === 0,
-                acceptPaypal: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }),10) % 2 === 0
+                acceptCards: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }), 10) % 2 === 0,
+                acceptBankCheck: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }), 10) % 3 === 0,
+                acceptPaypal: parseInt(randomstring.generate({ length: 5, charset: 'numeric' }), 10) % 2 === 0
             },
             place: {
                 label: TestResource.placeNames[Math.floor(Math.random() * TestResource.placeNames.length)],

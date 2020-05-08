@@ -13,6 +13,7 @@ export interface Configuration{
     categories: Item[],
     baseURL: string,
     fcmPublicVapidKey:string,
+    startDriveAfterDays:number,
 
     publicHolidays:{date:string, public_holiday:boolean, label:string}[],
     cgu:string;

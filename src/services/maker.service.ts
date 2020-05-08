@@ -3,6 +3,7 @@ import conf from '../confs';
 import * as moment from 'moment';
 import { OfficeSlot } from "../models/hebdo-slot";
 
+
 class MakerService{
 
     /**
@@ -18,8 +19,8 @@ class MakerService{
         const results : Date[] = [];
         const now = moment.default();
 
-        // /!\ rdv après 3 jours min
-        now.add(3, 'd');
+        // /!\ rdv après X jours min
+        now.add((maker as any).startDriveAfterDays || conf.startDriveAfterDays, 'd');
         
         // on propose au maximum, les 10 prochaines dates
         for(let i = 0; i< 10; i++){

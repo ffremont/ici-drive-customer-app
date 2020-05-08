@@ -5,7 +5,7 @@ export class UserDao{
     public async update(email:string, user:any): Promise<User>{
         if(!email || !user){ throw "update invalide"}
 
-        await context.db().collection(Context.USERS_COLLECTION).doc(email).update(user);
+        await context.db().collection(Context.USERS_COLLECTION).doc(email).set(user);
         return user;        
     }
 

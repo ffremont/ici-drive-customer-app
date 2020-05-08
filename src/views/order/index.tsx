@@ -86,7 +86,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
     });
 
     // charge la liste des commandes
-    ordersStore.load(ref);
+    ordersStore.load(ref || '');
   }
 
   onClickConfirmOrder(){

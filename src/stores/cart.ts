@@ -16,7 +16,7 @@ class CartStore implements Store<Order>{
     private sub:BehaviorSubject<Order>;
 
     constructor(){
-        let defaultOrder = { choices: [], created: (new Date()).getTime(), total: 0, ref: '' };
+        let defaultOrder = { choices: [], created: (new Date()).getTime(), total: 0, ref: '', updated: (new Date()).getTime() };
         if(window.sessionStorage && window.sessionStorage.getItem(CartStore.SESSION_STORAGE_KEY)){
             defaultOrder = JSON.parse(window.sessionStorage.getItem(CartStore.SESSION_STORAGE_KEY) as any);
         }
@@ -77,7 +77,7 @@ class CartStore implements Store<Order>{
      */
     resetCart() : Promise<void>{
         return new Promise((resolve) => {
-            const newOrder = { choices: [], created: (new Date()).getTime(), total: 0, ref: '' };
+            const newOrder = { choices: [], created: (new Date()).getTime(), total: 0, ref: '', updated: (new Date()).getTime() };
             this.set(newOrder);
             resolve();
         });
@@ -123,6 +123,7 @@ class CartStore implements Store<Order>{
         this.set({
             created: (new Date()).getTime(),
             maker,
+            updated: (new Date()).getTime(),
             ref: `${maker?.prefixOrderRef}${moment.default().format()}`,
             choices: pc ? [pc] : [],
             status: OrderState.PENDING,

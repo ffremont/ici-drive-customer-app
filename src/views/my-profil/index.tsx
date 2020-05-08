@@ -22,7 +22,7 @@ class MyProfil extends React.Component<{ history: any }, { email: string, firstn
 
   componentDidMount() {
     this.subMyProfil = myProfilStore.subscribe((myProfil: User) => {
-      if (myProfil.email) {
+      if (myProfil && myProfil.email) {
         this.setState({ email: myProfil.email, firstname: myProfil.firstname || '', lastname: myProfil.lastname || '', phone: myProfil.phone || '', address: myProfil.address || '' });
       }
     });
@@ -31,13 +31,15 @@ class MyProfil extends React.Component<{ history: any }, { email: string, firstn
   onSubmit(e:any) {
     e.preventDefault();
 
-    MyProfilStore.update({
+    const newUser = {
       firstname: this.state.firstname,
       lastname: this.state.lastname,
       email: this.state.email,
       phone: this.state.phone,
       address: this.state.address
-    }).then( () => {
+    };
+    MyProfilStore.update(newUser).then( () => {
+      myProfilStore.set(newUser);
       notifStore.set({type: NotifType.MY_PROFIL, message: 'Modification effectuée'});
     }).catch(() => this.props.history.push('/error'));
   }

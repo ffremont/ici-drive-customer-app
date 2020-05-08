@@ -99,11 +99,11 @@ const MenuApp = (props: any) => {
             <ListItemIcon><PersonIcon /></ListItemIcon>
             <ListItemText primary="Mon compte" secondary="Informations personnelles" />
           </ListItem>
-          <ListItem button key="how-to" >
+          <ListItem button key="how-to" onClick={() => props.history.push('/how')}>
             <ListItemIcon><HelpIcon /></ListItemIcon>
             <ListItemText primary="Comment ça marche ?" secondary="Explication des services" />
           </ListItem>
-          <ListItem button key="concept" >
+          <ListItem button key="concept" onClick={() => props.history.push('/concept')} >
             <ListItemIcon><EmojiObjectsIcon /></ListItemIcon>
             <ListItemText primary="Le concept" secondary="Présentation du concept" />
           </ListItem>

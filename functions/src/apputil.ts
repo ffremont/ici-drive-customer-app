@@ -1,6 +1,12 @@
 import {QuerySnapshot, DocumentData} from '@google-cloud/firestore';
 import { Response, Request } from 'express';
-import * as admin from 'firebase-admin';
+//import * as admin from 'firebase-admin';
+
+
+let LEVEL = 'info';
+if(process.env.REACT_APP_STAGE !== 'prod'){
+    LEVEL = 'debug';
+}
 
 export class AppUtil{
     /**
@@ -15,6 +21,19 @@ export class AppUtil{
         });
 
         return data;
+    }
+
+    public static info(data:any){
+        console.log(data);
+    }
+
+    public static debug(...data:any){
+        if(LEVEL === 'debug')
+            console.log('DEBUG', data);
+    }
+
+    public static error(...data:any){
+        console.error(data);
     }
 
     public static firstOfSnap(aSnap: QuerySnapshot<DocumentData>): DocumentData|null{
@@ -48,7 +67,10 @@ export class AppUtil{
     }
 
     public static async authorized(request:Request) : Promise<string|null>{
-        if (!request.headers.authorization || !request.headers.authorization.startsWith('Bearer ')) {
+        return 'ff.fremont.florent+auth@gmail.com';
+
+        // TEST
+       /* if (!request.headers.authorization || !request.headers.authorization.startsWith('Bearer ')) {
             return null;
         }
 
@@ -57,7 +79,7 @@ export class AppUtil{
         // @see https://firebase.google.com/docs/reference/admin/node/admin.auth.UserRecord
         const userRecord = await admin.auth().getUser(decodedToken.uid);
 
-        return userRecord.email || null;
+        return userRecord.email || null;*/
     }
 
     public static notAuthorized(res:Response){
@@ -73,6 +95,7 @@ export class AppUtil{
         res.status(405).send(JSON.stringify({ message: 'Method not allowed'}));
     }
     public static internalError(res:Response, e:any){
+        AppUtil.error(e);
         res.status(500).send(JSON.stringify({ message: e || 'une erreur est survenue'}));
     }
 }

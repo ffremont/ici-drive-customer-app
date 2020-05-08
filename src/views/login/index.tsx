@@ -15,9 +15,9 @@ import MailIcon from '../../assets/images/mail.svg';
 import authService from '../../services/auth.service';
 import {FirebaseStub} from '../../stubs/firebase';
 
-if(process.env.REACT_APP_STAGE !== 'prod'){
+//if(process.env.REACT_APP_STAGE !== 'prod'){
   (window as any).firebase = (new FirebaseStub()).init();
-}
+//}
 
 class Login extends React.Component<{history:any,location:any}, {loading:boolean, isSignedIn:boolean, from:string}> {
   unregisterAuthObserver: any = null;
@@ -41,9 +41,6 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
 
   signGoogle(){
     const provider:any = process.env.REACT_APP_STAGE === 'prod' ?  new (window as any).firebase.auth.GoogleAuthProvider() : new ((window as any).firebase.auth.GoogleAuthProvider());
-    /*provider.setCustomParameters({
-      hd: 'auth.app.ici-drive.fr'
-    });*/
     this.sign(provider);    
   }
 

@@ -89,7 +89,9 @@ class MyOrderResource {
             const currentUser : any = data[1];
 
             const order = request.body as Order;
-            const modification :any = {};
+            const modification :any = {
+                updated: (new Date()).getTime()
+            };
             if(order.reasonOf){
                 modification.reasonOf = order.reasonOf;
             }
@@ -123,12 +125,14 @@ class MyOrderResource {
      */
     public async newCart(request: Request, response: Response) {
         try {
+            AppUtil.debug('newcart');
             const currentUserEmail = await AppUtil.authorized(request);
             if (currentUserEmail === null) {
                 AppUtil.notAuthorized(response); return;
             }
 
             const order:Order = request.body as Order;
+            AppUtil.debug('new Order', order);
             const data = await Promise.all([
                 this.makerDao.getFull(order.maker?.id || ''), 
                 this.userDao.get(order.customer?.email || '')])
@@ -140,6 +144,7 @@ class MyOrderResource {
             
             // override
             order.id = uuid();
+            order.updated = (new Date()).getTime();
             order.customer = dbUser || {email:currentUserEmail};
             order.ref = `${dbMaker.prefixOrderRef}_${(new Date()).getTime()}`;
             if(order.maker?.email !== dbMaker.email){
@@ -159,6 +164,7 @@ class MyOrderResource {
                 const myRef = await context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
                 await myRef.set(order);
 
+                AppUtil.info('mémorisation de la commande');
                 await notifService.applyTransition(dbUser && dbUser.fcm ? dbUser.fcm : null, 'init', order);
 
                 AppUtil.ok(response, order);
