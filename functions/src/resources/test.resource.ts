@@ -30,13 +30,6 @@ class TestResource {
         'https://icidrive.b-cdn.net/ferme_d.jpg',
         'https://icidrive.b-cdn.net/parking_a.jpg'
     ];
-    private static makerImages: any = [
-        'https://icidrive.b-cdn.net/2019-03-01.jpg',
-        'https://icidrive.b-cdn.net/35913-bienvenue-ferme-carte-interactive-acheter-directement-chez-producteur.png',
-        'https://icidrive.b-cdn.net/IMG_4136-1-854x641.jpg',
-        'https://icidrive.b-cdn.net/unnamed.jpg',
-        'https://icidrive.b-cdn.net/20200421_062257_0000%20(1).png'
-    ];
 
     private static products: any = [
         {

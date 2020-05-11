@@ -43,6 +43,7 @@ app.get('/api/my-profil', myProfilResource.get.bind(myProfilResource));
 app.put('/api/my-profil', myProfilResource.update.bind(myProfilResource));
 
 export const api = functions.https.onRequest(app);
+export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));
 export const testAdd = functions.https.onRequest(testResource.add.bind(testResource));
 export const testFind = functions.https.onRequest(testResource.findAll.bind(testResource));
 

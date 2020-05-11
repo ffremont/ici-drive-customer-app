@@ -5,6 +5,9 @@ export class Config{
     public static confirmedExpireComingSoon = 12; // expire si drive dans moins de 12h
     public static limitBatchSchedule = 100;
 
+    public static MAKERS_NEAR_KM = 5;
+    public static MAKERS_SEARCH_LIMIT = 10;
+
     public static customerAppUrl = 'https://app.ici-drive.fr';
     public static makerAppUrl = 'https://admin.ici-drive.fr';
 

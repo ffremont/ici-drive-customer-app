@@ -50,6 +50,8 @@ const useStyles = makeStyles({
     },
     moneyLabel:{
         marginLeft:10,
+        fontSize: '0.8rem',
+        textAlign: 'center'
     }
 });
 
@@ -76,7 +78,7 @@ const Discover = (props: any) => {
                         {props.description}
                     </Typography>
 
-                    {props.payments && (<div className={classes.payments}>
+                    {props.payments && (<div className={`${classes.payments} payments`}>
                         <div className={`${classes.paymentItem} ${!payments.acceptPaypal ? classes.myDisabled : ''}`}>
                             <img className={classes.moneyIcon} alt="paypal" src={PaypalIcon} />
                             <span className={classes.moneyLabel}>Paiement en ligne</span>

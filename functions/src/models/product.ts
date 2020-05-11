@@ -9,5 +9,7 @@ export interface Product{
     volume?:number;
     maxInCart?:number;
     available:boolean;
-    topOfList:boolean;
+    topOfList?:boolean;
+    bio?:boolean;
+    draftImage?:string;
 }

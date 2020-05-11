@@ -336,7 +336,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
             checked={this.state.checkCgr}
             onChange={(e) => this.setState({ checkCgr: e.target.checked })}
             inputProps={{ 'aria-label': 'primary checkbox' }}
-          /> <Typography variant="body1">Accepter les <a href={CONF.cgr} target="_blank">Conditions Générales de Réservation</a></Typography>
+          /> <Typography variant="body1" className="accept-cgr">Accepter les <a href={CONF.cgr} target="_blank">Conditions Générales de Réservation</a></Typography>
         </div>)}
 
 

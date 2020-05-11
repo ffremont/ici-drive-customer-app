@@ -42,6 +42,7 @@ export class FirebaseStub {
 
     public auth() {
         return {
+                signOut:() => {console.log('signOut')},
                 onAuthStateChanged: (fn: any) => {
                 this.authFns.push(fn);
 

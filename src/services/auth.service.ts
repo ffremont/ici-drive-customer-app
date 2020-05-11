@@ -23,6 +23,10 @@ export class AuthService{
         this.isAuth = false;
         this.subUser.next(null);
         this.subToken.next(null);
+        
+        if((window as any).firebase){
+            (window as any).firebase.auth().signOut();
+        }
     }
 }
 

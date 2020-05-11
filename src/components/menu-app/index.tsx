@@ -12,7 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-import PersonIcon from '@material-ui/icons/Person';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import InfoIcon from '@material-ui/icons/Info';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -25,12 +25,15 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import HelpIcon from '@material-ui/icons/Help';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
+import BuildIcon from '@material-ui/icons/Build';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import cartStore from '../../stores/cart';
 import { Order } from '../../models/order';
 import conf from '../../confs';
 import authService from '../../services/auth.service';
 import About from '../about';
+import myProfilStore from '../../stores/my-profil';
+import { User } from '../../models/user';
 
 
 
@@ -63,6 +66,7 @@ const MenuApp = (props: any) => {
   const classes = useStyles();
   const [mode, setMode] = useState('full');
   const [auth] = useState(false);
+  const [email, setEmail] = useState('');
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
@@ -75,16 +79,21 @@ const MenuApp = (props: any) => {
     const subscription = cartStore.subscribe((order: Order) => {
       setQuantity(order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0));
     });
+    const subMyProfil = myProfilStore.subscribe((user:User) =>{
+      if(user && user.email)
+        setEmail(user.email.substr(0, user.email.indexOf('@')));
+    })
     return () => {
       // Nettoyage de l'abonnement
       subscription.unsubscribe();
+      subMyProfil.unsubscribe();
     };
   });
 
   const logout = () => {
     if(window.confirm('Voulez-vous déconnecter votre appareil de votre compte ?')){
       authService.signout();
-      props.history.push('/');
+      window.location.reload();
     }
   }
 
@@ -92,21 +101,25 @@ const MenuApp = (props: any) => {
     <div className={classes.root}>
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
         <List className="drawer-list">
+        {email && (<ListItem selected button key="connected">
+            <ListItemIcon><AccountCircleIcon /></ListItemIcon>
+            <ListItemText primary="Connecté" secondary={email} />
+          </ListItem>)}
           <ListItem button key="orders" onClick={() => props.history.push('/my-orders')}>
             <ListItemIcon><ReceiptIcon /></ListItemIcon>
             <ListItemText primary="Mes réservations" secondary="En cours et passées" />
           </ListItem>
           <ListItem button key="account" onClick={() => props.history.push('/my-profil')}>
-            <ListItemIcon><PersonIcon /></ListItemIcon>
+            <ListItemIcon><BuildIcon /></ListItemIcon>
             <ListItemText primary="Mon compte" secondary="Informations personnelles" />
           </ListItem>
           <ListItem button key="how-to" onClick={() => props.history.push('/how')}>
             <ListItemIcon><HelpIcon /></ListItemIcon>
-            <ListItemText primary="Comment ça marche ?" secondary="Explication des services" />
+            <ListItemText primary="Comment ça marche ?" secondary="" />
           </ListItem>
           <ListItem button key="concept" onClick={() => props.history.push('/concept')} >
             <ListItemIcon><EmojiObjectsIcon /></ListItemIcon>
-            <ListItemText primary="Le concept" secondary="Présentation du concept" />
+            <ListItemText primary="Concept &amp; histoire" secondary="" />
           </ListItem>
           <ListItem button key="support" onClick={() => window.open(conf.support)}>
             <ListItemIcon><BugReportIcon /></ListItemIcon>
@@ -121,10 +134,10 @@ const MenuApp = (props: any) => {
             <ListItemIcon><InfoIcon /></ListItemIcon>
             <ListItemText primary="A propos" secondary="De l'application" />
           </ListItem>
-          <ListItem button key="logout" onClick={logout}>
+          {email && (<ListItem button key="logout" onClick={logout}>
             <ListItemIcon><ExitToAppIcon /></ListItemIcon>
             <ListItemText primary="Se déconnecter" secondary="Dissocier cet appareil" />
-          </ListItem>
+          </ListItem>)}
         </List>
       </Drawer>
       <AppBar position="fixed" className={classes.appBar}>

@@ -3,11 +3,9 @@ import * as geohash from "ngeohash";
 import context, { Context } from '../context';
 import { AppUtil } from '../apputil';
 import { MakerDao } from '../dao/maker.dao';
+import {Config} from '../config';
 
 class MakerResource {
-
-    private static NEAR_KM = 40;
-    private static SEARCH_LIMIT = 2;
 
     private makerDao = new MakerDao();
 
@@ -46,19 +44,21 @@ class MakerResource {
         const near: any = request.query.near || null;
         let snapshot;
         try {
+            AppUtil.debug(`maker > search > query ${near}`);
             if (near) {
+                AppUtil.debug(`maker > search near  ${Config.MAKERS_NEAR_KM}km in limit ${Config.MAKERS_SEARCH_LIMIT}`);
                 const nearArr = near.split(',');
-                const nearRange = this.geoRange(parseFloat(nearArr[0]), parseFloat(nearArr[1]), MakerResource.NEAR_KM);
+                const nearRange = this.geoRange(parseFloat(nearArr[0]), parseFloat(nearArr[1]), Config.MAKERS_NEAR_KM);
 
                 const ref = await context.db().collection(Context.MAKERS_COLLECTION)
                     .where('place.point.geohash', '>', nearRange.lower)
                     .where('place.point.geohash', '<', nearRange.upper)
-                snapshot = await ref.limit(MakerResource.SEARCH_LIMIT).get();
+                snapshot = await ref.limit(Config.MAKERS_SEARCH_LIMIT).get();
             } else {
                 snapshot = await context.db().collection(Context.MAKERS_COLLECTION)
                     .where('created', '<', (new Date()).getTime())
                     .orderBy('created', 'desc')
-                    .limit(MakerResource.SEARCH_LIMIT).get();
+                    .limit(Config.MAKERS_SEARCH_LIMIT).get();
             }
 
             const makers = AppUtil.arrOfSnap(snapshot);

@@ -1,6 +1,6 @@
 import {QuerySnapshot, DocumentData} from '@google-cloud/firestore';
 import { Response, Request } from 'express';
-//import * as admin from 'firebase-admin';
+import * as admin from 'firebase-admin';
 
 
 let LEVEL = 'info';
@@ -67,10 +67,8 @@ export class AppUtil{
     }
 
     public static async authorized(request:Request) : Promise<string|null>{
-        return 'ff.fremont.florent+auth@gmail.com';
-
         // TEST
-       /* if (!request.headers.authorization || !request.headers.authorization.startsWith('Bearer ')) {
+        if (!request.headers.authorization || !request.headers.authorization.startsWith('Bearer ')) {
             return null;
         }
 
@@ -79,7 +77,7 @@ export class AppUtil{
         // @see https://firebase.google.com/docs/reference/admin/node/admin.auth.UserRecord
         const userRecord = await admin.auth().getUser(decodedToken.uid);
 
-        return userRecord.email || null;*/
+        return userRecord.email || null;
     }
 
     public static notAuthorized(res:Response){

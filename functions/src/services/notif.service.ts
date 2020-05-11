@@ -5,6 +5,7 @@ import { Order, OrderState } from '../models/order';
 import { Config } from '../config';
 import * as moment from 'moment';
 import { AppUtil } from '../apputil';
+import * as qs from 'qs';
 
 interface Transition {
     from: string,
@@ -73,34 +74,31 @@ export class NotifService {
         }
     }
 
-    private async createData(): Promise<URLSearchParams> {
-        const data = new URLSearchParams();
-        data.append('apikey', this.elasticmailApikey);
-        data.append('from', 'noreply@ici-drive.fr');
-        data.append('fromName', 'ici-drive.fr');
-        data.append('isTransactional', 'true');
-        data.append('sender', 'contact@ici-drive.fr');
-        data.append('senderName', 'app.ici-drive.fr');
+    private async createData(): Promise<any> {
+        const data :any = {};
+        data.apikey = this.elasticmailApikey;
+        data.from = 'noreply@ici-drive.fr';
+        data.fromName = 'ici-drive.fr';
+        data.isTransactional = true;
+        data.sender = 'contact@ici-drive.fr';
+        data.senderName='app.ici-drive.fr';
         return data;
     }
 
     private async send(templateName: string, to: string, subject: string, data: any): Promise<void> {
         AppUtil.debug("notif > send ", templateName, to, subject, data);
         const body = await this.createData();
-        body.append('template', templateName);
-        body.append('to', to);
-        body.append('subject', subject);
+        body.template = templateName;
+        body.to = to;
+        body.subject = subject;
 
         for (let [key, value] of Object.entries(data)) {
-            body.append(`merge_${key}`, `${value}`);
+            body[`merge_${key}`]= `${value}`;
         }
 
         AppUtil.debug('notif > send > axios post body',this.elasticmailUrl, body);
-        const resp = await axios.post(this.elasticmailUrl, body, {
-            timeout: 10000,
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
+        const resp = await axios.post(this.elasticmailUrl, qs.stringify(body), {
+            timeout: 10000
         })
         AppUtil.debug('notif > send > axios.post response',resp.status, resp.data);        
     }
