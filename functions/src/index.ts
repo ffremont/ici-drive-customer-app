@@ -6,6 +6,7 @@ import testResource from './resources/test.resource';
 import makerResource from './resources/maker.resource';
 import myOrderResource from './resources/myorder.resource';
 import myProfilResource from './resources/myprofil.resource';
+import adminMakerResource from './resources/admin-maker.resource';
 import context from './context';
 import express = require('express');
 
@@ -41,6 +42,16 @@ app.put('/api/my-orders/:id', myOrderResource.update.bind(myOrderResource));
 
 app.get('/api/my-profil', myProfilResource.get.bind(myProfilResource));
 app.put('/api/my-profil', myProfilResource.update.bind(myProfilResource));
+
+// ADMINISTRATION
+app.get('/api/admin/makers/self', adminMakerResource.getSelf.bind(adminMakerResource));
+/*app.put('/api/admin/makers/self/products/:ref', makerResource.updateProduct.bind(makerResource));
+app.delete('/api/admin/makers/self/products/:ref', makerResource.deleteProduct.bind(makerResource));
+app.post('/api/admin/makers/self/products/', makerResource.addProduct.bind(makerResource));
+
+app.get('/api/admin/my-orders', myOrderResource.getOrders.bind(myOrderResource));
+app.put('/api/admin/my-orders/:id', myOrderResource.updateOrder.bind(myOrderResource));*/
+
 
 export const api = functions.https.onRequest(app);
 export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));

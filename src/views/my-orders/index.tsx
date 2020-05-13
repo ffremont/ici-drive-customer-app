@@ -12,7 +12,6 @@ import Avatar from '@material-ui/core/Avatar';
 import * as moment from 'moment';
 import { withStyles, Theme } from '@material-ui/core/styles';
 import { deepOrange, grey, green } from '@material-ui/core/colors';
-import ReceiptIcon from '@material-ui/icons/Receipt';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import IconButton from '@material-ui/core/IconButton';

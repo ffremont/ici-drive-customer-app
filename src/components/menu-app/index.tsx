@@ -20,6 +20,8 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Badge from '@material-ui/core/Badge';
 import IciDriveTypoIcon from '../../assets/images/ici-drive-icon.png';
 import IciDriveBannerIcon from '../../assets/images/ici-drive-banner.png';
+import Button from '@material-ui/core/Button';
+
 import './MenuApp.scss';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import HelpIcon from '@material-ui/icons/Help';
@@ -34,6 +36,10 @@ import authService from '../../services/auth.service';
 import About from '../about';
 import myProfilStore from '../../stores/my-profil';
 import { User } from '../../models/user';
+import ClearIcon from '@material-ui/icons/Clear';
+import { grey } from '@material-ui/core/colors';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import pwaService from '../../services/pwa.service';
 
 
 
@@ -59,6 +65,16 @@ const useStyles = makeStyles((theme: Theme) =>
     fullList: {
       width: 'auto',
     },
+    installBar:{
+      color: theme.palette.common.white,
+      backgroundColor: grey[500],
+      marginBottom: 10,
+      padding: '10px 10px'
+    },
+    getApp:{
+      color: theme.palette.common.white,
+      borderColor: theme.palette.common.white
+    }
   }),
 );
 
@@ -70,10 +86,11 @@ const MenuApp = (props: any) => {
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
+  const [showInstall, setShowInstall] = useState(false);
 
   React.useEffect(() => {
     setMode(props.mode);
-  }, [props.mode])
+  }, [props.mode]);
 
   useEffect(() => {
     const subscription = cartStore.subscribe((order: Order) => {
@@ -83,10 +100,25 @@ const MenuApp = (props: any) => {
       if(user && user.email)
         setEmail(user.email.substr(0, user.email.indexOf('@')));
     })
+    const subInstalled = pwaService.installed.subscribe((installed) => {
+      if(installed)
+        setShowInstall(false)
+    });
+    const subCancelled = pwaService.cancelled.subscribe((cancelled) => {
+      if(cancelled)
+        setShowInstall(false)
+    });
+    const subBeforeinstallprompt = pwaService.beforeinstallprompt.subscribe((beforeinstallprompt) => {
+      if(beforeinstallprompt)
+        setShowInstall(true)
+    });
     return () => {
       // Nettoyage de l'abonnement
       subscription.unsubscribe();
       subMyProfil.unsubscribe();
+      subInstalled.unsubscribe();
+      subCancelled.unsubscribe();
+      subBeforeinstallprompt.unsubscribe();
     };
   });
 
@@ -223,6 +255,24 @@ const MenuApp = (props: any) => {
           )}
         </Toolbar>
       </AppBar>
+
+      { showInstall && (<div className={`install-bar ${classes.installBar}`}>
+        <div className="install-close" onClick={() => pwaService.close()}>
+            <ClearIcon/>
+        </div>
+        <div className="install-content">
+          <div className="install-icon">
+            <img src={IciDriveTypoIcon} alt="logo" />
+          </div>
+          <div className="install-title">
+            Drive de producteurs locaux
+          </div>
+        </div>
+        <div className="install-actions">
+        
+        <Button onClick={() => pwaService.install()} variant="outlined" startIcon={<GetAppIcon/>} className={classes.getApp}>Installer</Button>
+        </div>
+      </div>)}
     </div>
   );
 }
