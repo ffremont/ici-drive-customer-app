@@ -11,5 +11,4 @@ export interface Product{
     available:boolean;
     topOfList?:boolean;
     bio?:boolean;
-    draftImage?:string;
 }

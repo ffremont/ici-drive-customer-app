@@ -6,6 +6,7 @@ import { Config } from '../config';
 import * as moment from 'moment';
 import { AppUtil } from '../apputil';
 import * as qs from 'qs';
+import { Maker } from '../models/maker';
 
 interface Transition {
     from: string,
@@ -53,6 +54,10 @@ export class NotifService {
         newStatus: OrderState.CANCELLED,
         notify: (order: Order, fcm: string | null) => this.cancel(order, fcm)
     }];
+
+    public async notifyMaker(actionName: string, maker:Maker){
+        AppUtil.debug(`TODO add in-app notif for ${actionName}`);
+    }
 
     /**
      * Applique une transition

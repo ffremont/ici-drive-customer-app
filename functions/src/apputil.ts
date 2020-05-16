@@ -23,7 +23,7 @@ export class AppUtil{
         return data;
     }
 
-    public static info(data:any){
+    public static info(...data:any){
         console.log(data);
     }
 

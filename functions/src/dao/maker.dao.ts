@@ -19,6 +19,46 @@ export class MakerDao{
         }
     }
 
+    public async getByEmail(email:string): Promise<Maker|null>{
+        if(!email){ return null;}
+
+        const makerRef = await context.db().collection(Context.MAKERS_COLLECTION).where('email', '==', `${email}`.trim()).limit(1).get();
+        if (!makerRef.empty) {
+            const res = AppUtil.arrOfSnap(makerRef);
+            return res[0] as Maker;
+        } else {
+            return null;
+        }
+    }
+
+    public async setMaker(id:string, modification:any): Promise<void>{
+        if(!id || !modification){ throw "set invalide"}
+
+        await context.db().collection(Context.MAKERS_COLLECTION).doc(id).set(modification, {merge:true});       
+    }
+
+    public async addOrUpdateProduct(makerId:string, reference:string, product:Product): Promise<void>{
+        if(!makerId || !reference || !product){ throw "set invalide"}
+
+        await context.db()
+        .collection(Context.MAKERS_COLLECTION)
+        .doc(makerId)
+        .collection(Context.MAKERS_PRODUCTS_COLLECTION)
+        .doc(reference)
+        .set(product);       
+    }
+
+    public async delProduct(makerId:string, reference:string): Promise<void>{
+        if(!makerId || !reference ){ throw "del invalide"}
+
+        await context.db()
+        .collection(Context.MAKERS_COLLECTION)
+        .doc(makerId)
+        .collection(Context.MAKERS_PRODUCTS_COLLECTION)
+        .doc(reference)
+        .delete();  
+    }
+
     public async getFull(id:string): Promise<Maker|null>{
         if(!id){ return null;}
 
@@ -41,7 +81,7 @@ export class MakerDao{
     public async getFullByEmail(email:string): Promise<Maker|null>{
         if(!email){ return null;}
 
-        const makerRef = await context.db().collection(Context.MAKERS_COLLECTION).where('email', '==', email).limit(1).get();
+        const makerRef = await context.db().collection(Context.MAKERS_COLLECTION).where('email', '==', `${email}`.trim()).limit(1).get();
         if (!makerRef.empty) {
             const res = AppUtil.arrOfSnap(makerRef);
             const maker:Maker = res[0] as Maker;

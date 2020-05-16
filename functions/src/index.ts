@@ -2,11 +2,12 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as moment from 'moment';
 import 'moment/locale/fr';
-import testResource from './resources/test.resource';
+//import testResource from './resources/test.resource';
 import makerResource from './resources/maker.resource';
 import myOrderResource from './resources/myorder.resource';
 import myProfilResource from './resources/myprofil.resource';
 import adminMakerResource from './resources/admin-maker.resource';
+import busboy from './middlewares/busboy';
 import context from './context';
 import express = require('express');
 
@@ -22,6 +23,11 @@ if (customCreds) {
 }
 context.db(admin.firestore());
 moment.locale('fr');
+
+const runtimeOpts = {
+    timeoutSeconds: 300,
+    memory: functions.VALID_MEMORY_OPTIONS[1]
+}   
 
 
 // // Start writing Firebase Functions
@@ -45,17 +51,18 @@ app.put('/api/my-profil', myProfilResource.update.bind(myProfilResource));
 
 // ADMINISTRATION
 app.get('/api/admin/makers/self', adminMakerResource.getSelf.bind(adminMakerResource));
-/*app.put('/api/admin/makers/self/products/:ref', makerResource.updateProduct.bind(makerResource));
-app.delete('/api/admin/makers/self/products/:ref', makerResource.deleteProduct.bind(makerResource));
-app.post('/api/admin/makers/self/products/', makerResource.addProduct.bind(makerResource));
+app.post('/api/admin/makers/self/products/', busboy, adminMakerResource.addProduct.bind(adminMakerResource));
+app.put('/api/admin/makers/self/products/:ref', busboy, adminMakerResource.updateProduct.bind(adminMakerResource));
+app.delete('/api/admin/makers/self/products/:ref', adminMakerResource.deleteProduct.bind(adminMakerResource));
 
-app.get('/api/admin/my-orders', myOrderResource.getOrders.bind(myOrderResource));
+
+/*app.get('/api/admin/my-orders', myOrderResource.getOrders.bind(myOrderResource));
 app.put('/api/admin/my-orders/:id', myOrderResource.updateOrder.bind(myOrderResource));*/
 
 
-export const api = functions.https.onRequest(app);
-export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));
-export const testAdd = functions.https.onRequest(testResource.add.bind(testResource));
-export const testFind = functions.https.onRequest(testResource.findAll.bind(testResource));
+export const api = functions.runWith(runtimeOpts).https.onRequest(app);
+//export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));
+//export const testAdd = functions.https.onRequest(testResource.add.bind(testResource));
+//export const testFind = functions.https.onRequest(testResource.findAll.bind(testResource));
 
 
