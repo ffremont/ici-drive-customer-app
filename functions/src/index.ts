@@ -7,6 +7,7 @@ import makerResource from './resources/maker.resource';
 import myOrderResource from './resources/myorder.resource';
 import myProfilResource from './resources/myprofil.resource';
 import adminMakerResource from './resources/admin-maker.resource';
+import adminOrderResource from './resources/admin-order.resource';
 import busboy from './middlewares/busboy';
 import context from './context';
 import express = require('express');
@@ -55,9 +56,8 @@ app.post('/api/admin/makers/self/products/', busboy, adminMakerResource.addProdu
 app.put('/api/admin/makers/self/products/:ref', busboy, adminMakerResource.updateProduct.bind(adminMakerResource));
 app.delete('/api/admin/makers/self/products/:ref', adminMakerResource.deleteProduct.bind(adminMakerResource));
 
-
-/*app.get('/api/admin/my-orders', myOrderResource.getOrders.bind(myOrderResource));
-app.put('/api/admin/my-orders/:id', myOrderResource.updateOrder.bind(myOrderResource));*/
+app.get('/api/admin/my-orders', adminOrderResource.getOrders.bind(adminOrderResource));
+app.put('/api/admin/my-orders/:id', adminOrderResource.updateOrder.bind(adminOrderResource));
 
 
 export const api = functions.runWith(runtimeOpts).https.onRequest(app);

@@ -81,4 +81,9 @@ export class OrderDao{
         const snap = await context.db().collection(Context.ORDERS_COLLECTION).where('customer.email', '==', email).get();
         return AppUtil.arrOfSnap(snap) as Order[];
     }
+
+    public async getAllByMaker(email:string){
+        const snap = await context.db().collection(Context.ORDERS_COLLECTION).where('maker.email', '==', email).get();
+        return AppUtil.arrOfSnap(snap) as Order[];
+    }
 }
