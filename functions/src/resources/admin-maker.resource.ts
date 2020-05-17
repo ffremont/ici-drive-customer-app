@@ -108,18 +108,15 @@ class AdminMakerResource {
             if (!productRef) { throw 'Référence invalide' }
 
             const files = (request as any).files;
-            if (!files || !files.length) {
-                AppUtil.badRequest(response, 'Image requise');
-            }
-            const file = files[0];
+            const file = files && files.length ? files[0]:null;
 
             const currentMakerEmail = await AppUtil.authorized(request);
             if (currentMakerEmail === null) {
                 AppUtil.notAuthorized(response); return;
             }
 
-            const product = await this.safeUploadFile(JSON.parse(request.body.data) as any, file.originalname, file.buffer);
-            product.ref = productRef;   
+            let productForm = JSON.parse(request.body.data) as any;
+            let product:any = file ? await this.safeUploadFile(productForm, file.originalname, file.buffer) : productForm;
 
             const maker: any = await this.makerDao.getFullByEmail(currentMakerEmail);
             await this.makerDao.addOrUpdateProduct(maker.id, productRef, product);

@@ -1,6 +1,6 @@
 {
-  "short_name": "Ici drive",
-  "name": "Ici drive pour consommer local !",
+  "short_name": "ici drive",
+  "name": "app.ici-drive.fr",
   "icons": [
     {
       "src": "icons/icon-72x72.png",

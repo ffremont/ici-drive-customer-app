@@ -255,6 +255,7 @@ const MenuApp = (props: any) => {
           )}
         </Toolbar>
       </AppBar>
+      <div className="ghost-appbar"></div>
 
       { showInstall && (<div className={`install-bar ${classes.installBar}`}>
         <div className="install-close" onClick={() => pwaService.close()}>
