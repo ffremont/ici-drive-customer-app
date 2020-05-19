@@ -40,7 +40,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import { grey } from '@material-ui/core/colors';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import pwaService from '../../services/pwa.service';
-
+import LockIcon from '@material-ui/icons/Lock';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -114,11 +114,11 @@ const MenuApp = (props: any) => {
     });
     return () => {
       // Nettoyage de l'abonnement
-      subscription.unsubscribe();
-      subMyProfil.unsubscribe();
-      subInstalled.unsubscribe();
-      subCancelled.unsubscribe();
-      subBeforeinstallprompt.unsubscribe();
+        subscription.unsubscribe();
+        subMyProfil.unsubscribe();
+        subInstalled.unsubscribe();
+        subCancelled.unsubscribe();
+        subBeforeinstallprompt.unsubscribe();
     };
   });
 
@@ -133,18 +133,22 @@ const MenuApp = (props: any) => {
     <div className={classes.root}>
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
         <List className="drawer-list">
+        {!email && (<ListItem selected button key="login" onClick={() => props.history.push('/login')}>
+            <ListItemIcon><LockIcon /></ListItemIcon>
+            <ListItemText primary="Se connecter" />
+          </ListItem>)}
         {email && (<ListItem selected button key="connected">
             <ListItemIcon><AccountCircleIcon /></ListItemIcon>
             <ListItemText primary="Connecté" secondary={email} />
           </ListItem>)}
-          <ListItem button key="orders" onClick={() => props.history.push('/my-orders')}>
+          {email && ( <ListItem button key="orders" onClick={() => props.history.push('/my-orders')}>
             <ListItemIcon><ReceiptIcon /></ListItemIcon>
             <ListItemText primary="Mes réservations" secondary="En cours et passées" />
-          </ListItem>
-          <ListItem button key="account" onClick={() => props.history.push('/my-profil')}>
+          </ListItem>)}
+          {email && (<ListItem button key="account" onClick={() => props.history.push('/my-profil')}>
             <ListItemIcon><BuildIcon /></ListItemIcon>
             <ListItemText primary="Mon compte" secondary="Informations personnelles" />
-          </ListItem>
+          </ListItem>)}
           <ListItem button key="how-to" onClick={() => props.history.push('/how')}>
             <ListItemIcon><HelpIcon /></ListItemIcon>
             <ListItemText primary="Comment ça marche ?" secondary="" />

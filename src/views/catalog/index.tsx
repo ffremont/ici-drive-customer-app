@@ -134,7 +134,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
         <SnackAdd />
 
 
-        <CartConflit open={this.state.openCleanCart} onCleanAndAdd={() => this.cleanAndAdd()} />
+        <CartConflit open={this.state.openCleanCart} onClose={() => this.setState({openCleanCart:false})} onCleanAndAdd={() => this.cleanAndAdd()} />
 
         <Modal
           open={!!this.state.openPreview}

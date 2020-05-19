@@ -12,6 +12,7 @@ const CartConflit = (props: any) => {
 
   const handleClose = () => {
     setOpen(false);
+    props.onClose();
   };
 
   React.useEffect(() => {
