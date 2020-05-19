@@ -12,7 +12,7 @@
       content="app.ici-drive.fr, Plateforme de réservation de produits directement auprès des producteurs locaux. Le retrait de fait chez le producteur."
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/icons/icon-192x192.png" />
-    <!-- v%REACT_APP_VERSION% -->
+    
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -69,6 +69,7 @@
     -->
 
     <script>
+      window.appversion = "%REACT_APP_VERSION%";
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker-2.js', {
           scope: '/'

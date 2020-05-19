@@ -41,6 +41,7 @@ import { grey } from '@material-ui/core/colors';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import pwaService from '../../services/pwa.service';
 import LockIcon from '@material-ui/icons/Lock';
+import Mentions from '../mentions';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -86,6 +87,7 @@ const MenuApp = (props: any) => {
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
+  const [openMentions, setOpenMentions] = useState(false);  
   const [showInstall, setShowInstall] = useState(false);
 
   React.useEffect(() => {
@@ -161,7 +163,7 @@ const MenuApp = (props: any) => {
             <ListItemIcon><BugReportIcon /></ListItemIcon>
             <ListItemText primary="Support" secondary="Déclarer un incident" />
           </ListItem>
-          <ListItem button key="mentions">
+          <ListItem button key="mentions" onClick={() =>setOpenMentions(true)}>
             <ListItemIcon><LibraryBooksIcon /></ListItemIcon>
             <ListItemText primary="Mentions" secondary="CGU, CGR, ..." />
           </ListItem>
@@ -242,6 +244,7 @@ const MenuApp = (props: any) => {
           )}
 
           <About open={openAbout} onClose={() => setOpenAbout(false)}/>
+          <Mentions open={openMentions} onClose={() => setOpenMentions(false)}/>
 
           {auth && (
             <div>

@@ -17,5 +17,7 @@ export interface Configuration{
     publicHolidays:{date:string, public_holiday:boolean, label:string}[],
     cgu:string;
     cgr:string;
+    privacy_policy: string;
+    acceptable_use_policy:string;
     support:string;
 }
