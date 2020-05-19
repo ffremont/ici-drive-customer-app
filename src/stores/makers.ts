@@ -17,29 +17,27 @@ class MakersStore implements Store<Maker[]>{
         return this.sub.subscribe(func);
     }
 
-    public search(geoPoint: GeoPoint){
-        httpClientService.axios.get(conf.API.searchMakers(geoPoint))
+    public search(geoPoint: GeoPoint) : Promise<void>{
+        return httpClientService.axios.get(conf.API.searchMakers(geoPoint))
         .then((response: AxiosResponse<any>) => {
             if(Array.isArray(response.data)){
                 this.set(response.data);
             }else{
                 this.set([response.data]);
-            }            
-        }).catch((e:any) => {
-            console.error(e);
+            }
+            return response;            
         });
     }
 
-    public refresh(makerId = null):void{
-        httpClientService.axios.get(conf.API.makers(makerId))
+    public refresh(makerId = null):Promise<any>{
+        return httpClientService.axios.get(conf.API.makers(makerId))
         .then((response: AxiosResponse<any>) => {
             if(Array.isArray(response.data)){
                 this.set(response.data);
             }else{
                 this.set([response.data]);
             }            
-        }).catch((e:any) => {
-            console.error(e);
+            return response;
         });
     }
 }

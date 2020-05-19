@@ -30,15 +30,17 @@ import { Order } from '../../models/order';
 import CartConflit from './cart-conflit';
 import SnackAdd from '../../components/snack-add';
 import { NotifType } from '../../models/notif';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 interface GraphicProduct extends Product {
   category?: Item
 }
 
-class Catalog extends React.Component<{ history: any, match: any }, { products: GraphicProduct[], openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanCart: boolean, cart: Order | null }>{
+class Catalog extends React.Component<{ history: any, match: any }, { waiting: boolean,products: GraphicProduct[], openPreview: string, maker: Maker | null, activeIndex: number, wantToAdd: Product | null, openCleanCart: boolean, cart: Order | null }>{
 
-  state = { products: [], openCleanCart: false, activeIndex: -1, maker: null, openPreview: '', cart: null, wantToAdd: null };
+  state = { waiting:false, products: [], openCleanCart: false, activeIndex: -1, maker: null, openPreview: '', cart: null, wantToAdd: null };
   subMakers: Subscription | null = null;
   subOrder: Subscription | null = null;
 
@@ -53,7 +55,6 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
     this.subOrder = cartStore.subscribe((order: Order) => {
       this.setState({ cart: order.ref ? order : null });
     });
-
 
     this.subMakers = makerStore.subscribe((makers: Maker[]) => {
       const maker = makers.find((p: Maker) => p.id === makerId) || null;
@@ -72,11 +73,12 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
 
         this.setState({
           maker, products
-        })
-      }
-    })
+        });
+      }      
+    });
 
-    makerStore.refresh(makerId);
+    this.setState({waiting:true});
+    makerStore.refresh(makerId).finally(() => this.setState({waiting:false}));
   }
 
   addCart(p: Product) {
@@ -208,6 +210,10 @@ class Catalog extends React.Component<{ history: any, match: any }, { products: 
 
 
         </Grid>
+
+        {this.state.waiting && (<Backdrop className="backdrop" open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>)}
       </div>
     );
   }

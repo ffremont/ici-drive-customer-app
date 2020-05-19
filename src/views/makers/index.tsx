@@ -10,28 +10,30 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
-import RoomIcon from '@material-ui/icons/Room'; 
+import RoomIcon from '@material-ui/icons/Room';
 import { Item } from '../../models/item';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import {History} from 'history';
+import { History } from 'history';
 import TabPanel from '../../components/tab-panel';
 import conf from '../../confs';
 import mapService from '../../services/map.service';
 import { GeoPoint } from '../../models/geo-point';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 
-interface GraphicMaker extends Maker{
+interface GraphicMaker extends Maker {
   // en km
-  distance?:number;
+  distance?: number;
 }
 
 //https://github.com/typescript-cheatsheets/react-typescript-cheatsheet
-class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
-  state = { makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: {latitude:0, longitude:0} };
+class Makers extends React.Component<{ history: History }, { waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
+  state = { waiting: false, makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: { latitude: 0, longitude: 0 } };
   sub: Subscription | null = null;
 
 
@@ -41,16 +43,19 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
 
   componentDidMount() {
     mapService.getCurrentPosition()
-    .then( (geoPoint: GeoPoint) =>{
-      
-      makerStore.search(geoPoint);
+      .then((geoPoint: GeoPoint) => {
+        
+        this.setState({ waiting: true });
+        makerStore.search(geoPoint).finally(() => {
+          this.setState({ waiting: false });
+        })
 
-      this.setState({geoPoint, makers: this.computeGeoDistance(this.state.makers, geoPoint)});
-    }).catch(e=>{
-      console.error(e);
-      //alert('La géolocation est nécessaire pour ici-drive.fr, merci de l\'activer.');
-      (window as any).location.reload();
-    });
+        this.setState({ geoPoint, makers: this.computeGeoDistance(this.state.makers, geoPoint) });
+      }).catch(e => {
+        console.error(e);
+        //alert('La géolocation est nécessaire pour ici-drive.fr, merci de l\'activer.');
+        (window as any).location.reload();
+      });
 
     this.sub = makerStore.subscribe((newMakers: Maker[]) => {
       const cats: any = {
@@ -60,9 +65,9 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
         const part = newMakers[ip];
         if (part.categories) {
           for (let ic in part.categories) {
-            const cat:string = part.categories[ic];
+            const cat: string = part.categories[ic];
             if (!cats[cat] && conf.categories.some(c => c.id === cat)) {
-              cats[cat] = conf.categories.find(c => c.id===cat);
+              cats[cat] = conf.categories.find(c => c.id === cat);
             }
           }
         }
@@ -75,22 +80,24 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
     });
   }
 
-  private computeGeoDistance(makers:GraphicMaker[], geoPoint : GeoPoint): GraphicMaker[]{
-    if(!geoPoint || (geoPoint.latitude === 0)){
+  private computeGeoDistance(makers: GraphicMaker[], geoPoint: GeoPoint): GraphicMaker[] {
+    if (!geoPoint || (geoPoint.latitude === 0)) {
       return makers;
     }
 
-    return makers.map( (m:Maker) => {
-      if(!m.place.point){ return m}
+    return makers.map((m: Maker) => {
+      if (!m.place.point) { return m }
 
-      return {...m, distance : mapService.distance(
-        geoPoint.latitude, geoPoint.longitude,
-        m.place.point?.latitude || 0, m.place.point?.longitude || 0
-        )}
-    }).sort( (a: GraphicMaker,b: GraphicMaker)=>{
-      if(a.distance){
+      return {
+        ...m, distance: mapService.distance(
+          geoPoint.latitude, geoPoint.longitude,
+          m.place.point?.latitude || 0, m.place.point?.longitude || 0
+        )
+      }
+    }).sort((a: GraphicMaker, b: GraphicMaker) => {
+      if (a.distance) {
         return (a.distance as any) < (b.distance as any) ? -1 : 1;
-      }else{
+      } else {
         return (a.name > b.name) ? 1 : (b.name > a.name) ? -1 : 0
       }
     });
@@ -98,7 +105,7 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
 
   changeTab(newValue: number) {
     const cat: any = this.state.categories.find((c, i) => i === newValue);
-    
+
     if (cat) {
       this.setState({ value: newValue, filterCat: cat.id });
     } else {
@@ -114,11 +121,11 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
 
     return (
       <div className="makers">
-        <MenuApp mode="full" history={this.props.history}/>
+        <MenuApp mode="full" history={this.props.history} />
         <AppBar position="static">
-          
+
           <Tabs value={this.state.value} onChange={handleChange} variant="scrollable" className="tabs" aria-label="catégories de produits">
-            {this.state.categories.map((cat: Item, i: number) => <Tab key={'tab'+i} label={cat.label} value={i} />)}
+            {this.state.categories.map((cat: Item, i: number) => <Tab key={'tab' + i} label={cat.label} value={i} />)}
           </Tabs>
         </AppBar>
 
@@ -131,7 +138,7 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
             }).map((p: GraphicMaker, i) => {
               return (
                 <Card key={i} onClick={() => this.props.history.push(`/makers/${p.id}/catalog`)}
-                className="maker-card">
+                  className="maker-card">
                   <CardActionArea>
                     <CardMedia
                       className="maker-cardmedia"
@@ -147,9 +154,13 @@ class Makers extends React.Component<{history:History}, { geoPoint: GeoPoint, ma
                   </CardActionArea>
                 </Card>
               );
-          })}
+            })}
           </Grid>
         </TabPanel>)}
+
+        {this.state.waiting && (<Backdrop className="backdrop" open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>)}
       </div>
     );
   }
