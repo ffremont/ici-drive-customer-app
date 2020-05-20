@@ -48,3 +48,32 @@
     display: flex;
     flex-direction: row;
 }
+
+.banner-cgu{
+    position: fixed;
+    top: 0;
+    left:0;
+    right:0;
+    height: 100px;
+    background: #000000e8;
+    opacity: 0.9;
+    z-index: 11111;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    text-align: justify;
+    align-items: center;
+    a{
+        color:white !important;
+    }
+    .text{
+        flex:1;
+    }
+    .action{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 98px;
+    }
+}

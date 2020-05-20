@@ -58,7 +58,7 @@ app.delete('/api/admin/makers/self/products/:ref', adminMakerResource.deleteProd
 
 app.get('/api/admin/my-orders', adminOrderResource.getOrders.bind(adminOrderResource));
 app.put('/api/admin/my-orders/:id', adminOrderResource.updateOrder.bind(adminOrderResource));
-
+app.get('/api/admin/my-orders/:id', adminOrderResource.getOrder.bind(adminOrderResource));
 
 export const api = functions.runWith(runtimeOpts).https.onRequest(app);
 //export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));

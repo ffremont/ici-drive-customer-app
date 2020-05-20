@@ -41,15 +41,17 @@ import { NotifType } from '../../models/notif';
 import { Product } from '../../models/product';
 import myProfilStore, { MyProfilStore } from '../../stores/my-profil';
 import { User } from '../../models/user';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 interface CategoryProductChoice {
   products: ProductChoice[],
   category: Item
 }
 
-class Cart extends React.Component<{ history: any, location: any, match: any }, { showPhone:boolean, myProfil: User, phone: string, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
+class Cart extends React.Component<{ history: any, location: any, match: any }, { waiting: boolean, showPhone: boolean, myProfil: User, phone: string, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
 
-  state = { order: null, myProfil: { email: '' }, showPhone:false, phone: '', checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
+  state = { waiting: false, order: null, myProfil: { email: '' }, showPhone: false, phone: '', checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
   subOrder: Subscription | null = null;
   subMyProfil: Subscription | null = null;
   categories: Item[] = CONF.categories;
@@ -64,7 +66,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
     this.subMyProfil = myProfilStore.subscribe((myProfil: User) => {
       if (myProfil && myProfil.email) {
-        this.setState({ myProfil, phone: myProfil.phone || '', showPhone: !myProfil.phone});
+        this.setState({ myProfil, phone: myProfil.phone || '', showPhone: !myProfil.phone });
       }
     });
 
@@ -107,6 +109,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
       const newOrder: Order = { ...(this.state.order as any) };
       newOrder.customer = this.state.myProfil;
 
+      this.setState({waiting:true});
       cartStore.save(newOrder)
         .then(() => {
           cartStore.resetCart();
@@ -138,9 +141,11 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
       // update phone /my-profil
       const newUser = { ...this.state.myProfil } as User;
       newUser.phone = this.state.phone;
+      this.setState({waiting:true});
       MyProfilStore.update(newUser)
         .then(() => {
           // refresh my-profil
+          this.setState({waiting:false});
           myProfilStore.set(newUser);
           this.handleContinue();
         })
@@ -319,15 +324,15 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         </div>
 
         {this.state.order && (<Alert severity="warning" className="instruction-payments">
-        <AlertTitle>Consignes de paiement</AlertTitle>
-        <strong>ini-drive.fr n'organise aucunement les paiements</strong>, cette activité est à la charge des producteurs.
-        <br/> 
-        {this.state.order && order?.maker?.payments && order?.maker?.payments.acceptPaypal && <span>Le paiement PayPal sera initié après confirmation de la réservation de votre part, une fois la demande vérifiée.</span>}
-        {this.state.order && order?.maker?.payments && !order?.maker?.payments.acceptPaypal && <span>Le paiement au Drive se fera lors du retrait de la marchandise.</span>}
-      </Alert>)}
+          <AlertTitle>Consignes de paiement</AlertTitle>
+          <strong>ini-drive.fr n'organise aucunement les paiements</strong>, cette activité est à la charge des producteurs.
+          <br />
+          {this.state.order && order?.maker?.payments && order?.maker?.payments.acceptPaypal && <span>Le paiement PayPal sera initié après confirmation de la réservation de votre part, une fois la demande vérifiée.</span>}
+          {this.state.order && order?.maker?.payments && !order?.maker?.payments.acceptPaypal && <span>Le paiement au Drive se fera lors du retrait de la marchandise.</span>}
+        </Alert>)}
 
 
-      {!this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">
+        {!this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">
           <TextField type="tel" required onChange={(e) => this.setState({ phone: e.target.value })} id="cart-phone" inputProps={{ maxLength: 12 }} label="Téléphone" fullWidth={true} value={this.state.phone} />
         </form></div>)}
 
@@ -343,6 +348,10 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         {this.state.order && (
           <CartFooter text={this.state.summaryMode ? 'Envoyer la réservation' : 'Chosir le créneau'} onClickContinue={() => this.continue()} quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total} />
         )}
+
+        {this.state.waiting && (<Backdrop className="backdrop" open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>)}
       </div>
     );
   }

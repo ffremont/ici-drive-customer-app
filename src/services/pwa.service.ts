@@ -28,7 +28,7 @@ export class PwaService {
 
             // e.userChoice will return a Promise. For more details read: http://www.html5rocks.com/en/tutorials/es6/promises/
             e.userChoice.then((choiceResult:any) => {
-                if (choiceResult.outcome == 'dismissed') {
+                if (choiceResult.outcome === 'dismissed') {
                     //console.log('User cancelled homescreen install');
                     //EventBus.$emit('pwa.cancelled');
                     this.deferredPrompt = null;
@@ -55,4 +55,4 @@ export class PwaService {
     }
 }
 
-export default new PwaService;
+export default new PwaService();

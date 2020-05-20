@@ -104,8 +104,8 @@ export class NotifService {
         AppUtil.debug('notif > send > axios post body',this.elasticmailUrl, body);
         const resp = await axios.post(this.elasticmailUrl, qs.stringify(body), {
             timeout: 10000
-        })
-        AppUtil.debug('notif > send > axios.post response',resp.status, resp.data);        
+        });
+        AppUtil.debug('notif > send > axios.post response',templateName, resp.status, resp.data);        
     }
 
     public async cancel(order: Order, fcm: string | null): Promise<void> {
@@ -126,7 +126,7 @@ export class NotifService {
             if(order.maker?.fcm){
                 messages.push({
                     token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/orders/${order.id}`},
+                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
                     notification: {
                         title: `Réservation annulée`,
                         body: `${order.ref} est été annulée`
@@ -138,7 +138,7 @@ export class NotifService {
         }
 
         promises.push(this.send('ici_drive_annuler', order.maker?.email as any, Config.subjectCancelled, {
-            order_link: `${Config.makerAppUrl}/orders/${order.id}`,
+            order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
             order_ref: order.ref,
             order_reasonOf: order.reasonOf
         }));
@@ -168,7 +168,7 @@ export class NotifService {
             if(order.maker?.fcm){
                 messages.push({
                     token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/orders/${order.id}`},
+                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
                     notification: {
                         title: `Réservation refusée`,
                         body: `${order.ref} est été refusée`
@@ -180,7 +180,7 @@ export class NotifService {
         }
 
         promises.push(this.send('ici_drive_refused', order.maker?.email as any, Config.subjectRefused, {
-            order_link: `${Config.makerAppUrl}/orders/${order.id}`,
+            order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
             order_ref: order.ref,
             order_reasonOf: order.reasonOf
         }));
@@ -210,7 +210,7 @@ export class NotifService {
             if(order.maker?.fcm){
                 messages.push({
                     token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/orders/${order.id}`},
+                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
                     notification: {
                         title: `Réservation vérifiée`,
                         body: `${order.ref} a bien été vérifiée`
@@ -222,7 +222,7 @@ export class NotifService {
         }
 
         promises.push(this.send('ici_drive_maker_verified', order.maker?.email as any, Config.subjectVerified, {
-            order_link: `${Config.makerAppUrl}/orders/${order.id}`,
+            order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
             order_ref: order.ref
         }));
         promises.push(this.send('ici_drive_customer_verified', order.customer?.email as any, Config.subjectVerified, {
@@ -250,7 +250,7 @@ export class NotifService {
             if(order.maker?.fcm){
                 messages.push({
                     token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/orders/${order.id}`},
+                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
                     notification: {
                         title: `Nouvelle réservation`,
                         body: `Une vérification est nécessaire pour la réservation ${order.ref}`
@@ -262,7 +262,7 @@ export class NotifService {
         }
 
         promises.push(this.send('ici_drive_maker_new_cart', order.maker?.email as any, Config.subjectNewOrder, {
-            order_link: `${Config.makerAppUrl}/orders/${order.id}`,
+            order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
             maker_name: order.maker?.name
         }));
         promises.push(this.send('ici_drive_customer_new_cart', order.customer?.email as any, Config.subjectNewOrder, {
@@ -326,7 +326,7 @@ export class NotifService {
             if(order.maker?.fcm){
                 messages.push({
                     token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/orders/${order.id}`},
+                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
                     notification: {
                         title: `Une réservation confirmée`,
                         body: `La réservation ${order.ref} a été confirmée pour le ${moment(order.slot).format('ddd D MMM à HH:mm')}.`
@@ -346,18 +346,19 @@ export class NotifService {
             order.maker?.payments?.acceptCoins ? `d'espèces` : null].filter(c => c !== null).join(' / ');
         const notPaypalMsg = `Vous avez opté pour le paiement au moment du retrait de la marchandise, le client sera muni : ${paymentsLabels}`;
 
-        promises.push(this.send('ici_drive_maker_confirmed', order.maker?.email as any, Config.subjectCancelled, {
-            order_link: `${Config.makerAppUrl}/orders/${order.id}`,
+        promises.push(this.send('ici_drive_maker_confirmed', order.maker?.email as any, Config.subjectConfirmed, {
+            order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
             maker_name: order.maker?.name,
+            order_ref:order.ref,
             when: moment(order.slot).format('ddd D MMM à HH:mm'),
             maker_place_label: order.maker?.place.label,
             maker_place_address: order.maker?.place.address,
             maker_phone: order.maker?.phone,
             payments_info: order.maker?.payments?.acceptPaypal ? paypalMsg : notPaypalMsg
         }));
-        promises.push(this.send('ici_drive_customer_confirmed', order.customer?.email as any, Config.subjectCancelled, {
+        promises.push(this.send('ici_drive_customer_confirmed', order.customer?.email as any, Config.subjectConfirmed, {
             order_link: `${Config.customerAppUrl}/my-orders/${order.id}`,
-            
+            order_ref:order.ref,
             when: moment(order.slot).format('ddd D MMM à HH:mm'),
             maker_place_label: order.maker?.place.label,
             maker_place_address: order.maker?.place.address,

@@ -220,6 +220,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
               <TableCell align="center">Quantité</TableCell>
               <TableCell align="center">Réf.</TableCell>
               <TableCell align="center">P.U.</TableCell>
+              <TableCell align="center">Libellé</TableCell>
               <TableCell align="center">Description</TableCell>
             </TableRow>
           </TableHead>
@@ -229,6 +230,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
                 <TableCell align="center">{pc.quantity}</TableCell>
                 <TableCell align="center">{pc.product.ref}</TableCell>
                 <TableCell align="center">{pc.product.price}</TableCell>
+                <TableCell align="center">{pc.product.label}</TableCell>
                 <TableCell align="center">{pc.product.description}</TableCell>
               </TableRow>
             ))}

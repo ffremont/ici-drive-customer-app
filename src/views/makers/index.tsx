@@ -32,8 +32,8 @@ interface GraphicMaker extends Maker {
 }
 
 //https://github.com/typescript-cheatsheets/react-typescript-cheatsheet
-class Makers extends React.Component<{ history: History }, { waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
-  state = { waiting: false, makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: { latitude: 0, longitude: 0 } };
+class Makers extends React.Component<{ history: History }, { showEmptyResult : boolean,waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
+  state = { waiting: false, showEmptyResult:false, makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: { latitude: 0, longitude: 0 } };
   sub: Subscription | null = null;
 
 
@@ -45,9 +45,9 @@ class Makers extends React.Component<{ history: History }, { waiting: boolean, g
     mapService.getCurrentPosition()
       .then((geoPoint: GeoPoint) => {
         
-        this.setState({ waiting: true });
+        this.setState({ waiting: true, showEmptyResult:false });
         makerStore.search(geoPoint).finally(() => {
-          this.setState({ waiting: false });
+          this.setState({ waiting: false, showEmptyResult:true });
         })
 
         this.setState({ geoPoint, makers: this.computeGeoDistance(this.state.makers, geoPoint) });
@@ -131,6 +131,11 @@ class Makers extends React.Component<{ history: History }, { waiting: boolean, g
 
         {this.state.categories.map((cat, i) => <TabPanel key={i} value={this.state.value} index={i}>
           <Grid container direction="column" justify="center" alignItems="center" spacing={1}>
+
+            {this.state.showEmptyResult && (this.state.makers.length === 0) && (<div className="empty-makers">
+            <Typography variant="h4">Aucun producteur</Typography>
+            <Typography variant="h5">dans les {conf.makersNearKm} km </Typography>
+            </div>)}
 
             {this.state.makers.filter((p: Maker) => {
               if (this.state.filterCat === 'all') return true;

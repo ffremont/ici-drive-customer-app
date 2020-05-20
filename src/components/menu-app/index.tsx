@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       flexGrow: 1,
-      paddingRight:50,
+      paddingRight: 50,
     },
     list: {
       width: 250,
@@ -66,13 +66,13 @@ const useStyles = makeStyles((theme: Theme) =>
     fullList: {
       width: 'auto',
     },
-    installBar:{
+    installBar: {
       color: theme.palette.common.white,
       backgroundColor: grey[500],
       marginBottom: 10,
       padding: '10px 10px'
     },
-    getApp:{
+    getApp: {
       color: theme.palette.common.white,
       borderColor: theme.palette.common.white
     }
@@ -87,63 +87,73 @@ const MenuApp = (props: any) => {
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
-  const [openMentions, setOpenMentions] = useState(false);  
+  const [openMentions, setOpenMentions] = useState(false);
   const [showInstall, setShowInstall] = useState(false);
+  const [showCgu, setShowCgu] = useState(true);
 
   React.useEffect(() => {
     setMode(props.mode);
   }, [props.mode]);
 
+  React.useEffect(() => {
+    setShowCgu(!window.localStorage.acceptCgu);
+  })
+
   useEffect(() => {
     const subscription = cartStore.subscribe((order: Order) => {
       setQuantity(order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0));
     });
-    const subMyProfil = myProfilStore.subscribe((user:User) =>{
-      if(user && user.email)
+    const subMyProfil = myProfilStore.subscribe((user: User) => {
+      if (user && user.email)
         setEmail(user.email.substr(0, user.email.indexOf('@')));
     })
     const subInstalled = pwaService.installed.subscribe((installed) => {
-      if(installed)
+      if (installed)
         setShowInstall(false)
     });
     const subCancelled = pwaService.cancelled.subscribe((cancelled) => {
-      if(cancelled)
+      if (cancelled)
         setShowInstall(false)
     });
     const subBeforeinstallprompt = pwaService.beforeinstallprompt.subscribe((beforeinstallprompt) => {
-      if(beforeinstallprompt)
+      if (beforeinstallprompt)
         setShowInstall(true)
     });
     return () => {
       // Nettoyage de l'abonnement
-        subscription.unsubscribe();
-        subMyProfil.unsubscribe();
-        subInstalled.unsubscribe();
-        subCancelled.unsubscribe();
-        subBeforeinstallprompt.unsubscribe();
+      subscription.unsubscribe();
+      subMyProfil.unsubscribe();
+      subInstalled.unsubscribe();
+      subCancelled.unsubscribe();
+      subBeforeinstallprompt.unsubscribe();
     };
   });
 
   const logout = () => {
-    if(window.confirm('Voulez-vous déconnecter votre appareil de votre compte ?')){
+    if (window.confirm('Voulez-vous déconnecter votre appareil de votre compte ?')) {
       authService.signout();
       window.location.reload();
     }
   }
 
+  const closeBannerCgu = () => {
+    window.localStorage.acceptCgu="1";
+    setShowCgu(false);
+  };
+
   return (
     <div className={classes.root}>
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
         <List className="drawer-list">
-        {!email && (<ListItem selected button key="login" onClick={() => props.history.push('/login')}>
+          {!email && (<ListItem selected button key="login" onClick={() => props.history.push('/login')}>
             <ListItemIcon><LockIcon /></ListItemIcon>
             <ListItemText primary="Se connecter" />
           </ListItem>)}
-        {email && (<ListItem selected button key="connected">
+          {email && (<ListItem selected button key="connected">
             <ListItemIcon><AccountCircleIcon /></ListItemIcon>
             <ListItemText primary="Connecté" secondary={email} />
           </ListItem>)}
-          {email && ( <ListItem button key="orders" onClick={() => props.history.push('/my-orders')}>
+          {email && (<ListItem button key="orders" onClick={() => props.history.push('/my-orders')}>
             <ListItemIcon><ReceiptIcon /></ListItemIcon>
             <ListItemText primary="Mes réservations" secondary="En cours et passées" />
           </ListItem>)}
@@ -163,12 +173,12 @@ const MenuApp = (props: any) => {
             <ListItemIcon><BugReportIcon /></ListItemIcon>
             <ListItemText primary="Support" secondary="Déclarer un incident" />
           </ListItem>
-          <ListItem button key="mentions" onClick={() =>setOpenMentions(true)}>
+          <ListItem button key="mentions" onClick={() => setOpenMentions(true)}>
             <ListItemIcon><LibraryBooksIcon /></ListItemIcon>
             <ListItemText primary="Mentions" secondary="CGU, CGR, ..." />
           </ListItem>
-          
-          <ListItem button key="about" onClick={() =>setOpenAbout(true)}>
+
+          <ListItem button key="about" onClick={() => setOpenAbout(true)}>
             <ListItemIcon><InfoIcon /></ListItemIcon>
             <ListItemText primary="A propos" secondary="De l'application" />
           </ListItem>
@@ -236,15 +246,15 @@ const MenuApp = (props: any) => {
               </Badge>
             </IconButton>
           )}
-          
+
           {['cart'].indexOf(mode) > -1 && (
             <IconButton aria-label="vider le panier" onClick={props?.onResetCart} color="inherit">
               <RemoveShoppingCartIcon />
             </IconButton>
           )}
 
-          <About open={openAbout} onClose={() => setOpenAbout(false)}/>
-          <Mentions open={openMentions} onClose={() => setOpenMentions(false)}/>
+          <About open={openAbout} onClose={() => setOpenAbout(false)} />
+          <Mentions open={openMentions} onClose={() => setOpenMentions(false)} />
 
           {auth && (
             <div>
@@ -264,9 +274,9 @@ const MenuApp = (props: any) => {
       </AppBar>
       <div className="ghost-appbar"></div>
 
-      { showInstall && (<div className={`install-bar ${classes.installBar}`}>
+      {showInstall && (<div className={`install-bar ${classes.installBar}`}>
         <div className="install-close" onClick={() => pwaService.close()}>
-            <ClearIcon/>
+          <ClearIcon />
         </div>
         <div className="install-content">
           <div className="install-icon">
@@ -277,10 +287,23 @@ const MenuApp = (props: any) => {
           </div>
         </div>
         <div className="install-actions">
-        
-        <Button onClick={() => pwaService.install()} variant="outlined" startIcon={<GetAppIcon/>} className={classes.getApp}>Installer</Button>
+
+          <Button onClick={() => pwaService.install()} variant="outlined" startIcon={<GetAppIcon />} className={classes.getApp}>Installer</Button>
         </div>
       </div>)}
+
+      {showCgu && (<div className="banner-cgu">
+        <div className="text">En cliquant sur OK ou en poursuivant la navigation, vous acceptez les CGU / politique de confidentialité.&nbsp;
+            <a href={conf.cgu} target="_blank">En savoir plus</a>
+        </div>
+        <div className="action">
+        <Button variant="contained" onClick={() => closeBannerCgu()} >
+          OK
+</Button>
+        </div>
+      </div>)}
+
+
     </div>
   );
 }

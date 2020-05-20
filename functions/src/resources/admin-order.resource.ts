@@ -74,6 +74,27 @@ export class AdminOrderResource{
             AppUtil.error(e);
         }
     }
+
+    public async getOrder(request: Request, response: Response) {
+        try{
+            const orderId = request.params.id;
+            if(!orderId){ throw 'Identifiant invalide'}
+
+            const currentMakerEmail = await AppUtil.authorized(request);
+            if (currentMakerEmail === null) {
+                AppUtil.notAuthorized(response); return;
+            }
+
+            const order = await this.myOrderDao.get(orderId);
+            if(order?.maker?.email !==currentMakerEmail){
+                AppUtil.badRequest(response); return;
+            }
+
+            AppUtil.ok(response, order);
+        }catch(e){
+            AppUtil.error(e);
+        }
+    }
 }
 
 export default new AdminOrderResource();

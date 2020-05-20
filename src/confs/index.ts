@@ -7,8 +7,7 @@ const DEV_API_BASEURL = '/api-mock';
 const other: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
     cgr: 'http://google.fr',
-    privacy_policy: 'https://docs.google.com/document/d/e/2PACX-1vQp5YBhJywagTbos-519cIP2hwKv4GyxE3C0FGPIrZOsYa-2FA1WZwSbfoWudsGYt9508AUwdoYWqrN/pub',
-    acceptable_use_policy: 'https://docs.google.com/document/d/e/2PACX-1vTDZdAk4Eg5oBqaT6IMNagPLsX3---VBud8Qm2WjJCzhMWTeC-j3xlsyqNJfgd61RJIADouTWUDXzwj/pub',
+    makersNearKm:50,
     support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     baseURL: 'https://app.ici-drive.fr',
     startDriveAfterDays:3,
@@ -17,14 +16,7 @@ const other: Configuration = {
         makers: (makerId:any = null) => `${DEV_API_BASEURL}/makers${makerId === null ? '.json': '/'+makerId+'/index.json'}`,
         searchMakers: (geoPoint:GeoPoint) => `${DEV_API_BASEURL}/makers-2.json`,
         orders: (ref?:string) => `${DEV_API_BASEURL}/my-orders.json?ref=${ref}`,
-        myProfil: () => `${DEV_API_BASEURL}/my-profil.json`,
-
-        /*
-          makers: (makerId:any = '') => `${API_BASEURL}/makers${makerId ? '/'+makerId: ''}`,
-        searchMakers: (geoPoint:GeoPoint) => `${API_BASEURL}/makers?near=${geoPoint.latitude},${geoPoint.longitude}`,
-        orders: (ref?:string) => `${API_BASEURL}/my-orders/${ref}`,
-        myProfil: () => `${DEV_API_BASEURL}/my-profil`,
-        */
+        myProfil: () => `${DEV_API_BASEURL}/my-profil.json`
     },
     categories:[
         { "label": "Viandes", "id": "viandes"},
@@ -42,8 +34,7 @@ const other: Configuration = {
 const API_BASEURL = '/api';
 const prod: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
-    privacy_policy: 'https://docs.google.com/document/d/e/2PACX-1vQp5YBhJywagTbos-519cIP2hwKv4GyxE3C0FGPIrZOsYa-2FA1WZwSbfoWudsGYt9508AUwdoYWqrN/pub',
-    acceptable_use_policy: 'https://docs.google.com/document/d/e/2PACX-1vTDZdAk4Eg5oBqaT6IMNagPLsX3---VBud8Qm2WjJCzhMWTeC-j3xlsyqNJfgd61RJIADouTWUDXzwj/pub',
+    makersNearKm:50,
     cgr: '',
     support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     baseURL: 'https://app.ici-drive.fr',
