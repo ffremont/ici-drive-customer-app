@@ -325,7 +325,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
         {this.state.order && (<Alert severity="warning" className="instruction-payments">
           <AlertTitle>Consignes de paiement</AlertTitle>
-          <strong>ini-drive.fr n'organise aucunement les paiements</strong>, cette activité est à la charge des producteurs.
+          <strong>ici-drive.fr n'organise aucunement les paiements</strong>, cette activité est à la charge des producteurs.
           <br />
           {this.state.order && order?.maker?.payments && order?.maker?.payments.acceptPaypal && <span>Le paiement PayPal sera initié après confirmation de la réservation de votre part, une fois la demande vérifiée.</span>}
           {this.state.order && order?.maker?.payments && !order?.maker?.payments.acceptPaypal && <span>Le paiement au Drive se fera lors du retrait de la marchandise.</span>}

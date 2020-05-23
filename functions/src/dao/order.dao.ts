@@ -26,41 +26,34 @@ export class OrderDao{
         return AppUtil.arrOfSnap(snap) as Order[];  
     }
 
-
-    public async getConfirmedTooOld(): Promise<Order[]>{
-        const nowTs = (new Date()).getTime();
-
-        const snap = await context.db().collection(Context.ORDERS_COLLECTION)
-        .where('status', '==', OrderState.CONFIRMED)
-        .where('updated', '<', nowTs - Config.confirmedExpireAfter*3600000)
-        .limit(Config.limitBatchSchedule)
-        .get();
-        return AppUtil.arrOfSnap(snap) as Order[];  
-    }
-
     /**
-     * Order dont le drive est prévu dans - de 12h
+     * A lancer toutes les 6h min (windowInHours)
+     * 
+     * Si on confirme 48h avant la date du retrait, on annule automatiquement, 
+     * il faut laisser le temps au producteur de préparer la commande
      */
-    public async getConfirmedComingSoon(): Promise<Order[]>{
+    public async getConfirmedRecently(): Promise<Order[]>{
         const nowTs = (new Date()).getTime();
 
+        AppUtil.debug({status:OrderState.CONFIRMED, op:'updated >', value :nowTs - (Config.confirmedExpireAfter - Config.confirmedExpireWindowInHours)*3600000})
         const snap = await context.db().collection(Context.ORDERS_COLLECTION)
         .where('status', '==', OrderState.CONFIRMED)
-        .where('slot', '>', nowTs - Config.confirmedExpireComingSoon*3600000)
+        .where('updated', '>', nowTs - (Config.confirmedExpireAfter - Config.confirmedExpireWindowInHours)*3600000) // toutes les commandes confirmées il y a - de 48h
         .limit(Config.limitBatchSchedule)
         .get();
+        AppUtil.debug('getConfirmedRecently.lenth '+snap.size);
         return AppUtil.arrOfSnap(snap) as Order[];  
     }
 
     /**
-     * Order dont le drive est prévu dans - de 18h
+     * Order dont le drive est prévu très prochainement
      */
     public async getPendingComingSoon(): Promise<Order[]>{
         const nowTs = (new Date()).getTime();
 
         const snap = await context.db().collection(Context.ORDERS_COLLECTION)
         .where('status', '==', OrderState.PENDING)
-        .where('slot', '>', nowTs - Config.pendingExpireComingSoon*3600000)
+        .where('slot', '>', nowTs - Config.confirmedExpireAfter*3600000) // ça doit être vérifier / confirmé au moins 48h avant
         .limit(Config.limitBatchSchedule)
         .get();
         return AppUtil.arrOfSnap(snap) as Order[];  

@@ -1,31 +1,41 @@
 import { Request, Response } from 'express';
-import * as geohash from "ngeohash";
+//import * as geohash from "ngeohash";
 import context, { Context } from '../context';
 import { AppUtil } from '../apputil';
 import { MakerDao } from '../dao/maker.dao';
 import {Config} from '../config';
+import * as admin from 'firebase-admin';
 
 class MakerResource {
 
     private makerDao = new MakerDao();
 
+    /**
+     * @see https://stackoverflow.com/questions/46630507/how-to-run-a-geo-nearby-query-with-firestore
+     * @param latitude 
+     * @param longitude 
+     * @param kmDistance 
+     */
     private geoRange(
         latitude: number,
         longitude: number,
-        kmDistance: number): { lower: string, upper: string } {
+        kmDistance: number): { lower: any, upper: any} {
 
+            AppUtil.debug({latitude,longitude,kmDistance})
         const mileDistance = kmDistance / 1.60934;
         const lat = 0.0144927536231884; // degrees latitude per mile
         const lon = 0.0181818181818182; // degrees longitude per mile
 
-        const lowerLat = latitude - lat * mileDistance;
-        const lowerLon = longitude - lon * mileDistance;
+        const lowerLat = latitude - (lat * mileDistance);
+        const lowerLon = longitude - (lon * mileDistance);
 
-        const upperLat = latitude + lat * mileDistance;
-        const upperLon = longitude + lon * mileDistance;
+        const upperLat = latitude + (lat * mileDistance);
+        const upperLon = longitude + (lon * mileDistance);
 
-        const lower = geohash.encode(lowerLat, lowerLon);
-        const upper = geohash.encode(upperLat, upperLon);
+        //const lower = geohash.encode(lowerLat, lowerLon,12);
+        //const upper = geohash.encode(upperLat, upperLon,12);
+        const lower  =new admin.firestore.GeoPoint(lowerLat, lowerLon);
+        const upper  =new admin.firestore.GeoPoint(upperLat, upperLon);
 
         return {
             lower,
@@ -51,12 +61,15 @@ class MakerResource {
                 const nearRange = this.geoRange(parseFloat(nearArr[0]), parseFloat(nearArr[1]), Config.MAKERS_NEAR_KM);
 
                 const ref = await context.db().collection(Context.MAKERS_COLLECTION)
-                    .where('place.point.geohash', '>', nearRange.lower)
-                    .where('place.point.geohash', '<', nearRange.upper)
+                    .where('place.point.geopoint', '>', nearRange.lower)
+                    .where('place.point.geopoint', '<', nearRange.upper)
+                    .where('active', '==', true);
+                    
                 snapshot = await ref.limit(Config.MAKERS_SEARCH_LIMIT).get();
             } else {
                 snapshot = await context.db().collection(Context.MAKERS_COLLECTION)
                     .where('created', '<', (new Date()).getTime())
+                    .where('active', '==', true)
                     .orderBy('created', 'desc')
                     .limit(Config.MAKERS_SEARCH_LIMIT).get();
             }

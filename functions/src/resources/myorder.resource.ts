@@ -141,6 +141,10 @@ class MyOrderResource {
             if (!dbMaker) {
                 AppUtil.badRequest(response); return;
             }
+            if(!dbMaker.active){
+                AppUtil.error('newCart sur un procteur inactive invalide : '+dbMaker.id);
+                AppUtil.badRequest(response);return;
+            }
             
             // override
             order.id = uuid();

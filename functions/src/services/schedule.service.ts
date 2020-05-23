@@ -4,27 +4,30 @@ import { OrderState } from '../models/order';
 import notifService from '../services/notif.service';
 import { UserDao } from '../dao/user.dao';
 import { AppUtil } from '../apputil';
+import { Config } from '../config';
 
 export class ScheduleService{
     private orderDao = new OrderDao();
     private userDao = new UserDao();
 
     /**
-     * 
+     * Annulation des commandes confirmées moins de 48h avant le retrait
      */
     public async comfirmedExpiration(){
         AppUtil.debug('comfirmedExpiration...');
         const nowTo = (new Date()).getTime();
-        const orders = (await this.orderDao.getConfirmedTooOld());
-        orders.concat(await this.orderDao.getConfirmedComingSoon());
+        const orders = (await this.orderDao.getConfirmedRecently()).filter(order => {
+            return order.slot ? order.slot < (nowTo + Config.confirmedExpireWindowInHours*3600000) : false;
+        });
 
         const batch = context.db().batch();
 
         orders.forEach(order => {
             if(order.id){
-                AppUtil.debug(`update ${order.id}`);
+                AppUtil.debug(`update ${order.id} with status CANCELLED, reasonOf : ${Config.comfirmedExpirationReason(order)}`);
+
                 const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
-                batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo });
+                batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo, reasonOf: Config.comfirmedExpirationReason(order) });
             }            
         });
         
@@ -53,16 +56,16 @@ export class ScheduleService{
     public async pendingExpiration(){
         AppUtil.debug('pendingExpiration...');
         const nowTo = (new Date()).getTime();
-        const orders = (await this.orderDao.getPendingTooOld());
-        orders.concat(await this.orderDao.getPendingComingSoon());
+        let orders = (await this.orderDao.getPendingTooOld());
+        orders = orders.concat(await this.orderDao.getPendingComingSoon());
 
         const batch = context.db().batch();
 
         orders.forEach(order => {
             if(order.id){
-                AppUtil.debug(`update ${order.id}`);
-                const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
-                batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo });
+                AppUtil.debug(`update ${order.id} with status CANCELLED : `+Config.pendingExpirationReason(order));
+                //const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
+                //batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo, reasonOf: Config.pendingExpirationReason(order) });
             }            
         });
         

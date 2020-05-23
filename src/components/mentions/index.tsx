@@ -31,10 +31,22 @@ const Mentions = (props: any) => {
         <DialogContent>
         <ul>
               <li>
+              <a href={conf.mentions} target="_blank">Mentions</a>
+              </li>
+              <li>
               <a href={conf.cgu} target="_blank">Conditions générales d'utilisation</a>
               </li>
               <li>
               <a href={conf.cgr} target="_blank">Conditions générales de réservation</a>
+              </li>
+              <li>
+              <a href={conf.cgr} target="_blank">Conditions générales de réservation</a>
+              </li>
+              <li>
+              <a href={conf.privacy_policy} target="_blank">Politique de confidentialité</a>
+              </li>
+              <li>
+              <a href={conf.acceptableUsePolicy} target="_blank">Politique d'utilisation acceptable	</a>
               </li>
             </ul>
         </DialogContent>

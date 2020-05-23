@@ -8,9 +8,11 @@ import myOrderResource from './resources/myorder.resource';
 import myProfilResource from './resources/myprofil.resource';
 import adminMakerResource from './resources/admin-maker.resource';
 import adminOrderResource from './resources/admin-order.resource';
+import schedulerResource from './resources/scheduler.resource';
 import busboy from './middlewares/busboy';
 import context from './context';
 import express = require('express');
+
 
 const customCreds: any = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 if (customCreds) {
@@ -59,6 +61,9 @@ app.delete('/api/admin/makers/self/products/:ref', adminMakerResource.deleteProd
 app.get('/api/admin/my-orders', adminOrderResource.getOrders.bind(adminOrderResource));
 app.put('/api/admin/my-orders/:id', adminOrderResource.updateOrder.bind(adminOrderResource));
 app.get('/api/admin/my-orders/:id', adminOrderResource.getOrder.bind(adminOrderResource));
+
+// scheduler
+app.post('/api/scheduler/heatbeat', schedulerResource.heatbeat.bind(schedulerResource));
 
 export const api = functions.runWith(runtimeOpts).https.onRequest(app);
 //export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));

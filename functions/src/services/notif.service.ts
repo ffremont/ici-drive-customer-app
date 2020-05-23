@@ -53,6 +53,10 @@ export class NotifService {
         from: OrderState.VERIFIED,
         newStatus: OrderState.CANCELLED,
         notify: (order: Order, fcm: string | null) => this.cancel(order, fcm)
+    },{
+        from: OrderState.CONFIRMED,
+        newStatus: OrderState.CANCELLED,
+        notify: (order: Order, fcm: string | null) => this.cancel(order, fcm)
     }];
 
     public async notifyMaker(actionName: string, maker:Maker){
@@ -72,7 +76,7 @@ export class NotifService {
         const transition = this.transitions.find(t => t.from === fromStatus && t.newStatus === newOrder.status);
         AppUtil.debug('transition ? ',transition);
         if (transition) {
-            await transition.notify(newOrder, fcm);
+            //await transition.notify(newOrder, fcm);
             return;
         } else {
             return;
