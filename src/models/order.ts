@@ -30,4 +30,11 @@ export interface Order{
    slot?: number;
    reasonOf?:string;
    customer?: User;
+
+
+   /**
+    * True si le rappel a été envoyé
+    */
+   reminder?:boolean;
+
 }

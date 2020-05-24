@@ -27,6 +27,21 @@ export class OrderDao{
     }
 
     /**
+     * liste des commandes devant être retiré dans les "reminderNext" heures
+     */
+    public async nextOrders(): Promise<Order[]>{
+        const nowTs = (new Date()).getTime();
+
+        const snap = await context.db().collection(Context.ORDERS_COLLECTION)
+        .where('status', '==', OrderState.CONFIRMED)
+        .where('slot', '<', nowTs + Config.reminderNext*3600000)
+        .where('slot', '>', nowTs)
+        .limit(Config.limitBatchSchedule)
+        .get();
+        return AppUtil.arrOfSnap(snap) as Order[];  
+    }
+
+    /**
      * A lancer toutes les 6h min (windowInHours)
      * 
      * Si on confirme 48h avant la date du retrait, on annule automatiquement, 

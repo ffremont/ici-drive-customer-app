@@ -1,17 +1,18 @@
-import { Order } from "./models/order";
+
 
 export class Config {
     public static pendingExpireAfter = 72; // hours
+    public static reminderNext = 3; // envoi le rappel si la commande doit être retirer dans les 3 heures
     
     
-    public static limitBatchSchedule = 200;
+    public static limitBatchSchedule = 1;
 
     public static apikeyScheduler = 'a792450b-1a50-4429-84d2-420b8ea16ab7';
 
     public static confirmedExpireAfter = 48; // hours
     public static confirmedExpireWindowInHours = 6;
-    public static comfirmedExpirationReason = (order:Order) => `Annulation automatique, la confirmation doit intervenir au moins 48h avant `
-    public static pendingExpirationReason = (order:Order) => `Annulation automatique, la vérification doit intervenir au moins 48h avant `
+    public static comfirmedExpirationReason =  `Annulation automatique, la confirmation doit intervenir au moins 48h avant `
+    public static pendingExpirationReason = `Annulation automatique, la vérification doit intervenir au moins 48h avant `
 
     public static MAKERS_NEAR_KM = 50;
     public static MAKERS_SEARCH_LIMIT = 50;

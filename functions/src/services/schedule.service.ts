@@ -24,10 +24,10 @@ export class ScheduleService{
 
         orders.forEach(order => {
             if(order.id){
-                AppUtil.debug(`update ${order.id} with status CANCELLED, reasonOf : ${Config.comfirmedExpirationReason(order)}`);
+                AppUtil.debug(`update ${order.id} with status CANCELLED, reasonOf : ${Config.comfirmedExpirationReason}`);
 
                 const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
-                batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo, reasonOf: Config.comfirmedExpirationReason(order) });
+                batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo, reasonOf: Config.comfirmedExpirationReason });
             }            
         });
         
@@ -39,7 +39,8 @@ export class ScheduleService{
                 const o = orders[i] as any;
                 o.status = OrderState.CANCELLED;
                 o.updated = nowTo;
-
+                o.reasonOf = Config.comfirmedExpirationReason;
+                
                 const user = await this.userDao.get(o.customer?.email);
                 promises.push(notifService.applyTransition(user?.fcm || null, OrderState.CONFIRMED, o ));
             }
@@ -47,6 +48,39 @@ export class ScheduleService{
             AppUtil.info('PENDING EXPIRATION OK')
         }catch(e){
             AppUtil.error('pendingExpiration commit or notify ko',e);
+        }
+    }
+
+    /**
+     * Rappel des commandes prochaines
+     */
+    public async reminder(){
+        let orders = (await this.orderDao.nextOrders()).filter(o => !o.reminder);
+        const batch = context.db().batch();
+
+        orders.forEach(order => {
+            if(order.id){
+                AppUtil.debug(`update ${order.id} with status CANCELLED, reasonOf : ${Config.comfirmedExpirationReason}`);
+
+                const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
+                batch.update(ref, { reminder : true });
+            }            
+        });
+
+        try{
+            await batch.commit();
+
+            const promises = [];
+            for(let i = 0; i<orders.length;i++){
+                const o = orders[i] as any;
+
+                const user = await this.userDao.get(o.customer?.email);
+                promises.push(notifService.remind(o, user?.fcm || null));
+            }
+            await Promise.all(promises);
+            AppUtil.info('REMINDER OK')
+        }catch(e){
+            AppUtil.error('REMINDER notify ko',e);
         }
     }
 
@@ -63,9 +97,9 @@ export class ScheduleService{
 
         orders.forEach(order => {
             if(order.id){
-                AppUtil.debug(`update ${order.id} with status CANCELLED : `+Config.pendingExpirationReason(order));
-                //const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
-                //batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo, reasonOf: Config.pendingExpirationReason(order) });
+                AppUtil.debug(`update ${order.id} with status CANCELLED : `+Config.pendingExpirationReason);
+                const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
+                batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo, reasonOf: Config.pendingExpirationReason });
             }            
         });
         
@@ -77,6 +111,7 @@ export class ScheduleService{
                 const o = orders[i] as any;
                 o.status = OrderState.CANCELLED;
                 o.updated = nowTo;
+                o.reasonOf = Config.pendingExpirationReason;
 
                 const user = await this.userDao.get(o.customer?.email);
                 promises.push(notifService.applyTransition(user?.fcm || null, OrderState.PENDING, o ));

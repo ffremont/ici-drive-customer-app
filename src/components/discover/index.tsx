@@ -96,9 +96,9 @@ const Discover = (props: any) => {
                 <Button onClick={props.goToPlace} startIcon={<RoomIcon></RoomIcon>} size="small" color="primary">
                     Lieu du Drive
                 </Button>
-                <Button onClick={() => window.open((props.learnMore))} size="small" color="primary">
+                {props.learnMore && (<Button onClick={() => window.open((props.learnMore))} size="small" color="primary">
                     En savoir plus
-                </Button>
+                </Button>)}
             </CardActions>
         </Card>
     );

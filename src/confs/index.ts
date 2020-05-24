@@ -13,7 +13,7 @@ const other: Configuration = {
     makersNearKm:50,
     support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     baseURL: 'https://app.ici-drive.fr',
-    startDriveAfterDays:3,
+    startDriveAfterDays:4,
     fcmPublicVapidKey: 'BO7yESbBXsx7ddVzYqvkNpWf-3S6sjqQxEoolQQ1OG02D0-nmrpowEsYRHuoGEzT4w5Np6Gdwto5FiLsS--sONw',
     API: {
         makers: (makerId:any = null) => `${DEV_API_BASEURL}/makers${makerId === null ? '.json': '/'+makerId+'/index.json'}`,

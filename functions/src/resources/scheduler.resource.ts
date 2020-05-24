@@ -12,9 +12,12 @@ class SchedulerResource{
         }
 
         try{
-            //await scheduleService.comfirmedExpiration();
-            //AppUtil.info('comfirmedExpiration avec succès');
-            await scheduleService.pendingExpiration();
+            await Promise.all([
+                scheduleService.comfirmedExpiration(),
+                scheduleService.pendingExpiration()
+            ]);
+            
+            AppUtil.info('comfirmedExpiration avec succès');
             AppUtil.info('pendingExpiration avec succès');
             AppUtil.ok(response);
         }catch(e){

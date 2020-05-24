@@ -18,8 +18,9 @@ export interface Maker extends User{
     description:string;
     phone?: string;
     fcm?:string;
+    active?:boolean;
+    startDriveAfterDays?:number;
     //maxOrdersByDay:number;
-    //active:boolean;
     prefixOrderRef: string;
 
     place: Place;

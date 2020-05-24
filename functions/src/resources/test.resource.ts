@@ -211,6 +211,15 @@ class TestResource {
         response.send("findAll");
     }
 
+    public async addAmaker(request: Request, response: Response){
+        const aMaker = request.body as any;
+
+        const myRef = await context.db().collection(Context.MAKERS_COLLECTION).doc(aMaker.id);
+        await myRef.set(aMaker);
+
+        response.send('created '+aMaker.id);
+    }
+
     public async add(request: Request, response: Response) {
         const aMaker: Maker = this.randomMaker();
 

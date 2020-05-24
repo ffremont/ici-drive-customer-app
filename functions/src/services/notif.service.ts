@@ -76,7 +76,7 @@ export class NotifService {
         const transition = this.transitions.find(t => t.from === fromStatus && t.newStatus === newOrder.status);
         AppUtil.debug('transition ? ',transition);
         if (transition) {
-            //await transition.notify(newOrder, fcm);
+            await transition.notify(newOrder, fcm);
             return;
         } else {
             return;
@@ -102,7 +102,7 @@ export class NotifService {
         body.subject = subject;
 
         for (let [key, value] of Object.entries(data)) {
-            body[`merge_${key}`]= `${value}`;
+            body[`merge_${key}`]= `${value||''}`;
         }
 
         AppUtil.debug('notif > send > axios post body',this.elasticmailUrl, body);
