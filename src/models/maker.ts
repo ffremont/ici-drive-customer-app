@@ -14,7 +14,7 @@ export interface Maker extends User{
     created: number,
     name: string;
     image: string;
-    webPage:string;
+    webPage?:string;
     description:string;
     phone?: string;
     fcm?:string;

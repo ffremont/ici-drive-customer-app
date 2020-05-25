@@ -5,7 +5,7 @@ export class Config {
     public static reminderNext = 3; // envoi le rappel si la commande doit être retirer dans les 3 heures
     
     
-    public static limitBatchSchedule = 1;
+    public static limitBatchSchedule = 10;
 
     public static apikeyScheduler = 'a792450b-1a50-4429-84d2-420b8ea16ab7';
 
