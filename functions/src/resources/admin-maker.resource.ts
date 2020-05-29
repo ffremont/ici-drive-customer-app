@@ -35,7 +35,8 @@ class AdminMakerResource {
      */
     private async safeUploadFile(product: Product, originalname: string, buffer: any): Promise<Product> {
         const newProduct = { ...product };
-        await this.removeFileOnCdn(newProduct.image);
+        if(newProduct.image && newProduct.image.toLowerCase().startsWith('http'))
+            await this.removeFileOnCdn(newProduct.image);
 
         const targetFilename = `${uuid()}.${originalname.substr(originalname.lastIndexOf('.') + 1)}`;
         AppUtil.debug(`safeUploadFile > targetFilename : ${targetFilename}`)
