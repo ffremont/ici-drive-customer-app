@@ -32,8 +32,8 @@ interface GraphicMaker extends Maker {
 }
 
 //https://github.com/typescript-cheatsheets/react-typescript-cheatsheet
-class Makers extends React.Component<{ history: History }, { showEmptyResult : boolean,waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
-  state = { waiting: false, showEmptyResult:false, makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: { latitude: 0, longitude: 0 } };
+class Makers extends React.Component<{ history: History }, { showEmptyResult : boolean,gpsDisabled:boolean, waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
+  state = { waiting: false, gpsDisabled:false, showEmptyResult:false, makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: { latitude: 0, longitude: 0 } };
   sub: Subscription | null = null;
 
 
@@ -44,7 +44,6 @@ class Makers extends React.Component<{ history: History }, { showEmptyResult : b
   componentDidMount() {
     mapService.getCurrentPosition()
       .then((geoPoint: GeoPoint) => {
-        
         this.setState({ waiting: true, showEmptyResult:false });
         makerStore.search(geoPoint).finally(() => {
           this.setState({ waiting: false, showEmptyResult:true });
@@ -53,8 +52,9 @@ class Makers extends React.Component<{ history: History }, { showEmptyResult : b
         this.setState({ geoPoint, makers: this.computeGeoDistance(this.state.makers, geoPoint) });
       }).catch(e => {
         console.error(e);
+        this.setState({gpsDisabled:true});
         //alert('La géolocation est nécessaire pour ici-drive.fr, merci de l\'activer.');
-        (window as any).location.reload();
+        //(window as any).location.reload();
       });
 
     this.sub = makerStore.subscribe((newMakers: Maker[]) => {
@@ -135,6 +135,10 @@ class Makers extends React.Component<{ history: History }, { showEmptyResult : b
             {this.state.showEmptyResult && (this.state.makers.length === 0) && (<div className="empty-makers">
             <Typography variant="h4">Aucun producteur</Typography>
             <Typography variant="h5">dans les {conf.makersNearKm} km </Typography>
+            </div>)}
+            {this.state.gpsDisabled && (<div className="empty-makers">
+            <Typography variant="h4">GPS désactivé</Typography>
+            <Typography variant="h5">ici-drive a besoin du GPS, veuillez l'activer</Typography>
             </div>)}
 
             {this.state.makers.filter((p: Maker) => {
