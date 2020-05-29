@@ -166,6 +166,10 @@ class Catalog extends React.Component<{ history: any, match: any }, { waiting: b
                   alt="product"
                   height="140"
                   className="maker-media"
+                  onError={(e:any) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://app.ici-drive.fr/default_image.jpg"
+                  }}
                   image={p.image}
                   title={p.label}
                 />

@@ -35,7 +35,8 @@ class AdminMakerResource {
      */
     private async safeUploadFile(product: Product, originalname: string, buffer: any): Promise<Product> {
         const newProduct = { ...product };
-        if(newProduct.image && newProduct.image.toLowerCase().startsWith('http'))
+        AppUtil.debug('safeUploadFile newProduct.image : '+(newProduct.image));
+        if(newProduct.image && newProduct.image.trim().toLowerCase().startsWith('http'))
             await this.removeFileOnCdn(newProduct.image);
 
         const targetFilename = `${uuid()}.${originalname.substr(originalname.lastIndexOf('.') + 1)}`;
@@ -116,10 +117,13 @@ class AdminMakerResource {
                 AppUtil.notAuthorized(response); return;
             }
 
+            const maker: any = await this.makerDao.getFullByEmail(currentMakerEmail);
             let productForm = JSON.parse(request.body.data) as any;
+            const dbProduct = (maker.products || []).find((p:Product) => p.ref === productForm.ref);
+            productForm.image = dbProduct.image;
             let product:any = file ? await this.safeUploadFile(productForm, file.originalname, file.buffer) : productForm;
 
-            const maker: any = await this.makerDao.getFullByEmail(currentMakerEmail);
+            
             await this.makerDao.addOrUpdateProduct(maker.id, productRef, product);
 
             maker.products = maker.products.map( (p:Product) => p.ref === productRef ? product : p);
@@ -149,7 +153,8 @@ class AdminMakerResource {
             }
 
             const maker: any = await this.makerDao.getFullByEmail(currentMakerEmail);
-            const product = await this.safeUploadFile(JSON.parse(request.body.data) as any, file.originalname, file.buffer);
+            const newProduct = JSON.parse(request.body.data) as Product;
+            const product = await this.safeUploadFile(newProduct, file.originalname, file.buffer);
 
             if (!maker.products) maker.products = [];
             maker.products?.push(product);
