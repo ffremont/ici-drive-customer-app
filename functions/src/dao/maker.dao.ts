@@ -37,6 +37,12 @@ export class MakerDao{
         await context.db().collection(Context.MAKERS_COLLECTION).doc(id).set(modification, {merge:true});       
     }
 
+    public async addMaker(maker:Maker): Promise<void>{
+        if(!maker.id){ throw "add invalide"}
+
+        await context.db().collection(Context.MAKERS_COLLECTION).doc(maker.id).set(maker);       
+    }
+
     public async addOrUpdateProduct(makerId:string, reference:string, product:Product): Promise<void>{
         if(!makerId || !reference || !product){ throw "set invalide"}
 

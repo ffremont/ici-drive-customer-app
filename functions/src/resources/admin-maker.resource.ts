@@ -2,10 +2,13 @@ import { Request, Response } from 'express';
 import { AppUtil } from '../apputil';
 import { MakerDao } from '../dao/maker.dao';
 import bunnyCdnService from '../services/bunnycdn.service';
+import recaptchaService from '../services/recaptcha.service';
 import { Product } from '../models/product';
 import { Config } from '../config';
 import * as uuid from 'uuid-random';
 import notificationService from '../services/notif.service';
+import { Maker } from '../models/maker';
+import * as admin from 'firebase-admin';
 
 
 class AdminMakerResource {
@@ -33,25 +36,24 @@ class AdminMakerResource {
      * @param originalname 
      * @param buffer 
      */
-    private async safeUploadFile(product: Product, originalname: string, buffer: any): Promise<Product> {
-        const newProduct = { ...product };
-        AppUtil.debug('safeUploadFile newProduct.image : '+(newProduct.image));
-        if(newProduct.image && newProduct.image.trim().toLowerCase().startsWith('http'))
-            await this.removeFileOnCdn(newProduct.image);
+    private async safeUploadFile(image:string, originalname: string, buffer: any, type:string = ''): Promise<string> {
+        AppUtil.debug('safeUploadFile image : '+(image));
+        if(image && image.trim().toLowerCase().startsWith('http'))
+            await this.removeFileOnCdn(image);
 
         const targetFilename = `${uuid()}.${originalname.substr(originalname.lastIndexOf('.') + 1)}`;
         AppUtil.debug(`safeUploadFile > targetFilename : ${targetFilename}`)
         try {
-            await bunnyCdnService.upload(`${bunnyCdnService.baseURL}${Config.getBunnycdnStorageApiPath(targetFilename)}`, buffer);
-            newProduct.image = `${Config.bunnyCdnImageUrl(targetFilename)}`;
+            await bunnyCdnService.upload(`${bunnyCdnService.baseURL}${Config.getBunnycdnStorageApiPath(targetFilename, type)}`, buffer);
+            image = `${Config.getBunnyCdnImageUrl(targetFilename, type)}`;
         } catch (e) {
             AppUtil.error(`safeUploadFile > upload impossible, erreur technique ${targetFilename}`, e)
-            newProduct.image = Config.getDefaultImageUrl();
+            image = Config.getDefaultImageUrl();
         }
 
-        AppUtil.debug(`safeUploadFile > target image url : ${newProduct.image}`);
+        AppUtil.debug(`safeUploadFile > target image url : ${image}`);
 
-        return newProduct;
+        return image;
     }
 
     /**
@@ -121,7 +123,7 @@ class AdminMakerResource {
             let productForm = JSON.parse(request.body.data) as any;
             const dbProduct = (maker.products || []).find((p:Product) => p.ref === productForm.ref);
             productForm.image = dbProduct.image;
-            let product:any = file ? await this.safeUploadFile(productForm, file.originalname, file.buffer) : productForm;
+            let product:any = file ? await this.safeUploadFile(productForm.image, file.originalname, file.buffer) : productForm;
 
             
             await this.makerDao.addOrUpdateProduct(maker.id, productRef, product);
@@ -134,6 +136,46 @@ class AdminMakerResource {
             });
 
             await notificationService.notifyMaker('updateProduct', maker);
+            AppUtil.ok(response);
+        } catch (e) {
+            AppUtil.internalError(response, e);
+        }
+    }
+
+    /**
+     * Inscription d'un nouveau producteur
+     * @param request 
+     * @param response 
+     */
+    public async register(request: Request, response: Response) {
+        try {
+            const files = (request as any).files;
+            if (!files || !files.length) {
+                AppUtil.badRequest(response, 'Images requises');
+            }
+            const recaptcha = request.query.recaptcha;
+            if(!recaptcha){
+                AppUtil.badRequest(response, 'Recaptcha invalide');
+            }
+            
+            await recaptchaService.verify(recaptcha);
+
+            const newMaker = JSON.parse(request.body.data) as Maker;
+            newMaker.id = uuid();
+            newMaker.active = false;
+            newMaker.created = (new Date()).getTime();
+            if(newMaker.place.point)
+            newMaker.place.point.geopoint = new admin.firestore.GeoPoint(newMaker.place.point.latitude, newMaker.place.point.longitude);
+
+            const fileImage = files.find((f:any) => f.fieldname === 'fileImage');
+            newMaker.image = await this.safeUploadFile(newMaker.image, fileImage.originalname, fileImage.buffer, 'maker');
+
+            const filePlaceImage = files.find((f:any) => f.fieldname === 'filePlaceImage');
+            newMaker.place.image = await this.safeUploadFile(newMaker?.place.image||'', filePlaceImage.originalname, filePlaceImage.buffer, 'place');
+
+            await this.makerDao.addMaker(newMaker);
+            await notificationService.registerMaker(newMaker);
+
             AppUtil.ok(response);
         } catch (e) {
             AppUtil.internalError(response, e);
@@ -154,8 +196,8 @@ class AdminMakerResource {
 
             const maker: any = await this.makerDao.getFullByEmail(currentMakerEmail);
             const newProduct = JSON.parse(request.body.data) as Product;
-            const product = await this.safeUploadFile(newProduct, file.originalname, file.buffer);
-
+            const product = {...newProduct, image : await this.safeUploadFile(newProduct.image, file.originalname, file.buffer)};
+            
             if (!maker.products) maker.products = [];
             maker.products?.push(product);
             const cats = maker.products.map((p: Product) => p.categoryId);

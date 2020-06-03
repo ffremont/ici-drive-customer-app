@@ -163,7 +163,7 @@ const MenuApp = (props: any) => {
           </ListItem>)}
           <ListItem button key="how-to" onClick={() => props.history.push('/how')}>
             <ListItemIcon><HelpIcon /></ListItemIcon>
-            <ListItemText primary="Comment ça marche ?" secondary="" />
+            <ListItemText primary="Premiers pas" secondary="" />
           </ListItem>
           <ListItem button key="concept" onClick={() => props.history.push('/concept')} >
             <ListItemIcon><EmojiObjectsIcon /></ListItemIcon>
@@ -283,7 +283,7 @@ const MenuApp = (props: any) => {
             <img src={IciDriveTypoIcon} alt="logo" />
           </div>
           <div className="install-title">
-            Drive de producteurs locaux
+            Drive de produits locaux
           </div>
         </div>
         <div className="install-actions">

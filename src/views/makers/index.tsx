@@ -20,9 +20,13 @@ import { History } from 'history';
 import TabPanel from '../../components/tab-panel';
 import conf from '../../confs';
 import mapService from '../../services/map.service';
+import preferenceService, {GeoSearchPoint} from '../../services/preference.service';
+import Fab from '@material-ui/core/Fab';
 import { GeoPoint } from '../../models/geo-point';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Near from './near';
+import Button from '@material-ui/core/Button';
 
 
 
@@ -32,8 +36,8 @@ interface GraphicMaker extends Maker {
 }
 
 //https://github.com/typescript-cheatsheets/react-typescript-cheatsheet
-class Makers extends React.Component<{ history: History }, { showEmptyResult : boolean,gpsDisabled:boolean, waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
-  state = { waiting: false, gpsDisabled:false, showEmptyResult:false, makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: { latitude: 0, longitude: 0 } };
+class Makers extends React.Component<{ history: History, location: any }, { showEmptyResult: boolean, geoSearchPoint: GeoSearchPoint|null, openNear: boolean, gpsDisabled: boolean, waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
+  state = { geoSearchPoint: null, waiting: false, openNear: false, gpsDisabled: false, showEmptyResult: false, makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: { latitude: 0, longitude: 0 } };
   sub: Subscription | null = null;
 
 
@@ -42,20 +46,19 @@ class Makers extends React.Component<{ history: History }, { showEmptyResult : b
   }
 
   componentDidMount() {
-    mapService.getCurrentPosition()
-      .then((geoPoint: GeoPoint) => {
-        this.setState({ waiting: true, showEmptyResult:false });
-        makerStore.search(geoPoint).finally(() => {
-          this.setState({ waiting: false, showEmptyResult:true });
-        })
+    preferenceService.getSearchPoint()
+      .then((geoSearchPoint: GeoSearchPoint | null) => {
+        if (geoSearchPoint === null) {
+          this.setState({ gpsDisabled: true });
+        } else {
+          this.setState({ waiting: true, showEmptyResult: false, geoSearchPoint });
+          makerStore.search(geoSearchPoint).finally(() => {
+            this.setState({ waiting: false, showEmptyResult: true });
+          })
 
-        this.setState({ geoPoint, makers: this.computeGeoDistance(this.state.makers, geoPoint) });
-      }).catch(e => {
-        console.error(e);
-        this.setState({gpsDisabled:true});
-        //alert('La géolocation est nécessaire pour ici-drive.fr, merci de l\'activer.');
-        //(window as any).location.reload();
-      });
+          //this.setState({makers: this.computeGeoDistance(this.state.makers, geoSearchPoint) });
+        }
+    });
 
     this.sub = makerStore.subscribe((newMakers: Maker[]) => {
       const cats: any = {
@@ -74,13 +77,13 @@ class Makers extends React.Component<{ history: History }, { showEmptyResult : b
       }
 
       this.setState({
-        makers: this.computeGeoDistance(newMakers, this.state.geoPoint),
+        makers: this.computeGeoDistance(newMakers, this.state.geoSearchPoint),
         categories: Object.values(cats)
       });
     });
   }
 
-  private computeGeoDistance(makers: GraphicMaker[], geoPoint: GeoPoint): GraphicMaker[] {
+  private computeGeoDistance(makers: GraphicMaker[], geoPoint: GeoPoint|null): GraphicMaker[] {
     if (!geoPoint || (geoPoint.latitude === 0)) {
       return makers;
     }
@@ -113,11 +116,33 @@ class Makers extends React.Component<{ history: History }, { showEmptyResult : b
     }
   }
 
+/**
+ * Dès qu'on change l'adresse de la recherche
+ * @param near 
+ */
+  onChangeNear(near: { latitude: number, longitude: number, address: string }) {
+    const geoSearchPoint = {latitude:near.latitude, longitude: near.longitude, address: near.address};
+    this.setState({
+      geoSearchPoint,
+      waiting: true, 
+      showEmptyResult: false,
+      gpsDisabled:false, 
+      geoPoint: geoSearchPoint
+    }); 
+    preferenceService.setSearchPoint(geoSearchPoint).then(() => {});
+
+    makerStore.search(geoSearchPoint).finally(() => {
+      this.setState({ waiting: false, showEmptyResult: true });
+    });    
+  }
+
 
   render() {
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
       this.changeTab(newValue);
     };
+
+    const geoSearchPoint :any = this.state.geoSearchPoint;
 
     return (
       <div className="makers">
@@ -133,12 +158,14 @@ class Makers extends React.Component<{ history: History }, { showEmptyResult : b
           <Grid container direction="column" justify="center" alignItems="center" spacing={1}>
 
             {this.state.showEmptyResult && (this.state.makers.length === 0) && (<div className="empty-makers">
-            <Typography variant="h4">Aucun producteur</Typography>
-            <Typography variant="h5">dans les {conf.makersNearKm} km </Typography>
+              <Typography variant="h4">Aucun producteur</Typography>
+              <Typography variant="h5">dans les {conf.makersNearKm} km </Typography>
             </div>)}
             {this.state.gpsDisabled && (<div className="empty-makers">
-            <Typography variant="h4">GPS désactivé</Typography>
-            <Typography variant="h5">ici-drive a besoin du GPS, veuillez l'activer</Typography>
+              <Typography variant="h4">GPS désactivé</Typography>
+              <Typography variant="h5">Filtrer par adresse</Typography>
+              
+              <Button onClick={() => this.setState({ openNear: true })} variant="outlined" color="secondary">Rechercher</Button>
             </div>)}
 
             {this.state.makers.filter((p: Maker) => {
@@ -166,6 +193,12 @@ class Makers extends React.Component<{ history: History }, { showEmptyResult : b
             })}
           </Grid>
         </TabPanel>)}
+
+        <Fab className="near-search" color={geoSearchPoint && geoSearchPoint.latitude && geoSearchPoint.address && geoSearchPoint.longitude ? 'secondary' : 'primary'} aria-label="search" onClick={() => this.setState({ openNear: true })}>
+          <RoomIcon />
+        </Fab>
+
+        <Near open={this.state.openNear} address={geoSearchPoint ? geoSearchPoint.address:''} onChange={(near: any) => this.onChangeNear(near)} onClose={() => this.setState({ openNear: false })} />
 
         {this.state.waiting && (<Backdrop className="backdrop" open={true}>
           <CircularProgress color="inherit" />

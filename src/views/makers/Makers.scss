@@ -10,6 +10,11 @@
    background-size: 100%;
 }
 
+.near-search{
+    position: fixed !important;
+    bottom: 30px;
+    right: 30px;
+}
 
 .maker-card{
     max-width: 500px;
@@ -20,7 +25,14 @@
 .empty-makers{
     margin-top: 10vh;
     text-align: center;
-    opacity: 0.4;
+
+    h3,h4,h5{
+        opacity: 0.4;
+    }
+
+    h5{
+        margin-bottom:10px;
+    }
 }
 .maker-cardcontent{
     display: flex;

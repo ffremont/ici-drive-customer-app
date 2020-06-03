@@ -198,8 +198,8 @@ class Catalog extends React.Component<{ history: any, match: any }, { waiting: b
                 </CardActions>
                 <Collapse in={this.state.activeIndex === i} timeout="auto" unmountOnExit>
                   <CardContent>
-                    {p.volume && (<Typography className="my-p" paragraph>Volume: {parseFloat(`${p.volume}`).toFixed(2)}L</Typography>)}
-                    {p.weight && (<Typography className="my-p" paragraph>Poids: {p.weight > 1000 ? parseFloat(`${p.weight / 1000}`).toFixed(1) + 'k' : parseFloat(`${p.weight}`).toFixed(0)}g</Typography>)}
+                    {p && ((p.volume||0) > 0) && (<Typography className="my-p" paragraph>Volume: {parseFloat(`${p.volume}`).toFixed(2)}L</Typography>)}
+                    {p && ((p.weight||0) > 0) && (<Typography className="my-p" paragraph>Poids: {(p.weight||0) > 1000 ? parseFloat(`${(p.weight||0) / 1000}`).toFixed(1) + 'k' : parseFloat(`${p.weight}`).toFixed(0)}g</Typography>)}
 
                     {p.description && (<Typography className="my-p" paragraph>
                       {p.description}

@@ -1,5 +1,6 @@
 export interface GeoPoint{
     latitude:number;
     longitude: number;
-    geohash?: string
+    geohash?: string;
+    geopoint?:any;
 }

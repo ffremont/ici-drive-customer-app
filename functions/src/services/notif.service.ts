@@ -94,6 +94,10 @@ export class NotifService {
         return data;
     }
 
+    public async registerMaker(maker : Maker){
+        await this.send('ici_drive_register_maker', maker.email as any, Config.subjectRegister, {});
+    }
+
     private async send(templateName: string, to: string, subject: string, data: any): Promise<void> {
         AppUtil.debug("notif > send ", templateName, to, subject, data);
         const body = await this.createData();
