@@ -67,7 +67,6 @@ export class AppUtil{
     }
 
     public static async authorized(request:Request) : Promise<string|null>{
-        // TEST
         if (!request.headers.authorization || !request.headers.authorization.startsWith('Bearer ')) {
             return null;
         }

@@ -190,12 +190,12 @@ const MenuApp = (props: any) => {
       </Drawer>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          {mode === 'full' && (
+          {(['full'].indexOf(mode) > -1) && (
             <IconButton edge="start" className={classes.firstButton} onClick={() => setOpen(true)} color="inherit" aria-label="menu">
               <MenuIcon />
             </IconButton>
           )}
-          {mode !== 'full' && (
+          {(['full'].indexOf(mode) === -1) && (
             <IconButton edge="start" className={classes.firstButton} onClick={() => props.history.goBack()} color="inherit" aria-label="précédent">
               <ArrowBackIosIcon />
             </IconButton>

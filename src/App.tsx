@@ -15,7 +15,6 @@ import PrivateRoute from './components/private-route';
 import NoMatch from './views/no-match';
 import { Subscription } from 'rxjs';
 import httpClientService from './services/http-client.service';
-import fcmService from './services/fcm.service';
 import Catalog from './views/catalog';
 import * as moment from 'moment';
 import 'moment/locale/fr';
@@ -28,6 +27,7 @@ import Error from './views/error';
 import MyProfil from './views/my-profil';
 import How from './views/how';
 import Concept from './views/concept';
+import fcmService from './services/fcm.service';
 
 
 // @see https://material-ui.com/customization/palette/
@@ -35,37 +35,18 @@ import Concept from './views/concept';
 const theme = createMuiTheme({"palette":{"common":{"black":"#000","white":"#fff"},"background":{"paper":"#fff","default":"#fafafa"},"primary":{"light":"rgba(74, 74, 74, 0.77)","main":"rgba(74, 74, 74, 1)","dark":"rgba(61, 61, 62, 1)","contrastText":"#fff"},"secondary":{"light":"rgba(255, 102, 0, 0.79)","main":"rgba(255, 102, 0, 1)","dark":"rgba(192, 77, 0, 1)","contrastText":"#fff"},"error":{"light":"#e57373","main":"#f44336","dark":"#d32f2f","contrastText":"#fff"},"text":{"primary":"rgba(0, 0, 0, 0.87)","secondary":"rgba(0, 0, 0, 0.54)","disabled":"rgba(0, 0, 0, 0.38)","hint":"rgba(0, 0, 0, 0.38)"}}});
 
 
-class App extends React.Component<{}, { concurrentCalls: number }>{
+class App extends React.Component<{}, {  }>{
 
-  state = { concurrentCalls: 0 };
-  subHttpClientRequest: Subscription | null = null;
-  subHttpClientResponse: Subscription | null = null;
 
   componentDidMount() {
-    fcmService.init();
+        
     moment.locale('fr');
-    this.subHttpClientRequest = httpClientService.subOnRequest(() => {
-      ///this.setState({ concurrentCalls: this.state.concurrentCalls + 1 });
-    });
-    this.subHttpClientResponse = httpClientService.subOnResponse(() => {
-      if (this.state.concurrentCalls > 0) {
-        //this.setState({ concurrentCalls: this.state.concurrentCalls - 1 });
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    this.subHttpClientRequest?.unsubscribe();
-    this.subHttpClientResponse?.unsubscribe();
   }
 
   render() {
     return (
       <MuiThemeProvider theme={theme}>
 
-        <Backdrop className="backdrop" open={this.state.concurrentCalls !== 0}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
         <Router>
           <Switch>
             {/*<Route exact path="/" render={(routeProps) => <Makers {...routeProps} />} />*/}

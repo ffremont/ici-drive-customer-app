@@ -194,7 +194,7 @@ class Makers extends React.Component<{ history: History, location: any }, { show
           </Grid>
         </TabPanel>)}
 
-        <Fab className="near-search" color={geoSearchPoint && geoSearchPoint.latitude && geoSearchPoint.address && geoSearchPoint.longitude ? 'secondary' : 'primary'} aria-label="search" onClick={() => this.setState({ openNear: true })}>
+        <Fab className="near-search" color={geoSearchPoint && geoSearchPoint.latitude && geoSearchPoint.address && geoSearchPoint.longitude && (geoSearchPoint.address !== 'Autour de moi')? 'secondary' : 'primary'} aria-label="search" onClick={() => this.setState({ openNear: true })}>
           <RoomIcon />
         </Fab>
 

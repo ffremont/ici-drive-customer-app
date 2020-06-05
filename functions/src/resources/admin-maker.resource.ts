@@ -123,8 +123,10 @@ class AdminMakerResource {
             let productForm = JSON.parse(request.body.data) as any;
             const dbProduct = (maker.products || []).find((p:Product) => p.ref === productForm.ref);
             productForm.image = dbProduct.image;
-            let product:any = file ? await this.safeUploadFile(productForm.image, file.originalname, file.buffer) : productForm;
-
+            let product:any =productForm;
+            if(file){
+                product.image = await this.safeUploadFile(productForm.image, file.originalname, file.buffer);
+            }
             
             await this.makerDao.addOrUpdateProduct(maker.id, productRef, product);
 

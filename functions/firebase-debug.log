@@ -1,0 +1,24 @@
+[debug] [2020-06-05T11:59:31.276Z] ----------------------------------------------------------------------
+[debug] [2020-06-05T11:59:31.279Z] Command:       /home/florent/Applications/node-v10.15.1-linux-x64/bin/node /home/florent/VisualStudioCode/ici-drive-customer-app/functions/node_modules/.bin/firebase deploy --only functions
+[debug] [2020-06-05T11:59:31.279Z] CLI Version:   8.2.0
+[debug] [2020-06-05T11:59:31.279Z] Platform:      linux
+[debug] [2020-06-05T11:59:31.279Z] Node Version:  v10.15.1
+[debug] [2020-06-05T11:59:31.280Z] Time:          Fri Jun 05 2020 13:59:31 GMT+0200 (GMT+02:00)
+[debug] [2020-06-05T11:59:31.280Z] ----------------------------------------------------------------------
+[debug] [2020-06-05T11:59:31.280Z] 
+[debug] [2020-06-05T11:59:31.289Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-06-05T11:59:31.290Z] > authorizing via signed-in user
+[debug] [2020-06-05T11:59:31.290Z] [iam] checking project ici-drive for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2020-06-05T11:59:31.293Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/ici-drive:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2020-06-05T11:59:32.102Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 05 Jun 2020 11:59:31 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=572","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-05T11:59:32.105Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/ici-drive/serviceAccounts/ici-drive@appspot.gserviceaccount.com:testIamPermissions  
+ {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2020-06-05T11:59:32.917Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 05 Jun 2020 11:59:32 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions.
+Please upgrade using npm install --save firebase-functions@latest in your functions directory.
+[info] 
+[info] === Deploying to 'ici-drive'...
+[info] 
+[info] i  deploying functions
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build

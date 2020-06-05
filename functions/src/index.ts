@@ -68,7 +68,7 @@ app.post('/api/scheduler/heatbeat', schedulerResource.heatbeat.bind(schedulerRes
 
 export const api = functions.runWith(runtimeOpts).https.onRequest(app);
 //export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));
-//export const testAdd = functions.https.onRequest(testResource.addAmaker.bind(testResource));
+//export const testSend = functions.https.onRequest(testResource.testFcm.bind(testResource));
 //export const testFind = functions.https.onRequest(testResource.findAll.bind(testResource));
 
 

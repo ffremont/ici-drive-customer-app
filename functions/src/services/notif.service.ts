@@ -14,15 +14,6 @@ interface Transition {
     notify: any
 }
 
-interface FirebaseMessage {
-    token: string,
-    notification: {
-        title: string,
-        body: string
-    },
-    data: any
-}
-
 export class NotifService {
 
     elasticmailUrl: string = functions.config().elasticemail.url;
@@ -53,13 +44,13 @@ export class NotifService {
         from: OrderState.VERIFIED,
         newStatus: OrderState.CANCELLED,
         notify: (order: Order, fcm: string | null) => this.cancel(order, fcm)
-    },{
+    }, {
         from: OrderState.CONFIRMED,
         newStatus: OrderState.CANCELLED,
         notify: (order: Order, fcm: string | null) => this.cancel(order, fcm)
     }];
 
-    public async notifyMaker(actionName: string, maker:Maker){
+    public async notifyMaker(actionName: string, maker: Maker) {
         AppUtil.debug(`TODO add in-app notif for ${actionName}`);
     }
 
@@ -74,7 +65,7 @@ export class NotifService {
         AppUtil.debug('applyTransition', fcm, fromStatus, newOrder.status);
 
         const transition = this.transitions.find(t => t.from === fromStatus && t.newStatus === newOrder.status);
-        AppUtil.debug('transition ? ',transition);
+        AppUtil.debug('transition ? ', transition);
         if (transition) {
             await transition.notify(newOrder, fcm);
             return;
@@ -84,17 +75,17 @@ export class NotifService {
     }
 
     private async createData(): Promise<any> {
-        const data :any = {};
+        const data: any = {};
         data.apikey = this.elasticmailApikey;
         data.from = 'noreply@ici-drive.fr';
         data.fromName = 'ici-drive.fr';
         data.isTransactional = true;
         data.sender = 'contact@ici-drive.fr';
-        data.senderName='app.ici-drive.fr';
+        data.senderName = 'app.ici-drive.fr';
         return data;
     }
 
-    public async registerMaker(maker : Maker){
+    public async registerMaker(maker: Maker) {
         await this.send('ici_drive_register_maker', maker.email as any, Config.subjectRegister, {});
     }
 
@@ -106,45 +97,32 @@ export class NotifService {
         body.subject = subject;
 
         for (let [key, value] of Object.entries(data)) {
-            body[`merge_${key}`]= `${value||''}`;
+            body[`merge_${key}`] = `${value || ''}`;
         }
 
-        AppUtil.debug('notif > send > axios post body',this.elasticmailUrl, body);
+        AppUtil.debug('notif > send > axios post body', this.elasticmailUrl, body);
         const resp = await axios.post(this.elasticmailUrl, qs.stringify(body), {
             timeout: 10000
         });
-        AppUtil.debug('notif > send > axios.post response',templateName, resp.status, resp.data);        
+        AppUtil.debug('notif > send > axios.post response', templateName, resp.status, resp.data);
     }
 
     public async cancel(order: Order, fcm: string | null): Promise<void> {
         AppUtil.debug(`notif > cancel ${order.id}`);
-        const promises : any = [];
+        const promises: any = [];
 
-        if (fcm) {
-            // to user
-            const messages = [{
-                token: fcm,
-                data: { url : `${Config.customerAppUrl}/my-orders/${order.id}`},
-                notification: {
-                    title: `Réservation annulée`,
-                    body: `${order.ref} est été annulée`
-                }
-            } as FirebaseMessage];
-            // to maker
-            if(order.maker?.fcm){
-                messages.push({
-                    token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
-                    notification: {
-                        title: `Réservation annulée`,
-                        body: `${order.ref} est été annulée`
-                    }
-                } as FirebaseMessage);
-            }
-            
-            promises.push(admin.messaging().sendAll(messages));
-        }
-
+        promises.push(this.pushAboutOrder(
+            {
+                fcm,
+                title: `Réservation annulée`,
+                body: `${order.ref} est été annulée`
+            },{
+                fcm:order.maker?.fcm || null,
+                title: `Réservation annulée`,
+                body: `${order.ref} est été annulée`
+            }, order.id || ''
+        ));
+        
         promises.push(this.send('ici_drive_annuler', order.maker?.email as any, Config.subjectCancelled, {
             order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
             order_ref: order.ref,
@@ -160,32 +138,19 @@ export class NotifService {
     }
 
     public async refused(order: Order, fcm: string | null): Promise<void> {
-        const promises : any = [];
+        const promises: any = [];
 
-        if (fcm) {
-            // to user
-            const messages = [{
-                token: fcm,
-                data: { url : `${Config.customerAppUrl}/my-orders/${order.id}`},
-                notification: {
-                    title: `Réservation refusée`,
-                    body: `${order.ref} est été refusée`
-                }
-            } as FirebaseMessage];
-            // to maker
-            if(order.maker?.fcm){
-                messages.push({
-                    token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
-                    notification: {
-                        title: `Réservation refusée`,
-                        body: `${order.ref} est été refusée`
-                    }
-                } as FirebaseMessage);
-            }
-            
-            promises.push(admin.messaging().sendAll(messages));
-        }
+        promises.push(this.pushAboutOrder(
+            {
+                fcm,
+                title: `Réservation refusée`,
+                body: `${order.ref} est été refusée`
+            },{
+                fcm:order.maker?.fcm || null,
+                title: `Réservation refusée`,
+                body: `${order.ref} est été refusée`
+            }, order.id || ''
+        ));
 
         promises.push(this.send('ici_drive_refused', order.maker?.email as any, Config.subjectRefused, {
             order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
@@ -202,32 +167,19 @@ export class NotifService {
     }
 
     public async verified(order: Order, fcm: string | null): Promise<void> {
-        const promises : any = [];
+        const promises: any = [];
 
-        if (fcm) {
-            // to user
-            const messages = [{
-                token: fcm,
-                data: { url : `${Config.customerAppUrl}/my-orders/${order.id}`},
-                notification: {
-                    title: `Réservation vérifiée`,
-                    body: `Veuillez confirmer la réservation ${order.ref}`
-                }
-            } as FirebaseMessage];
-            // to maker
-            if(order.maker?.fcm){
-                messages.push({
-                    token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
-                    notification: {
-                        title: `Réservation vérifiée`,
-                        body: `${order.ref} a bien été vérifiée`
-                    }
-                } as FirebaseMessage);
-            }
-            
-            promises.push(admin.messaging().sendAll(messages));
-        }
+        promises.push(this.pushAboutOrder(
+            {
+                fcm,
+                title: `Réservation vérifiée`,
+                body: `Veuillez confirmer la réservation ${order.ref}`
+            },{
+                fcm:order.maker?.fcm || null,
+                title: `Réservation vérifiée`,
+                body: `${order.ref} a bien été vérifiée`
+            }, order.id || ''
+        ));
 
         promises.push(this.send('ici_drive_maker_verified', order.maker?.email as any, Config.subjectVerified, {
             order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
@@ -242,32 +194,19 @@ export class NotifService {
     }
 
     public async newOrder(order: Order, fcm: string | null): Promise<void> {
-        const promises : any = [];
+        const promises: any = [];
 
-        if (fcm) {
-            // to user
-            const messages = [{
-                token: fcm,
-                data: { url : `${Config.customerAppUrl}/my-orders/${order.id}`},
-                notification: {
-                    title: `Nouvelle réservation`,
-                    body: `Le producteur va vérifier la réservation ${order.ref} très prochainement`
-                }
-            } as FirebaseMessage];
-            // to maker
-            if(order.maker?.fcm){
-                messages.push({
-                    token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
-                    notification: {
-                        title: `Nouvelle réservation`,
-                        body: `Une vérification est nécessaire pour la réservation ${order.ref}`
-                    }
-                } as FirebaseMessage);
-            }
-            
-            promises.push(admin.messaging().sendAll(messages));
-        }
+        promises.push(this.pushAboutOrder(
+            {
+                fcm,
+                title: `Nouvelle réservation`,
+                body: `Le producteur va vérifier la réservation "${order.ref}" très prochainement`
+            },{
+                fcm:order.maker?.fcm || null,
+                title: `Nouvelle réservation`,
+                body: `Une vérification est nécessaire pour la réservation ${order.ref}`
+            }, order.id || ''
+        ));
 
         promises.push(this.send('ici_drive_maker_new_cart', order.maker?.email as any, Config.subjectNewOrder, {
             order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
@@ -277,7 +216,7 @@ export class NotifService {
             order_link: `${Config.customerAppUrl}/my-orders/${order.id}`,
             maker_name: order.maker?.name
         }));
-    
+
         await Promise.all(promises);
     }
 
@@ -287,17 +226,17 @@ export class NotifService {
             order.maker?.payments?.acceptBankCheck ? `d'un chèque` : null,
             order.maker?.payments?.acceptCoins ? `d'espèces` : null].filter(c => c !== null).join(' / ');
 
-        const promises : any = [];
+        const promises: any = [];
 
         if (fcm) {
             promises.push(admin.messaging().send({
                 token: fcm,
-                data: { url : `${Config.customerAppUrl}/my-orders/${order.id}`},
-                notification: {
+                data: {
+                    url: `${Config.customerAppUrl}/my-orders/${order.id}`,
                     title: `Rappel du retrait`,
-                    body: `Votre réservation ${order.ref} vous attend le ${moment(order.slot).format('ddd D MMM à HH:mm')}`
+                    body: `Votre réservation "${order.ref}" vous attend à ${moment(order.slot).format('HH:mm')} le ${moment(order.slot).format('ddd D MMM')}`
                 }
-            } as FirebaseMessage));
+            }));
         }
 
         promises.push(this.send('ici_drive_customer_remind', order.customer?.email as any, Config.subjectRemind, {
@@ -317,33 +256,57 @@ export class NotifService {
         await Promise.all(promises);
     }
 
-    public async confirmed(order: Order, fcm: string | null): Promise<void> {
-        const promises : any = [];
+    /**
+     * Push de notification dans le cadre de CRUD sur les réservations
+     */
+    private pushAboutOrder(
+            user:{fcm:string|null, title:string,body:string}, 
+            maker:{fcm:string|null, title:string,body:string}, 
+            orderId:string){
+        const messages = [];
+        if (user.fcm) // to user
+            messages.push({
+                token: user.fcm,
+                data: {
+                    url: `${Config.customerAppUrl}/my-orders/${orderId}`,
+                    title: user.title,
+                    body: user.body,
+                    icon:'/icons/icon-192x192.png'
+                },
+            });
 
-        if (fcm) {
-            // to user
-            const messages = [{
-                token: fcm,
-                data: { url : `${Config.customerAppUrl}/my-orders/${order.id}`},
-                notification: {
-                    title: `Réservation confirmée`,
-                    body: `Un email récapitulatif vous a été envoyé pour la réservation ${order.ref}.`
+        // to maker
+        if (maker.fcm)
+            messages.push({
+                token: maker.fcm,
+                data: {
+                    url: `${Config.makerAppUrl}/my-orders/${orderId}`,
+                    title: maker.title,
+                    body: maker.body,
+                    icon:'/icons/icon-192x192.png'
                 }
-            } as FirebaseMessage];
-            // to maker
-            if(order.maker?.fcm){
-                messages.push({
-                    token: order.maker?.fcm,
-                    data: { url : `${Config.makerAppUrl}/my-orders/${order.id}`},
-                    notification: {
-                        title: `Une réservation confirmée`,
-                        body: `La réservation ${order.ref} a été confirmée pour le ${moment(order.slot).format('ddd D MMM à HH:mm')}.`
-                    }
-                } as FirebaseMessage);
-            }
-            
-            promises.push(admin.messaging().sendAll(messages));
-        }
+            });
+
+        if (messages.length)
+            return admin.messaging().sendAll(messages);
+        else   
+            return Promise.resolve();
+    }
+
+    public async confirmed(order: Order, fcm: string | null): Promise<void> {
+        const promises: any = [];
+
+        promises.push(this.pushAboutOrder(
+            {
+                fcm,
+                title: `Réservation confirmée`,
+                body: `Un email récapitulatif vous a été envoyé pour la réservation ${order.ref}.`
+            },{
+                fcm:order.maker?.fcm || null,
+                title: `Une réservation confirmée`,
+                body: `La réservation ${order.ref} a été confirmée pour le ${moment(order.slot).format('ddd D MMM à HH:mm')}.`
+            }, order.id || ''
+        ));
 
         const paypalMsg = `Vous avez opté pour le paiement via Paypal, veuillez ENVOYER via le site officielle Paypal la demande paiement au client :
         ${order.customer?.email}
@@ -357,7 +320,7 @@ export class NotifService {
         promises.push(this.send('ici_drive_maker_confirmed', order.maker?.email as any, Config.subjectConfirmed, {
             order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
             maker_name: order.maker?.name,
-            order_ref:order.ref,
+            order_ref: order.ref,
             when: moment(order.slot).format('ddd D MMM à HH:mm'),
             maker_place_label: order.maker?.place.label,
             maker_place_address: order.maker?.place.address,
@@ -366,7 +329,7 @@ export class NotifService {
         }));
         promises.push(this.send('ici_drive_customer_confirmed', order.customer?.email as any, Config.subjectConfirmed, {
             order_link: `${Config.customerAppUrl}/my-orders/${order.id}`,
-            order_ref:order.ref,
+            order_ref: order.ref,
             when: moment(order.slot).format('ddd D MMM à HH:mm'),
             maker_place_label: order.maker?.place.label,
             maker_place_address: order.maker?.place.address,

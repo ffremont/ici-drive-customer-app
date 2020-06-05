@@ -1,6 +1,7 @@
 import { User } from "../models/user";
 import myProfilStore from '../stores/my-profil';
 import { BehaviorSubject } from "rxjs";
+import fcmService from "./fcm.service";
 
 export class AuthService{
     public subToken = new BehaviorSubject<string|null>(null);
@@ -8,6 +9,8 @@ export class AuthService{
     public isAuth = false;
 
     public authenticate(user:User): void {
+        fcmService.init();
+        
         this.isAuth = true;
         this.subUser.next(user);
 

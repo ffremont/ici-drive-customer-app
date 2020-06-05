@@ -53,7 +53,6 @@ class MyOrders extends React.Component<{ history: any, classes: any }, { orders:
 
     
     this.sub = ordersStore.subscribe((orders: Order[]) => {
-      console.log('MyOrders > ordersStore.sub ',orders);
       if(orders)
         (orders as any).sortBy('slot',true);
       this.setState({ orders : orders || [] })

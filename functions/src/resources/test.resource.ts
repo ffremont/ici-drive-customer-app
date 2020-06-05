@@ -4,7 +4,9 @@ import * as randomstring from 'randomstring';
 import { Maker } from '../models/maker';
 import { Product } from '../models/product';
 import * as randomLocation from 'random-location';
+import * as admin from 'firebase-admin';
 import * as geohash from "ngeohash";
+import { AppUtil } from '../apputil';
 
 class TestResource {
 
@@ -209,6 +211,20 @@ class TestResource {
             console.log(doc.id, '=>', doc.data());
         });
         response.send("findAll");
+    }
+
+    public async testFcm(request: Request, response: Response){
+        const r = await admin.messaging().send({
+            token: request.body,
+            data: {
+                url : 'https://google.fr',
+                title: 'hello',
+                body:'florent',
+                icon:'https://app.ici-drive.fr/default_image.jpg'
+              }
+        })
+        console.log('Successfully sent message:', r);
+        AppUtil.ok(response);
     }
 
     public async addAmaker(request: Request, response: Response){
