@@ -13,7 +13,7 @@ const other: Configuration = {
     makersNearKm:50,
     support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     baseURL: 'https://app.ici-drive.fr',
-    startDriveAfterDays:4,
+    startDriveAfterDays:5,
     fcmPublicVapidKey: 'BO7yESbBXsx7ddVzYqvkNpWf-3S6sjqQxEoolQQ1OG02D0-nmrpowEsYRHuoGEzT4w5Np6Gdwto5FiLsS--sONw',
     API: {
         makers: (makerId:any = null) => `${DEV_API_BASEURL}/makers${makerId === null ? '.json': '/'+makerId+'/index.json'}`,
@@ -44,7 +44,7 @@ const prod: Configuration = {
     privacy_policy:'https://docs.google.com/document/d/e/2PACX-1vQp5YBhJywagTbos-519cIP2hwKv4GyxE3C0FGPIrZOsYa-2FA1WZwSbfoWudsGYt9508AUwdoYWqrN/pub',
     support: 'https://forms.gle/q4KYieunhwWVn1BR6',
     baseURL: 'https://app.ici-drive.fr',
-    startDriveAfterDays:3,
+    startDriveAfterDays:5,
     fcmPublicVapidKey: 'BO7yESbBXsx7ddVzYqvkNpWf-3S6sjqQxEoolQQ1OG02D0-nmrpowEsYRHuoGEzT4w5Np6Gdwto5FiLsS--sONw',
     API: {
         makers: (makerId:any = '') => `${API_BASEURL}/makers${makerId ? '/'+makerId: ''}`,

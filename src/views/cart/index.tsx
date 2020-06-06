@@ -248,13 +248,16 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
                   </Avatar>
                 }
                 title={order.maker?.place.label}
-                subheader="Retrait / livraison"
+                subheader="Retrait"
               />
             </Card>
           </Grid>
 
           {this.state.firstSlot && (<Grid item>
-            <Card className="card-info">
+            <Card className="card-info" onClick={() => {
+              window.scrollTo(0,document.body.scrollHeight);
+
+            }}>
               <CardHeader
                 avatar={
                   <Avatar>
@@ -341,7 +344,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
             checked={this.state.checkCgr}
             onChange={(e) => this.setState({ checkCgr: e.target.checked })}
             inputProps={{ 'aria-label': 'primary checkbox' }}
-          /> <Typography variant="body1" className="accept-cgr">Accepter les <a href={CONF.cgr} target="_blank">Conditions Générales de Réservation</a></Typography>
+          /> <Typography variant="body1" className="accept-cgr">Accepter les <a href={CONF.cgr} rel="noreferrer noopener" target="_blank">Conditions Générales de Réservation</a></Typography>
         </div>)}
 
 

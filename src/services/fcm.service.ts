@@ -53,7 +53,7 @@ export class FcmService {
         if (permission === 'granted') {
             return "ok";
         } else {
-            throw 'no granted'
+            throw new Error('no granted');
         }
     }
 

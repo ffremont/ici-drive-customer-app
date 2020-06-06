@@ -9,34 +9,31 @@ class HttpClientService{
     private subResponse = new Subject<HttpCall>();
 
     private config: AxiosRequestConfig;
-    private idToken: string|null = null;
 
     public axios:any;
 
     constructor(){
-        setTimeout(() => {
-            authService.subToken.subscribe( (token:any) => this.idToken = token );
-        },0);
-
         this.config = {
             responseType: 'json',
             timeout: 15000,
-            transformRequest: [(data:any, headers:any)=>{
-                headers['Content-Type'] = 'application/json';
-                if(this.idToken !== null){
-                    headers.Authorization = `Bearer ${this.idToken}`;
-                }
-                this.subRequest.next({data, headers});
-                return JSON.stringify(data);
-            }],
+            
             transformResponse: [(data:any, headers:any)=>{
                 this.subResponse.next({data, headers});
                 return data;
             }]
         };
         this.axios = axios.create(this.config);
-        //// Alter defaults after instance has been created
-        //instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        this.axios.interceptors.request.use(async (config:any) => {
+            config.headers['Content-Type'] = 'application/json';
+            const token = await authService.getToken();
+            if(token !== null){
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+            this.subRequest.next({data : config.data, headers: config.headers});
+            config.data = JSON.stringify(config.data);
+            return config;
+          });
     }
 
     public subOnRequest(func:any): Subscription{

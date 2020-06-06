@@ -89,7 +89,7 @@ const MenuApp = (props: any) => {
   const [openAbout, setOpenAbout] = useState(false);
   const [openMentions, setOpenMentions] = useState(false);
   const [showInstall, setShowInstall] = useState(false);
-  const [showCgu, setShowCgu] = useState(true);
+  const [showCgu, setShowCgu] = useState(false);
 
   React.useEffect(() => {
     setMode(props.mode);
@@ -97,7 +97,7 @@ const MenuApp = (props: any) => {
 
   React.useEffect(() => {
     setShowCgu(!window.localStorage.acceptCgu);
-  })
+  },[]);
 
   useEffect(() => {
     const subscription = cartStore.subscribe((order: Order) => {
@@ -294,7 +294,7 @@ const MenuApp = (props: any) => {
 
       {showCgu && (<div className="banner-cgu">
         <div className="text">En cliquant sur OK ou en poursuivant la navigation, vous acceptez les CGU / politique de confidentialité.&nbsp;
-            <a href={conf.cgu} target="_blank">En savoir plus</a>
+            <a href={conf.cgu} rel="noreferrer noopener" target="_blank">En savoir plus</a>
         </div>
         <div className="action">
         <Button variant="contained" onClick={() => closeBannerCgu()} >

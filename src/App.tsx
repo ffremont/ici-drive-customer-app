@@ -7,14 +7,10 @@ import {
 } from "react-router-dom";
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Login from './views/login';
 import Makers from './views/makers';
 import PrivateRoute from './components/private-route';
 import NoMatch from './views/no-match';
-import { Subscription } from 'rxjs';
-import httpClientService from './services/http-client.service';
 import Catalog from './views/catalog';
 import * as moment from 'moment';
 import 'moment/locale/fr';
@@ -27,7 +23,6 @@ import Error from './views/error';
 import MyProfil from './views/my-profil';
 import How from './views/how';
 import Concept from './views/concept';
-import fcmService from './services/fcm.service';
 
 
 // @see https://material-ui.com/customization/palette/

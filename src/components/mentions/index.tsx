@@ -29,24 +29,24 @@ const Mentions = (props: any) => {
       >
         <DialogTitle id="alert-dialog-title">Mentions</DialogTitle>
         <DialogContent>
-        <ul>
+        <ul>  
               <li>
-              <a href={conf.mentions} target="_blank">Mentions</a>
+              <a href={conf.mentions}  rel="noreferrer noopener" target="_blank">Mentions</a>
               </li>
               <li>
-              <a href={conf.cgu} target="_blank">Conditions générales d'utilisation</a>
+              <a href={conf.cgu} target="_blank" rel="noreferrer noopener">Conditions générales d'utilisation</a>
               </li>
               <li>
-              <a href={conf.cgr} target="_blank">Conditions générales de réservation</a>
+              <a href={conf.cgr} target="_blank" rel="noreferrer noopener">Conditions générales de réservation</a>
               </li>
               <li>
-              <a href={conf.cgr} target="_blank">Conditions générales de réservation</a>
+              <a href={conf.cgr} target="_blank" rel="noreferrer noopener">Conditions générales de réservation</a>
               </li>
               <li>
-              <a href={conf.privacy_policy} target="_blank">Politique de confidentialité</a>
+              <a href={conf.privacy_policy} rel="noreferrer noopener" target="_blank">Politique de confidentialité</a>
               </li>
               <li>
-              <a href={conf.acceptableUsePolicy} target="_blank">Politique d'utilisation acceptable	</a>
+              <a href={conf.acceptableUsePolicy} rel="noreferrer noopener" target="_blank">Politique d'utilisation acceptable	</a>
               </li>
             </ul>
         </DialogContent>
