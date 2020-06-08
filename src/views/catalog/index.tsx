@@ -63,13 +63,11 @@ class Catalog extends React.Component<{ history: any, match: any }, { waiting: b
       } else {
         const products = (maker.products || []).map((p: GraphicProduct) => {
           p.category = conf.categories.find(c => c.id === p.categoryId);
+          p.topOfList = (p.topOfList ? 1 : 0) as any;
           return p;
         }).filter((p: GraphicProduct) => p.available);
 
-        // SORT
-        /*products.sort((a:GraphicProduct, b:GraphicProduct) =>   
-          a.label - b.label //|| a.glow - b.glow;
-      );*/
+        (products as any).sortBy('topOfList',true, 'label', true);
 
         this.setState({
           maker, products
@@ -131,7 +129,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { waiting: b
 
     return (
       <div className="maker">
-        <MenuApp mode="catalog" history={this.props.history} />
+        <MenuApp mode="catalog" share={`${conf.baseURL}/makers/${myPart ? myPart.id : ''}/catalog`} history={this.props.history} />
 
         <SnackAdd />
 

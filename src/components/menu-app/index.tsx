@@ -42,6 +42,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import pwaService from '../../services/pwa.service';
 import LockIcon from '@material-ui/icons/Lock';
 import Mentions from '../mentions';
+import ShareIcon from '@material-ui/icons/Share';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -84,6 +85,7 @@ const MenuApp = (props: any) => {
   const [mode, setMode] = useState('full');
   const [auth] = useState(false);
   const [email, setEmail] = useState('');
+  const [share, setShare] = useState('');
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
@@ -94,6 +96,9 @@ const MenuApp = (props: any) => {
   React.useEffect(() => {
     setMode(props.mode);
   }, [props.mode]);
+  React.useEffect(() => {
+    setShare(props.share);
+  }, [props.share]);
 
   React.useEffect(() => {
     setShowCgu(!window.localStorage.acceptCgu);
@@ -139,6 +144,15 @@ const MenuApp = (props: any) => {
   const closeBannerCgu = () => {
     window.localStorage.acceptCgu="1";
     setShowCgu(false);
+  };
+
+
+  const shareMaker = () => {
+    (window as any).navigator.share({
+      title: `Drive de produits locaux`,
+      text: `Découvrez ce producteur ${share}`,
+    }); // partage l'URL de MDN
+    
   };
 
   return (
@@ -190,19 +204,19 @@ const MenuApp = (props: any) => {
       </Drawer>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          {(['full'].indexOf(mode) > -1) && (
+          {(['full', 'makers'].indexOf(mode) > -1) && (
             <IconButton edge="start" className={classes.firstButton} onClick={() => setOpen(true)} color="inherit" aria-label="menu">
               <MenuIcon />
             </IconButton>
           )}
-          {(['full'].indexOf(mode) === -1) && (
+          {(['full', 'makers'].indexOf(mode) === -1) && (
             <IconButton edge="start" className={classes.firstButton} onClick={() => props.history.goBack()} color="inherit" aria-label="précédent">
               <ArrowBackIosIcon />
             </IconButton>
           )}
 
 
-          {mode === 'full' && (
+          {['full', 'makers'].indexOf(mode) > -1 && (
             <Typography variant="h6" className={classes.title}>
               <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveBannerIcon} />
             </Typography>
@@ -238,6 +252,10 @@ const MenuApp = (props: any) => {
               Mon compte
             </Typography>
           )}
+
+          {(['catalog'].indexOf(mode) > -1 )&&  (window as any).navigator.share && (<IconButton aria-label="partager" onClick={shareMaker} color="inherit">
+            <ShareIcon />
+          </IconButton>)}
 
           {['full', 'catalog'].indexOf(mode) > -1 && (
             <IconButton aria-label="nb. de produits" onClick={() => props.history.push('/cart')} color="inherit">
