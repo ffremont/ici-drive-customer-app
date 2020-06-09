@@ -54,6 +54,7 @@ app.put('/api/my-profil', myProfilResource.update.bind(myProfilResource));
 
 // ADMINISTRATION
 app.get('/api/admin/makers/self', adminMakerResource.getSelf.bind(adminMakerResource));
+app.put('/api/admin/makers/self', adminMakerResource.updateSelf.bind(adminMakerResource));
 app.post('/api/admin/makers/self', busboy, adminMakerResource.register.bind(adminMakerResource));
 app.post('/api/admin/makers/self/products/', busboy, adminMakerResource.addProduct.bind(adminMakerResource));
 app.put('/api/admin/makers/self/products/:ref', busboy, adminMakerResource.updateProduct.bind(adminMakerResource));

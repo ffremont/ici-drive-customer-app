@@ -14,7 +14,6 @@ export class FcmService {
 
         this.requestPermission().then(() => {
             if (this.isInit) { return; }
-            this.isInit = true;
 
             if ((window as any).firebase) {
                 this.messaging = (window as any).firebase.messaging();
@@ -35,6 +34,7 @@ export class FcmService {
 
         setTimeout(() => {
             if (this.isInit) { return; }
+            this.isInit = true;
             // à chaque rechargement de l'utilisateur, on met à jour le refresh s'il a changé
             myProfilStore.subscribe((myProfil: User) => {
                 if (this.lastFcm !== this.fcm) {

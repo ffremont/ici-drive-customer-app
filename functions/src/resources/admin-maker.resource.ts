@@ -219,6 +219,32 @@ class AdminMakerResource {
     }
 
     /**
+     * MAJ du profil du producteur
+     * @param request 
+     * @param response 
+     */
+    public async updateSelf(request: Request, response: Response) {
+        try {
+            const currentMakerEmail = await AppUtil.authorized(request);
+            if (currentMakerEmail === null) {
+                AppUtil.notAuthorized(response); return;
+            }
+
+            const partialMaker = await this.makerDao.getByEmail(currentMakerEmail);
+            if(!partialMaker){
+                AppUtil.badRequest(response);return;
+            }
+
+            const modification = request.body as any;
+            await this.makerDao.setMaker(partialMaker.id, modification);
+
+            AppUtil.ok(response);
+        } catch (e) {
+            AppUtil.internalError(response, e);
+        }
+    }
+
+    /**
      * Retourne le profil du producteur s'il est connu
      * @param request 
      * @param response 

@@ -171,6 +171,8 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
       handleCloseEraseProduct();
     };
 
+    setTimeout(()=> window.scrollTo(0,0),0);
+
     return (
       <div className="cart">
         <MenuApp mode={this.state.summaryMode ? 'summary' : 'cart'} onResetCart={() => this.setState({ wantResetCard: true })} history={this.props.history} />

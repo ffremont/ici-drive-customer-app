@@ -47,7 +47,6 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.onmessage = function (msg) {
-  
   switch (msg.data.name) {
       case 'push':
         const {title, body,icon, tag, url} = msg.data;
