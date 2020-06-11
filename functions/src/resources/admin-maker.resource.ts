@@ -229,14 +229,30 @@ class AdminMakerResource {
             if (currentMakerEmail === null) {
                 AppUtil.notAuthorized(response); return;
             }
-
             const partialMaker = await this.makerDao.getByEmail(currentMakerEmail);
             if(!partialMaker){
                 AppUtil.badRequest(response);return;
             }
+            const files = (request as any).files;
 
-            const modification = request.body as any;
-            await this.makerDao.setMaker(partialMaker.id, modification);
+            const newMaker = JSON.parse(request.body.data) as Maker;
+            
+            // écrasement des valeurs
+            newMaker.id = partialMaker.id;
+            newMaker.created = partialMaker.created;
+            newMaker.email = partialMaker.email;
+            newMaker.active = partialMaker.active;
+
+            const fileImage = files.find((f:any) => f.fieldname === 'fileImage');
+            if(fileImage)
+                newMaker.image = await this.safeUploadFile(partialMaker.image, fileImage.originalname, fileImage.buffer, 'maker');
+
+            const filePlaceImage = files.find((f:any) => f.fieldname === 'filePlaceImage');
+            if(filePlaceImage)
+                newMaker.place.image = await this.safeUploadFile(partialMaker?.place.image||'', filePlaceImage.originalname, filePlaceImage.buffer, 'place');
+
+            delete newMaker.products;
+            await this.makerDao.setMaker(partialMaker.id, {...partialMaker, ...newMaker});
 
             AppUtil.ok(response);
         } catch (e) {

@@ -12,6 +12,7 @@ import schedulerResource from './resources/scheduler.resource';
 import busboy from './middlewares/busboy';
 import context from './context';
 import express = require('express');
+//import cors = require('cors');
 
 
 const customCreds: any = process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -40,6 +41,8 @@ const runtimeOpts = {
 //
 
 const app = express();
+//app.use(cors());
+
 
 app.get('/api/makers', makerResource.search.bind(makerResource));
 app.get('/api/makers/:id', makerResource.getFullMaker.bind(makerResource));
@@ -54,7 +57,7 @@ app.put('/api/my-profil', myProfilResource.update.bind(myProfilResource));
 
 // ADMINISTRATION
 app.get('/api/admin/makers/self', adminMakerResource.getSelf.bind(adminMakerResource));
-app.put('/api/admin/makers/self', adminMakerResource.updateSelf.bind(adminMakerResource));
+app.put('/api/admin/makers/self', busboy, adminMakerResource.updateSelf.bind(adminMakerResource));
 app.post('/api/admin/makers/self', busboy, adminMakerResource.register.bind(adminMakerResource));
 app.post('/api/admin/makers/self/products/', busboy, adminMakerResource.addProduct.bind(adminMakerResource));
 app.put('/api/admin/makers/self/products/:ref', busboy, adminMakerResource.updateProduct.bind(adminMakerResource));
