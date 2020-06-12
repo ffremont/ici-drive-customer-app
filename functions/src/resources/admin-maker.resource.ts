@@ -233,9 +233,9 @@ class AdminMakerResource {
             if(!partialMaker){
                 AppUtil.badRequest(response);return;
             }
-            const files = (request as any).files;
+            const files = (request as any).files || [];
 
-            const newMaker = JSON.parse(request.body.data) as Maker;
+            const newMaker = request.body.data ? JSON.parse(request.body.data) as Maker : request.body;
             
             // écrasement des valeurs
             newMaker.id = partialMaker.id;

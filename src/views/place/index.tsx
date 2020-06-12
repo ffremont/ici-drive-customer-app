@@ -8,6 +8,7 @@ import MenuApp from '../../components/menu-app';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import RoomIcon from '@material-ui/icons/Room';
+import { Link } from 'react-router-dom';
 
 class Place extends React.Component<{ history: any, match: any }, { maker: Maker | null }>{
 
@@ -52,16 +53,24 @@ class Place extends React.Component<{ history: any, match: any }, { maker: Maker
             {maker.place.description && (<Typography variant="body1">{maker.place.description}</Typography>)}</div>
         </Grid>
         <Grid item>
-        <Button
-        variant="contained"
-        color="primary"
-        onClick={() => window.open(`https://www.google.fr/maps/place/${window.encodeURI(maker.place.address||'')}`)}
-        size="large"
-        className="place-look"
-        startIcon={<RoomIcon />}
-      >
-        Consulter la carte
+          <Link
+            className="a-map"
+            to={{
+              pathname: `/makers/${maker.id}/map`,
+              search: `?name=${encodeURIComponent(maker.name)}&address=${encodeURIComponent(maker.place.address || '')}&lat=${maker.place.point?.latitude}&lng=${maker.place.point?.longitude}`
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              className="place-look"
+              startIcon={<RoomIcon />}
+            >
+              Consulter la carte
       </Button>
+          </Link>
+
         </Grid>
       </Grid>)}
     </div>);

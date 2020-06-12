@@ -23,6 +23,7 @@ import Error from './views/error';
 import MyProfil from './views/my-profil';
 import How from './views/how';
 import Concept from './views/concept';
+import MapPlace from './views/place/map/MapPlace';
 
 
 // @see https://material-ui.com/customization/palette/
@@ -52,6 +53,7 @@ class App extends React.Component<{}, {  }>{
             <Route exact path="/concept" component={Concept} />
             <Route path="/makers/:id/catalog" component={Catalog} />
             <Route path="/makers/:id/place" component={Place} />
+            <Route path="/makers/:id/map" component={MapPlace} />
 
             <Route path="/login" component={Login} />
             <PrivateRoute exact path="/cart" component={Cart} />

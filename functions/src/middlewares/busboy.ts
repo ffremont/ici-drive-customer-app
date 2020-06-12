@@ -5,6 +5,10 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 export default function(req: Request, res: Response, next:any){
+    if(req.headers['content-type'] && (req.headers['content-type'].toLowerCase().indexOf('application/json') > -1) ){
+      next(); return;
+    }
+
     const busboy = new Busboy({
         headers: req.headers,
         limits: {
