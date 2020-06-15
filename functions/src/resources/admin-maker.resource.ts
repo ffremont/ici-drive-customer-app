@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { AppUtil } from '../apputil';
 import { MakerDao } from '../dao/maker.dao';
 import bunnyCdnService from '../services/bunnycdn.service';
-import recaptchaService from '../services/recaptcha.service';
+//import recaptchaService from '../services/recaptcha.service';
 import { Product } from '../models/product';
 import { Config } from '../config';
 import * as uuid from 'uuid-random';
@@ -155,12 +155,11 @@ class AdminMakerResource {
             if (!files || !files.length) {
                 AppUtil.badRequest(response, 'Images requises');
             }
-            const recaptcha = request.query.recaptcha;
+            /*const recaptcha = request.query.recaptcha;
             if(!recaptcha){
                 AppUtil.badRequest(response, 'Recaptcha invalide');
             }
-            
-            await recaptchaService.verify(recaptcha);
+            await recaptchaService.verify(recaptcha);*/
 
             const newMaker = JSON.parse(request.body.data) as Maker;
             newMaker.id = uuid();
