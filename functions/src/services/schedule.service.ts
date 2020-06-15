@@ -11,13 +11,13 @@ export class ScheduleService{
     private userDao = new UserDao();
 
     /**
-     * Annulation des commandes confirmées moins de 48h avant le retrait
+     * Annulation des commandes confirmées dès 48h, on check que le retrait ne se fait pas mnt
      */
     public async comfirmedExpiration(){
         AppUtil.debug('comfirmedExpiration...');
         const nowTo = (new Date()).getTime();
         const orders = (await this.orderDao.getConfirmedRecently()).filter(order => {
-            return order.slot ? order.slot < (nowTo + Config.confirmedExpireWindowInHours*3600000) : false;
+            return order.slot && ((order.slot - order.updated) < Config.confirmedExpireAfter*3600000);
         });
 
         const batch = context.db().batch();
@@ -90,7 +90,7 @@ export class ScheduleService{
     public async pendingExpiration(){
         AppUtil.debug('pendingExpiration...');
         const nowTo = (new Date()).getTime();
-        let orders = (await this.orderDao.getPendingTooOld());
+        let orders = (await this.orderDao.getPendingTooShort());
         orders = orders.concat(await this.orderDao.getPendingComingSoon());
 
         const batch = context.db().batch();
@@ -99,6 +99,7 @@ export class ScheduleService{
             if(order.id){
                 AppUtil.debug(`update ${order.id} with status CANCELLED : `+Config.pendingExpirationReason);
                 const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
+                
                 batch.update(ref, { status : OrderState.CANCELLED, updated:nowTo, reasonOf: Config.pendingExpirationReason });
             }            
         });

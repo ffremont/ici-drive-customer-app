@@ -12,7 +12,7 @@ export class Config {
     public static confirmedExpireAfter = 48; // hours
     public static confirmedExpireWindowInHours = 6;
     public static comfirmedExpirationReason = `Annulation automatique, la confirmation doit intervenir au moins 48h avant `
-    public static pendingExpirationReason = `Annulation automatique, la vérification doit intervenir au moins 48h avant `
+    public static pendingExpirationReason = `Annulation automatique, la vérification doit intervenir au moins 72h avant `
 
     public static MAKERS_NEAR_KM = 50;
     public static MAKERS_SEARCH_LIMIT = 50;
