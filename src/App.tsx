@@ -24,6 +24,7 @@ import MyProfil from './views/my-profil';
 import How from './views/how';
 import Concept from './views/concept';
 import MapPlace from './views/place/map/MapPlace';
+import EmailCheck from './views/email-check';
 
 
 // @see https://material-ui.com/customization/palette/
@@ -54,6 +55,7 @@ class App extends React.Component<{}, {  }>{
             <Route path="/makers/:id/catalog" component={Catalog} />
             <Route path="/makers/:id/place" component={Place} />
             <Route path="/makers/:id/map" component={MapPlace} />
+            <Route path="/email-check" component={EmailCheck} /> 
 
             <Route path="/login" component={Login} />
             <PrivateRoute exact path="/cart" component={Cart} />

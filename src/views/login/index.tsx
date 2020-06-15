@@ -36,7 +36,20 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
   }
 
   signEmail(){
-    this.sign(process.env.REACT_APP_STAGE === 'prod' ? new (window as any).firebase.auth.EmailAuthProvider() : new ((window as any).firebase.auth.EmailAuthProvider()));
+    const f = (window as any).firebase;
+
+    if(f){
+      const email:any = window.prompt('Merci de saisir votre email ');
+
+      f.auth().sendSignInLinkToEmail(email, {
+        url: window.location.origin+'/email-check',
+        handleCodeInApp: true,
+      })
+      .then(function() {
+        window.localStorage.setItem('emailForSignIn', email);
+        alert('Un message vous a été envoyé');
+      })
+    }
   }
 
   signGoogle(){
