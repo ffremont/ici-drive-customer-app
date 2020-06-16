@@ -2,4 +2,10 @@ node_modules
 build
 .runtimeconfig.json
 functions/.runtimeconfig.json
-android/
+android/*.keystore
+android/*.apk
+android/*.pepk
+android/build
+android/.idea
+android/app/release
+android/.gradle

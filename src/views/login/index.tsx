@@ -47,7 +47,7 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
       })
       .then(function() {
         window.localStorage.setItem('emailForSignIn', email);
-        alert('Un message vous a été envoyé');
+        alert('Un message vous a été envoyé (attention aux tries automatiques : notifications, promotions, spam...)');
       })
     }
   }
@@ -133,7 +133,6 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
             </Button>
             <Button
                 type="button"
-                disabled={true}
                 fullWidth
                 color="primary"
                 size="large"
@@ -141,7 +140,7 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
                 variant="contained"
                 className="provider email"
               >
-                <img alt="mail" src={MailIcon} /> Connexion par email (indisponible)
+                <img alt="mail" src={MailIcon} /> Connexion par email
             </Button>
             </div>
           </Container>

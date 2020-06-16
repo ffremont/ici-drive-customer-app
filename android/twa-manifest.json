@@ -1,0 +1,24 @@
+{
+  "packageId": "fr.ici_drive.app.twa",
+  "host": "app.ici-drive.fr",
+  "name": "ici-drive",
+  "launcherName": "ici drive",
+  "themeColor": "#ff6600",
+  "navigationColor": "#000000",
+  "backgroundColor": "#FFFFFF",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://app.ici-drive.fr/icons/icon-512x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "alias": "android",
+    "path": "./android.keystore"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://app.ici-drive.fr/manifest.json",
+  "fallbackType": "customtabs",
+  "appVersion": "1"
+}
