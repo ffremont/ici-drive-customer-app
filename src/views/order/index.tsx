@@ -126,32 +126,24 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
     const currentOrder: O.Order = (this.state.order as any) as O.Order;
     const maker: Maker = (currentOrder?.maker as any) as Maker;
 
-    let paymentsLabels = '';
-    if(maker && maker.payments && !maker.payments.acceptPaypal){
-      paymentsLabels = [
-        maker.payments?.acceptCards ? `par carte` : null,
-        maker.payments?.acceptBankCheck ? `par chèque` : null,
-        maker.payments?.acceptCoins ? `en espèce` : null].filter(c => c !== null).join(' / ');
-    }else if(maker && maker.payments && maker.payments.acceptPaypal){
-      paymentsLabels = 'en ligne via Paypal';
-    }
-
     return (<div className="order">
       <MenuApp mode="light" history={this.props.history} />
-      {currentOrder && (<Grid container direction="column" justify="center" spacing={1}>
+      {currentOrder && (<Grid container direction="column" justify="center" className="order-container" spacing={1}>
 
         <Grid item>
           <Chip label={this.status[(currentOrder.status as any)].label} className={this.status[(currentOrder.status as any)].color} />
         </Grid>
 
-        {currentOrder.status === O.OrderState.CONFIRMED && paymentsLabels && (<Grid item>
-          <Alert severity="warning">
-            <strong>Consignes de paiement : </strong>{paymentsLabels}
-          </Alert>
-        </Grid>)}
 
         {currentOrder.reasonOf && (<Grid item>
           <Alert severity="info">{currentOrder.reasonOf}</Alert>
+        </Grid>)}
+
+        {currentOrder.maker && currentOrder.maker.payments && (<Grid item className="payments">
+          {currentOrder.maker.payments.acceptCoins && (<Chip className="payment" label="espèce" />)}
+          {currentOrder.maker.payments.acceptCards && (<Chip className="payment" label="carte bancaire" />)}
+          {currentOrder.maker.payments.acceptBankCheck && (<Chip className="payment" label="chèque" />)}
+          {currentOrder.maker.payments.acceptPaypal && (<Chip className="payment" label="paypal" />)}
         </Grid>)}
         
 

@@ -41,6 +41,7 @@ import { NotifType } from '../../models/notif';
 import { Product } from '../../models/product';
 import myProfilStore, { MyProfilStore } from '../../stores/my-profil';
 import { User } from '../../models/user';
+import Chip from '@material-ui/core/Chip';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -109,7 +110,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
       const newOrder: Order = { ...(this.state.order as any) };
       newOrder.customer = this.state.myProfil;
 
-      this.setState({waiting:true});
+      this.setState({ waiting: true });
       cartStore.save(newOrder)
         .then(() => {
           cartStore.resetCart();
@@ -141,11 +142,11 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
       // update phone /my-profil
       const newUser = { ...this.state.myProfil } as User;
       newUser.phone = this.state.phone;
-      this.setState({waiting:true});
+      this.setState({ waiting: true });
       MyProfilStore.update(newUser)
         .then(() => {
           // refresh my-profil
-          this.setState({waiting:false});
+          this.setState({ waiting: false });
           myProfilStore.set(newUser);
           this.handleContinue();
         })
@@ -157,6 +158,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
   render() {
     const order: Order = (this.state.order as any) as Order;
+    const payments: any = order && order.maker ? order.maker.payments || { acceptCoins: true, acceptBankCheck:true, acceptCards:true } : {};
     const handleClose = () => this.setState({ wantResetCard: false });
     const handleCloseEraseProduct = () => this.setState({ eraseProduct: null });
     const reset = () => {
@@ -170,8 +172,6 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
       handleCloseEraseProduct();
     };
-
-    setTimeout(()=> window.scrollTo(0,0),0);
 
     return (
       <div className="cart">
@@ -249,15 +249,15 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
                     <RoomIcon />
                   </Avatar>
                 }
-                title={order.maker?.place.label}
-                subheader="Retrait"
+                title={order.maker?.place.address}
+                subheader={order.maker?.place.label}
               />
             </Card>
           </Grid>
 
           {this.state.firstSlot && (<Grid item>
             <Card className="card-info" onClick={() => {
-              window.scrollTo(0,document.body.scrollHeight);
+              window.scrollTo(0, document.body.scrollHeight);
 
             }}>
               <CardHeader
@@ -275,7 +275,8 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         </Grid>)}
 
         {this.state.order && (<div className="info-area">
-          <Alert severity="info">Tous les prix sont indicatifs et en TTC. La réservation via ici-drive.fr ne tient pas compte des stocks épuisés ou éventuels du producteur.</Alert>
+          <Alert severity="info">
+            Prix TTC. En cas de rupture de stock d'un produit, vous en serez informé et vous choisirez de confirmer ou non.</Alert>
         </div>)}
 
         {/* les categories avec les produits */}
@@ -329,12 +330,16 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         </div>
 
         {this.state.order && (<Alert severity="warning" className="instruction-payments">
-          <AlertTitle>Consignes de paiement</AlertTitle>
-          <strong>ici-drive.fr n'organise aucunement les paiements</strong>, cette activité est à la charge des producteurs.
-          <br />
-          {this.state.order && order?.maker?.payments && order?.maker?.payments.acceptPaypal && <span>Le paiement PayPal sera initié après confirmation de la réservation de votre part, une fois la demande vérifiée.</span>}
-          {this.state.order && order?.maker?.payments && !order?.maker?.payments.acceptPaypal && <span>Le paiement au Drive se fera lors du retrait de la marchandise.</span>}
+          <AlertTitle>Pas de paiement sur ici-drive</AlertTitle>
+          <strong>Paiement directement et intégralement au producteur</strong>
         </Alert>)}
+
+        <div className="payments">
+          {payments.acceptCoins && (<Chip className="payment" label="espèce" />)}
+          {payments.acceptCards && (<Chip className="payment" label="carte bancaire" />)}
+          {payments.acceptBankCheck && (<Chip className="payment" label="chèque" />)}
+          {payments.acceptPaypal && (<Chip className="payment" label="paypal" />)}
+        </div>
 
 
         {!this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">

@@ -46,8 +46,7 @@
     "payments":{
         "acceptCoins":true,
         "acceptCards":true,
-        "acceptPaypal": true,
-        "paypalMeUrl": "http"
+        "acceptPaypal": false
 }}  , {
     "place": {
         "description": "9kikUD82ywkI7ujtemhogjoYjGuaW3Vq61MBe2qlq8tupGpQm5",

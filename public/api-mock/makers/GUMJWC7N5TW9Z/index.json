@@ -1,8 +1,7 @@
 {"payments":{
     "acceptCoins":true,
     "acceptCards":false,
-    "acceptPaypal": true,
-    "paypalMeUrl": "http"
+    "acceptPaypal": false
 }, "image": "https://icidrive.b-cdn.net/2019-03-01.jpg", "email": "NM8fqfGq3p@gmail.com", "name": "aaxcSutMZo", "place": {
     "address": "13 rue de la e6wZQHb 68254 à ntv4Za",
     "label": "Parking du Super U",

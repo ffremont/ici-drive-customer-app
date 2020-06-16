@@ -95,3 +95,10 @@
         width:80%;
     }
 }
+
+.payments{
+    margin: 20px 10px;
+    .payment + .payment{
+        margin-left: 10px;
+    }
+}

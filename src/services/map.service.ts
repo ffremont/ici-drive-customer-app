@@ -10,6 +10,7 @@ class MapService{
     public getCurrentPosition():Promise<GeoPoint>{
         return new Promise((resolve, reject)=>{
             if(navigator.geolocation){
+
                 navigator.geolocation.getCurrentPosition((pos) =>{
                     resolve({
                         latitude: pos.coords.latitude,

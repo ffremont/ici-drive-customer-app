@@ -49,8 +49,11 @@ class Place extends React.Component<{ history: any, match: any }, { maker: Maker
         </Grid>)}
         <Grid item>
           <div className="texts"><Typography variant="h4" gutterBottom>{maker.place.label}</Typography>
+            {maker.place.address && (<Typography align="center" variant="body1">{maker.place.address}</Typography>)}
             <Typography variant="subtitle1">{maker.place.slotsDescription}</Typography>
-            {maker.place.description && (<Typography variant="body1">{maker.place.description}</Typography>)}</div>
+            {maker.place.description && (<Typography align="center" variant="body1">{maker.place.description}</Typography>)}
+            
+            </div>
         </Grid>
         <Grid item>
           <Link

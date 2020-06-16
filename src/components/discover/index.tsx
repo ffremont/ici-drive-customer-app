@@ -70,7 +70,7 @@ const Discover = (props: any) => {
                     image={props.image}
                     title="Producteur / artisan"
                 />
-                <CardContent>
+                <CardContent className="discover-content">
                     <Typography gutterBottom variant="h5" component="h2">
                         {props.title}
                     </Typography>
@@ -79,16 +79,16 @@ const Discover = (props: any) => {
                     </Typography>
 
                     {props.payments && (<div className={`${classes.payments} payments`}>
-                        <div className={`${classes.paymentItem} ${!payments.acceptPaypal ? classes.myDisabled : ''}`}>
+                        {payments.acceptPaypal && (<div className={`${classes.paymentItem} ${!payments.acceptPaypal ? classes.myDisabled : ''}`}>
                             <img className={classes.moneyIcon} alt="paypal" src={PaypalIcon} />
                             <span className={classes.moneyLabel}>Paiement en ligne</span>
-                        </div>
-                        <div className={`${classes.paymentItem} ${!payments.acceptCards && !payments.acceptCoins ? classes.myDisabled : ''}`}>
+                        </div>)}
+                        {(payments.acceptCards || payments.acceptCoins || payments.acceptCards) && (<div className={`${classes.paymentItem} ${!payments.acceptCards && !payments.acceptCoins ? classes.myDisabled : ''}`}>
                             <CreditCardIcon className={`${classes.moneyIcon} ${!payments.acceptCards ? classes.myDisabled : ''}`} />
                             <EuroIcon className={`${classes.moneyIcon} ${!payments.acceptCoins ? classes.myDisabled : ''}`} />
                             <img className={`${classes.moneyIcon} ${!payments.acceptBankCheck ? classes.myDisabled : ''}`}  alt="bank_check" src={BankCheckIcon} />
                             <span className={classes.moneyLabel}>Paiement au Drive</span>
-                        </div>
+                        </div>)}
                     </div>)}
                 </CardContent>
             </CardActionArea>

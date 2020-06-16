@@ -1,0 +1,151 @@
+{
+    "created": 1588003735514,
+    "ref": "GAEC_346025QSG576RB",
+    "id": "AA",
+    "status": "pending",
+    "total": 6.5,
+    "slot": 1588255735514,
+    "reasonOf": "Tous les produits sont disponibles",
+    "customer": {
+        "email": "ff.fremont.florent@gmail.com",
+        "firstname": "Florent",
+        "lastname": "FREMONT",
+        "address": "5 rue de la terre, 79000 Niort"
+    },
+    "choices": [{
+        "product": {
+            "label": "Carotte BIO",
+            "image": "https://icidrive.b-cdn.net/carotte.jpg",
+            "categoryId": "fruit-leg",
+            "ref": "GTN_CAR_01",
+            "price": 1.3,
+            "description": "Carotte Standard. Filet de 2 kg",
+            "weight": 2000,
+
+            "available": true,
+            "maxInCart": 10
+        },
+        "quantity": 2
+    }, {
+        "product": {
+            "label": "Pomme de terre BIO",
+            "image": "https://icidrive.b-cdn.net/large.jpg",
+            "categoryId": "fruit-leg",
+            "ref": "GTN_PDT_01",
+            "price": 1.3,
+            "description": "Pomme de terre Standard. Filet de 5 kg",
+            "weight": 5000,
+
+            "available": true,
+            "maxInCart": 10
+        },
+        "quantity": 3
+    }],
+    "maker": {
+        "email": "ff.fremont.florent@gmail.com",
+        "payments": {
+            "acceptCoins": true,
+            "acceptCards": false,
+            "acceptBankCheck": true,
+            "acceptPaypal": false
+        },
+        "id": "AB7",
+        "created": 12423525345,
+        "name": "GAEC de terre noire",
+        "webPage": "https://www.acheteralasource.com/producteur/77782",
+        "description": "Producteur de fruits et de légume en deux-sèvres",
+        "image": "https://icidrive.b-cdn.net/20200421_062257_0000%20(1).png",
+        "prefixOrderRef": "REF_GAEG79_",
+        "phone": "0101010110",
+        "place": {
+            "label": "Parking de terre noire",
+            "address": "5 rue de la terre, 79000 Niort",
+            "description": "Situé près de la rocade Sud de Niort, au calme.",
+            "image": "https://icidrive.b-cdn.net/normandie-ferme-bio-grande-suardiere.jpg",
+            "slotsDescription": "Ouvert habituellement la semaine et le week-end",
+            "hebdoSlot": {
+                "lundi": {
+                    "openAt": "8:00",
+                    "closeAt": "12:00"
+                },
+                "mardi": {
+                    "openAt": "8:00",
+                    "closeAt": "12:00"
+                },
+                "mercredi": {
+                    "openAt": "8:00",
+                    "closeAt": "12:00"
+                },
+                "jeudi": {
+                    "openAt": "8:00",
+                    "closeAt": "12:00"
+                },
+                "vendredi": {
+                    "openAt": "8:00",
+                    "closeAt": "12:00"
+                },
+                "samedi": {
+                    "openAt": "8:00",
+                    "closeAt": "12:00"
+                },
+                "dimanche": {
+                    "openAt": "8:00",
+                    "closeAt": "18:00"
+                }
+            }
+        },
+        "categories": [{
+                "label": "Boeuf / Veau",
+                "id": "boeuf-veau"
+            },
+            {
+                "label": "Volaille / Lapin",
+                "id": "volaille-lapin"
+            },
+            {
+                "label": "Agneau / Porc",
+                "id": "agneau-porc"
+            },
+            {
+                "label": "Charcuterie",
+                "id": "charcuterie"
+            },
+            {
+                "label": "Boisson / Vin",
+                "id": "boisson-vin"
+            },
+            {
+                "label": "Epicerie",
+                "id": "epicerie"
+            },
+            {
+                "label": "Fromage",
+                "id": "fromage"
+            },
+            {
+                "label": "Pâtes / Légumineuses",
+                "id": "pates-leg"
+            },
+            {
+                "label": "Glace",
+                "id": "glace"
+            },
+            {
+                "label": "Fruit / Légume",
+                "id": "fruit-leg"
+            },
+            {
+                "label": "Mer",
+                "id": "mer"
+            },
+            {
+                "label": "Miel",
+                "id": "miel"
+            },
+            {
+                "label": "Crèmerie",
+                "id": "cremerie"
+            }
+        ]
+    }
+}

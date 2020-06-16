@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as moment from 'moment';
+import 'moment-timezone';
 import 'moment/locale/fr';
 //import testResource from './resources/test.resource';
 import makerResource from './resources/maker.resource';
@@ -27,6 +28,7 @@ if (customCreds) {
 }
 context.db(admin.firestore());
 moment.locale('fr');
+moment.tz.setDefault("Europe/Paris");
 
 const runtimeOpts = {
     timeoutSeconds: 300,
@@ -73,6 +75,6 @@ app.post('/api/scheduler/heatbeat', schedulerResource.heatbeat.bind(schedulerRes
 export const api = functions.runWith(runtimeOpts).https.onRequest(app);
 //export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));
 //export const testSend = functions.https.onRequest(testResource.testFcm.bind(testResource));
-//export const testFind = functions.https.onRequest(testResource.findAll.bind(testResource));
+//export const test = functions.https.onRequest(testResource.test.bind(testResource));
 
 

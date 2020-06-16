@@ -18,7 +18,7 @@ const other: Configuration = {
     API: {
         makers: (makerId:any = null) => `${DEV_API_BASEURL}/makers${makerId === null ? '.json': '/'+makerId+'/index.json'}`,
         searchMakers: (geoPoint:GeoPoint) => `${DEV_API_BASEURL}/makers-2.json`,
-        orders: (ref?:string) => `${DEV_API_BASEURL}/my-orders.json?ref=${ref}`,
+        orders: (ref?:string) => `${DEV_API_BASEURL}/${ref ? 'order-'+ref+'.json': 'my-orders.json'}`,
         myProfil: () => `${DEV_API_BASEURL}/my-profil.json`
     },
     categories:[

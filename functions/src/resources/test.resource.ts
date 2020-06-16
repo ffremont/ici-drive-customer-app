@@ -7,6 +7,7 @@ import * as randomLocation from 'random-location';
 import * as admin from 'firebase-admin';
 import * as geohash from "ngeohash";
 import { AppUtil } from '../apputil';
+import * as moment from 'moment';
 
 class TestResource {
 
@@ -204,6 +205,10 @@ class TestResource {
         };
     }
 
+
+    public async test(request: Request, response: Response) {
+            AppUtil.ok(response, moment(1592640000000).format('ddd D MMM à HH:mm'))
+    }
 
     public async findAll(request: Request, response: Response) {
         const snapshot = await context.db().collection(Context.MAKERS_COLLECTION).limit(1).get();

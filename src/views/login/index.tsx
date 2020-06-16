@@ -133,6 +133,7 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
             </Button>
             <Button
                 type="button"
+                disabled={true}
                 fullWidth
                 color="primary"
                 size="large"
@@ -140,7 +141,7 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
                 variant="contained"
                 className="provider email"
               >
-                <img alt="mail" src={MailIcon} /> Connexion par email
+                <img alt="mail" src={MailIcon} /> Connexion par email (indisponible)
             </Button>
             </div>
           </Container>
