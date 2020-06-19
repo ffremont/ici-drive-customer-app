@@ -22,8 +22,8 @@ class MakerService{
         // /!\ rdv après X jours min
         now.add((maker as any).startDriveAfterDays || conf.startDriveAfterDays, 'd');
         
-        // on propose au maximum, les 10 prochaines dates
-        for(let i = 0; i< 10; i++){
+        // on propose au maximum, les 7 prochaines dates
+        for(let i = 0; i< 7; i++){
             // si férié, on passe
             if(conf.publicHolidays.some(ph => ph.date === now.format('YYYY-MM-DD'))){
                 now.add(1, 'd');

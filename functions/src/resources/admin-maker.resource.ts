@@ -250,6 +250,9 @@ class AdminMakerResource {
             if(filePlaceImage)
                 newMaker.place.image = await this.safeUploadFile(partialMaker?.place.image||'', filePlaceImage.originalname, filePlaceImage.buffer, 'place');
 
+            if(newMaker.place.point)
+                newMaker.place.point.geopoint = new admin.firestore.GeoPoint(newMaker.place.point.latitude, newMaker.place.point.longitude);
+
             delete newMaker.products;
             await this.makerDao.setMaker(partialMaker.id, {...partialMaker, ...newMaker});
 

@@ -75,6 +75,7 @@ class MakerResource {
             }
 
             const makers = AppUtil.arrOfSnap(snapshot);
+            
 
             AppUtil.expires(response, 1800);
             AppUtil.ok(response, makers);
