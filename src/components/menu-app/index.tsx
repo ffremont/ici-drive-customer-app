@@ -41,7 +41,6 @@ import { grey } from '@material-ui/core/colors';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import pwaService from '../../services/pwa.service';
 import LockIcon from '@material-ui/icons/Lock';
-import Mentions from '../mentions';
 import ShareIcon from '@material-ui/icons/Share';
 
 
@@ -187,7 +186,7 @@ const MenuApp = (props: any) => {
             <ListItemIcon><BugReportIcon /></ListItemIcon>
             <ListItemText primary="Support" secondary="Déclarer un incident" />
           </ListItem>
-          <ListItem button key="mentions" onClick={() => setOpenMentions(true)}>
+          <ListItem button key="mentions" onClick={() => props.history.push('/mentions')}>
             <ListItemIcon><LibraryBooksIcon /></ListItemIcon>
             <ListItemText primary="Mentions" secondary="CGU, CGR, ..." />
           </ListItem>
@@ -272,7 +271,6 @@ const MenuApp = (props: any) => {
           )}
 
           <About open={openAbout} onClose={() => setOpenAbout(false)} />
-          <Mentions open={openMentions} onClose={() => setOpenMentions(false)} />
 
           {auth && (
             <div>
