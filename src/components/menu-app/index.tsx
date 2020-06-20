@@ -64,6 +64,9 @@ const useStyles = makeStyles((theme: Theme) =>
     titleNoPadding:{
       paddingRight:0
     },
+    catalogTitleCanShare:{
+      paddingLeft:50
+    },
     list: {
       width: 250,
     },
@@ -112,7 +115,7 @@ const MenuApp = (props: any) => {
       setQuantity(order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0));
     });
     const subHistory = historyService.stack.subscribe((r) => {
-      setCanGoBack(historyService.canGoBack(window.location.pathname));
+      setCanGoBack(historyService.canGoBack());
     });
     const subMyProfil = myProfilStore.subscribe((user: User) => {
       if (user && user.email)
@@ -229,7 +232,7 @@ const MenuApp = (props: any) => {
             </Typography>
           )}
           {['light', 'catalog'].indexOf(mode) > -1 && (
-            <Typography variant="h6" align="center" className={`${classes.title} ${canGoBack ? '': classes.titleNoPadding}`}>
+            <Typography variant="h6" align="center" className={`${classes.title} ${canGoBack ? '': classes.titleNoPadding} ${(window as any).navigator.share && mode === 'catalog' ? classes.catalogTitleCanShare: ''}`}>
               <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveTypoIcon} />
 
             </Typography>
