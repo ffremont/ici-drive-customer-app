@@ -185,7 +185,7 @@ class Makers extends React.Component<{ history: History, location: any }, { show
                       <Typography gutterBottom variant="h5" component="h2">
                         {p.name}
                       </Typography>
-                      <Chip label={p.distance ? `${p.distance.toFixed(1)}km` : 'inconnue'} className="distance-maker" color="default" icon={<RoomIcon />} />
+                      {p.distance && (<Chip label={p.distance ? `${p.distance.toFixed(1)}km` : 'inconnue'} className="distance-maker" color="default" icon={<RoomIcon />} />)}
                     </CardContent>
                   </CardActionArea>
                 </Card>
