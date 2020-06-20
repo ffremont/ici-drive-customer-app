@@ -43,7 +43,7 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
       const email:any = window.prompt('Merci de saisir votre email ');
 
       f.auth().sendSignInLinkToEmail(email, {
-        url: window.location.origin+'/email-check',
+        url: window.location.origin,
         handleCodeInApp: true,
       })
       .then(function() {
@@ -136,6 +136,7 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
             <Button
                 type="button"
                 fullWidth
+                disabled={false}
                 color="primary"
                 size="large"
                 onClick={() => this.signEmail()}

@@ -13,6 +13,7 @@ import schedulerResource from './resources/scheduler.resource';
 import busboy from './middlewares/busboy';
 import context from './context';
 import express = require('express');
+import { AppUtil } from './apputil';
 //import cors = require('cors');
 
 
@@ -24,7 +25,7 @@ if (customCreds) {
         credential: admin.credential.cert(serviceAccount)
     });
 } else {
-    admin.initializeApp();
+     admin.initializeApp();  
 }
 context.db(admin.firestore());
 moment.locale('fr');
@@ -75,6 +76,6 @@ app.post('/api/scheduler/heatbeat', schedulerResource.heatbeat.bind(schedulerRes
 export const api = functions.runWith(runtimeOpts).https.onRequest(app);
 //export const searchMaker = functions.https.onRequest(makerResource.search.bind(makerResource));
 //export const testSend = functions.https.onRequest(testResource.testFcm.bind(testResource));
-//export const test = functions.https.onRequest(testResource.test.bind(testResource));
+
 
 

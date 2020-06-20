@@ -2,7 +2,7 @@
 
 export class Config {
     public static pendingExpireAfter = 72; // hours
-    public static reminderNext = 3; // envoi le rappel si la commande doit être retirer dans les 3 heures
+    public static reminderNext = 2; // envoi le rappel si la commande doit être retirer dans les 2 heures
 
 
     public static limitBatchSchedule = 10;
