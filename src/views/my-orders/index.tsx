@@ -15,6 +15,7 @@ import { deepOrange, grey, green, common } from '@material-ui/core/colors';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import IconButton from '@material-ui/core/IconButton';
+import historyService from '../../services/history.service';
 
 
 
@@ -45,6 +46,7 @@ class MyOrders extends React.Component<{ history: any, classes: any }, { orders:
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     this.statusLabel[OrderState.PENDING] = {label: 'En cours de validation', color: this.props.classes.orange};
     this.statusLabel[OrderState.CANCELLED] = {label: 'Annulée', color: this.props.classes.grey};
     this.statusLabel[OrderState.VERIFIED] = {label: 'Vérifiée, en attente de confirmation', color: this.props.classes.orange};

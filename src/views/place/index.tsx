@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import RoomIcon from '@material-ui/icons/Room';
 import { Link } from 'react-router-dom';
+import historyService from '../../services/history.service';
 
 class Place extends React.Component<{ history: any, match: any }, { maker: Maker | null }>{
 
@@ -21,6 +22,7 @@ class Place extends React.Component<{ history: any, match: any }, { maker: Maker
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     const makerId = this.props.match.params.id;
     this.subMakers = makerStore.subscribe((makers: Maker[]) => {
       const maker = makers.find((p: Maker) => p.id === makerId) || null;

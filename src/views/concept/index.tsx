@@ -2,6 +2,7 @@ import React from 'react';
 import './Concept.scss';
 import MenuApp from '../../components/menu-app';
 import Typography from '@material-ui/core/Typography';
+import historyService from '../../services/history.service';
 
 class Concept extends React.Component<{ history: any, match: any }, {}>{
 
@@ -10,7 +11,7 @@ class Concept extends React.Component<{ history: any, match: any }, {}>{
   }
 
   componentDidMount() {
-
+    historyService.on(window.location.pathname);
   }
 
   render() {

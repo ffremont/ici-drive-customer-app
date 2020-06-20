@@ -44,6 +44,7 @@ import { User } from '../../models/user';
 import Chip from '@material-ui/core/Chip';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import historyService from '../../services/history.service';
 
 interface CategoryProductChoice {
   products: ProductChoice[],
@@ -63,6 +64,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     this.setState({ summaryMode: window.location.pathname.indexOf('/summary') > -1 });
 
     this.subMyProfil = myProfilStore.subscribe((myProfil: User) => {

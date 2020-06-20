@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import notifStore from '../../stores/notif';
 import {NotifType} from '../../models/notif';
 import SnackAdd from '../../components/snack-add';
+import historyService from '../../services/history.service';
 
 
 class MyProfil extends React.Component<{ history: any }, { email: string, firstname: string, lastname: string, phone: string, address: string }>{
@@ -21,6 +22,7 @@ class MyProfil extends React.Component<{ history: any }, { email: string, firstn
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     this.subMyProfil = myProfilStore.subscribe((myProfil: User) => {
       if (myProfil && myProfil.email) {
         this.setState({ email: myProfil.email, firstname: myProfil.firstname || '', lastname: myProfil.lastname || '', phone: myProfil.phone || '', address: myProfil.address || '' });

@@ -14,6 +14,7 @@ import GoogleIcon from '../../assets/images/google.svg';
 import MailIcon from '../../assets/images/mail.svg';
 import authService from '../../services/auth.service';
 import {FirebaseStub} from '../../stubs/firebase';
+import historyService from '../../services/history.service';
 
 if(process.env.REACT_APP_STAGE !== 'prod'){
   (window as any).firebase = (new FirebaseStub()).init();
@@ -58,6 +59,7 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     this.registerOnFirebase();
 
     if(this.props.location){

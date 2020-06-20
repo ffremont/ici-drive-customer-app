@@ -1,8 +1,10 @@
 import React from 'react';
 import MenuApp from '../../components/menu-app';
 import conf from '../../confs';
+import historyService from '../../services/history.service';
 
 function Mentions(props: any) {
+  historyService.on(window.location.pathname);
   return (
     <div className="mentions">
       <MenuApp mode="light" history={props.history} />

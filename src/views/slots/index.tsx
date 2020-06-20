@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import makerService from '../../services/maker.service';
+import historyService from '../../services/history.service';
 
 interface SlotButton {
   selected: boolean;
@@ -35,6 +36,7 @@ class Slots extends React.Component<{ history: any, match: any }, { order: Order
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     const tomorowLabel = moment.default().format('ddd D MMM');
 
     this.subOrder = cartStore.subscribe((order: Order) => {

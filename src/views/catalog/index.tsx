@@ -32,6 +32,7 @@ import SnackAdd from '../../components/snack-add';
 import { NotifType } from '../../models/notif';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import historyService from '../../services/history.service';
 
 
 interface GraphicProduct extends Product {
@@ -50,6 +51,7 @@ class Catalog extends React.Component<{ history: any, match: any }, { waiting: b
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     const makerId = this.props.match.params.id;
 
     this.subOrder = cartStore.subscribe((order: Order) => {

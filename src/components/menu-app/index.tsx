@@ -42,6 +42,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import pwaService from '../../services/pwa.service';
 import LockIcon from '@material-ui/icons/Lock';
 import ShareIcon from '@material-ui/icons/Share';
+import historyService from '../../services/history.service';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -59,6 +60,9 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       flexGrow: 1,
       paddingRight: 50,
+    },
+    titleNoPadding:{
+      paddingRight:0
     },
     list: {
       width: 250,
@@ -83,12 +87,12 @@ const MenuApp = (props: any) => {
   const classes = useStyles();
   const [mode, setMode] = useState('full');
   const [auth] = useState(false);
+  const [canGoBack, setCanGoBack] = useState(false);
   const [email, setEmail] = useState('');
   const [share, setShare] = useState('');
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
-  const [openMentions, setOpenMentions] = useState(false);
   const [showInstall, setShowInstall] = useState(false);
   const [showCgu, setShowCgu] = useState(false);
 
@@ -106,6 +110,9 @@ const MenuApp = (props: any) => {
   useEffect(() => {
     const subscription = cartStore.subscribe((order: Order) => {
       setQuantity(order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0));
+    });
+    const subHistory = historyService.stack.subscribe((r) => {
+      setCanGoBack(historyService.canGoBack(window.location.pathname));
     });
     const subMyProfil = myProfilStore.subscribe((user: User) => {
       if (user && user.email)
@@ -125,6 +132,7 @@ const MenuApp = (props: any) => {
     });
     return () => {
       // Nettoyage de l'abonnement
+      subHistory.unsubscribe();
       subscription.unsubscribe();
       subMyProfil.unsubscribe();
       subInstalled.unsubscribe();
@@ -201,14 +209,14 @@ const MenuApp = (props: any) => {
           </ListItem>)}
         </List>
       </Drawer>
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position="fixed" className={`${classes.appBar} ${canGoBack ? 'canGoBack': 'cantGoBack'}`}>
         <Toolbar>
           {(['full', 'makers'].indexOf(mode) > -1) && (
-            <IconButton edge="start" className={classes.firstButton} onClick={() => setOpen(true)} color="inherit" aria-label="menu">
+            <IconButton edge="start" className={`${classes.firstButton}`} onClick={() => setOpen(true)} color="inherit" aria-label="menu">
               <MenuIcon />
             </IconButton>
           )}
-          {(['full', 'makers'].indexOf(mode) === -1) && (
+          {canGoBack && (['full', 'makers'].indexOf(mode) === -1) && (
             <IconButton edge="start" className={classes.firstButton} onClick={() => props.history.goBack()} color="inherit" aria-label="précédent">
               <ArrowBackIosIcon />
             </IconButton>
@@ -216,12 +224,12 @@ const MenuApp = (props: any) => {
 
 
           {['full', 'makers'].indexOf(mode) > -1 && (
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={`${classes.title} ${canGoBack ? '': classes.titleNoPadding}`}>
               <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveBannerIcon} />
             </Typography>
           )}
           {['light', 'catalog'].indexOf(mode) > -1 && (
-            <Typography variant="h6" align="center" className={classes.title}>
+            <Typography variant="h6" align="center" className={`${classes.title} ${canGoBack ? '': classes.titleNoPadding}`}>
               <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveTypoIcon} />
 
             </Typography>

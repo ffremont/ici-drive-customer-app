@@ -13,6 +13,7 @@ import Link from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import EuroIcon from '@material-ui/icons/Euro';
 import ClearIcon from '@material-ui/icons/Clear';
+import historyService from '../../services/history.service';
 
 class How extends React.Component<{ history: any, match: any }, {}>{
 
@@ -21,7 +22,7 @@ class How extends React.Component<{ history: any, match: any }, {}>{
   }
 
   componentDidMount() {
-
+    historyService.on(window.location.pathname);
   }
 
   render() {

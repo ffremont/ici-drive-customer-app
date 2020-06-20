@@ -2,6 +2,7 @@ import React from 'react';
 import './MapPlace.scss';
 import { Subscription } from 'rxjs';
 import MenuApp from '../../../components/menu-app';
+import historyService from '../../../services/history.service';
 
 class MapPlace extends React.Component<{ history: any, match: any, location:any }, { }>{
 
@@ -14,6 +15,7 @@ class MapPlace extends React.Component<{ history: any, match: any, location:any 
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     const query = new URLSearchParams(this.props.location.search);
     const name = query.get('name'), address = query.get('address'), lat = parseFloat(query.get('lat')||'0'), lng = parseFloat(query.get('lng')||'0');
 

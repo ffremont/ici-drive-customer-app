@@ -31,6 +31,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 
 import Confirm from './confirm';
 import MenuApp from '../../components/menu-app';
+import historyService from '../../services/history.service';
 
 
 const pendingActions = [
@@ -72,6 +73,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     this.status[O.OrderState.PENDING] = {label: 'En cours de validation', color: this.props.classes.orange};
     this.status[O.OrderState.CANCELLED] = {label: 'Annulée', color: this.props.classes.grey};
     this.status[O.OrderState.VERIFIED] = {label: 'Vérifiée, en attente de confirmation', color: this.props.classes.orange};

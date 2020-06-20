@@ -26,6 +26,7 @@ import Concept from './views/concept';
 import MapPlace from './views/place/map/MapPlace';
 import EmailCheck from './views/email-check';
 import Mentions from './views/mentions';
+import historyService from './services/history.service';
 
 
 // @see https://material-ui.com/customization/palette/
@@ -35,17 +36,20 @@ const theme = createMuiTheme({"palette":{"common":{"black":"#000","white":"#fff"
 
 class App extends React.Component<{}, {  }>{
 
+  customHistory:any;
 
   componentDidMount() {
-        
+    historyService.onApp();
     moment.locale('fr');
   }
 
   render() {
+    
+
     return (
       <MuiThemeProvider theme={theme}>
 
-        <Router>
+        <Router >
           <Switch>
             {/*<Route exact path="/" render={(routeProps) => <Makers {...routeProps} />} />*/}
 

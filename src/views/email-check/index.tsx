@@ -1,4 +1,5 @@
 import React from 'react';
+import historyService from '../../services/history.service';
 
 class EmailCheck extends React.Component<{ history: any, match: any }, {}>{
 
@@ -7,6 +8,7 @@ class EmailCheck extends React.Component<{ history: any, match: any }, {}>{
   }
 
   componentDidMount() {
+    historyService.on(window.location.pathname);
     const firebase = (window as any).firebase;
     if (!firebase) return;
     // Confirm the link is a sign-in with email link.
