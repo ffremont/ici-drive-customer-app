@@ -2,6 +2,7 @@
   "hosting": {
     "target": "customer-ici-drive-prod",
     "public": "build",
+    "appAssociation": "NONE",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -12,11 +13,22 @@
       "headers": [ {
         "key": "X-Robots-Tag",
         "value": "noindex"
-      } ]
+      },{
+        "source": "**/.well-known/**",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      }]
     }],
     "rewrites": [{
       "source": "/api/**",
       "function": "api"
+    },{
+      "source": "/.well-known/assetlinks.json",
+      "destination": "/well-known/assetlinks.json"
     },{
       "source": "**",
       "destination": "/index.html"

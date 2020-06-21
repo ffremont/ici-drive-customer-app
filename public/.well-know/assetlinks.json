@@ -1,5 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target" : { "namespace": "android_app", "package_name": "fr.ici_drive.app.twa",
-                   "sha256_cert_fingerprints": [": EC:2A:75:B2:A1:98:61:66:64:28:12:3F:5B:C5:53:63:B8:03:51:0F:39:C4:FF:0D:E9:13:C2:62:9E:E9:32:5D"] }
-    }]

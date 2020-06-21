@@ -27,7 +27,7 @@ def twaManifest = [
     themeColor: '#71C837', // The color used for the status bar.
     navigationColor: '#000000', // The color used for the navigation bar.
     backgroundColor: '#FFFFFF', // The color used for the splash screen background.
-    enableNotifications: false, // Set to true to enable notification delegation.
+    enableNotifications: true, // Set to true to enable notification delegation.
     // Every shortcut must include the following fields:
     // - name: String that will show up in the shortcut.
     // - short_name: Shorter string used if |name| is too long.
@@ -48,8 +48,8 @@ android {
         applicationId "fr.ici_drive.app.twa"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 2
-        versionName "2"
+        versionCode 4
+        versionName "4"
 
         // The name for the application
         resValue "string", "appName", twaManifest.name
