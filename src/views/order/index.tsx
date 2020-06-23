@@ -25,6 +25,7 @@ import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 
 import PrintIcon from '@material-ui/icons/Print';
+import RoomIcon from '@material-ui/icons/Room';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import PhoneIcon from '@material-ui/icons/Phone';
@@ -40,7 +41,10 @@ const pendingActions = [
 ];
 const actions = [
   { icon: <PrintIcon />, name: 'print', label:'Imprimer' },
-  { icon: <PhoneIcon />, name: 'phone', label:'Contacter' }
+  { icon: <PhoneIcon />, name: 'phone', label:'Contacter' },
+  { icon: <RoomIcon />, name: 'marker', label:'Itinéraire' }
+
+  
 ];
 
 const useStyles = (theme: Theme) => ({
@@ -120,7 +124,9 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
     }else if(action && (action.name === 'cancel')){
       this.setState({openCancelDialog:true});
     }else if(action && (action.name === 'phone')){
-      window.open(`tel:${(this.state.order as any).maker.phone}`, '_blank');
+      window.open(`tel:${(this.state.order as any).maker.phone}`);
+    }else if(action && (action.name === 'marker') && (this.state.order as any).maker.place.point){
+      window.open(`https://www.google.fr/maps?q=${(this.state.order as any).maker.place.point.latitude},${(this.state.order as any).maker.place.point.longitude}`);
     }
   }
 

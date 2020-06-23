@@ -99,7 +99,7 @@ class MakerResource {
             const maker = await this.makerDao.getFull(markerId);
 
             if(maker){
-                AppUtil.expires(response, 1800);
+                AppUtil.expires(response, 60);
                 AppUtil.ok(response, maker);
             }else{
                 AppUtil.notFound(response);

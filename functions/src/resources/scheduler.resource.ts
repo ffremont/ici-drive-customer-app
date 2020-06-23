@@ -14,11 +14,13 @@ class SchedulerResource{
         try{
             await Promise.all([
                 scheduleService.comfirmedExpiration(),
-                scheduleService.pendingExpiration()
+                scheduleService.pendingExpiration(),
+                scheduleService.reminder()
             ]);
             
             AppUtil.info('comfirmedExpiration avec succès');
             AppUtil.info('pendingExpiration avec succès');
+            AppUtil.info('reminder avec succès');
             AppUtil.ok(response);
         }catch(e){
             AppUtil.error('scheduler in error',e);

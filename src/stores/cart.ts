@@ -20,6 +20,7 @@ class CartStore implements Store<Order>{
         if(window.sessionStorage && window.sessionStorage.getItem(CartStore.SESSION_STORAGE_KEY)){
             defaultOrder = JSON.parse(window.sessionStorage.getItem(CartStore.SESSION_STORAGE_KEY) as any);
         }
+        this.order = defaultOrder;
         this.sub = new BehaviorSubject<Order>(defaultOrder);
     }
 

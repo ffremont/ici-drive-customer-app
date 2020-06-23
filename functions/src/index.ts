@@ -13,7 +13,7 @@ import schedulerResource from './resources/scheduler.resource';
 import busboy from './middlewares/busboy';
 import context from './context';
 import express = require('express');
-import { AppUtil } from './apputil';
+//import { AppUtil } from './apputil';
 //import cors = require('cors');
 
 

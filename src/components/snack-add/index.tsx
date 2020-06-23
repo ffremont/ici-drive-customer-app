@@ -9,12 +9,14 @@ import { Notif, NotifType } from '../../models/notif';
 const SnackAdd = (props: any) => {
     const [open, setOpen] = React.useState(false);
     const [text, setText] = React.useState('');
+    const [duration, setDuration] = React.useState(800);
 
     useEffect(() => {
         const subscription = notifStore.subscribe((notif: Notif) => {
             if ([NotifType.SNACK_CART, NotifType.MY_PROFIL].indexOf(notif.type) > -1){
                 setText(notif.message);
-                setOpen(true);                
+                setOpen(true);    
+                if(notif.duration) setDuration(notif.duration); else setDuration(800);
             }
         });
         return () => {
@@ -35,7 +37,7 @@ const SnackAdd = (props: any) => {
     return (
         <Snackbar
             open={open}
-            autoHideDuration={800}
+            autoHideDuration={duration}
             onClose={handleClose}
             message={text ? text : "Panier actualisé"}
             action={

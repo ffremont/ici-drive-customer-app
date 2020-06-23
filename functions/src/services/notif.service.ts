@@ -241,6 +241,7 @@ export class NotifService {
 
         promises.push(this.send('ici_drive_customer_remind', order.customer?.email as any, Config.subjectRemind, {
             order_link: `${Config.customerAppUrl}/my-orders/${order.id}`,
+            order_ref:order.ref,
             maker_customer_phone: order.customer?.phone,
             when: moment(order.slot).format('ddd D MMM à HH:mm'),
             maker_place_label: order.maker?.place.label,

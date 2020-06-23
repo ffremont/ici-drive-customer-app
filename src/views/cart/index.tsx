@@ -51,9 +51,9 @@ interface CategoryProductChoice {
   category: Item
 }
 
-class Cart extends React.Component<{ history: any, location: any, match: any }, { waiting: boolean, showPhone: boolean, myProfil: User, phone: string, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
+class Cart extends React.Component<{ history: any, location: any, match: any }, { showErrors:boolean, expension:any, waiting: boolean, showPhone: boolean, myProfil: User, phone: string, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
 
-  state = { waiting: false, order: null, myProfil: { email: '' }, showPhone: false, phone: '', checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
+  state = { showErrors:false, expension:[], waiting: false, order: null, myProfil: { email: '' }, showPhone: false, phone: '', checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
   subOrder: Subscription | null = null;
   subMyProfil: Subscription | null = null;
   categories: Item[] = CONF.categories;
@@ -87,9 +87,9 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         if (slots && slots.length) {
           newFirstSlot = moment.default(slots[0]).format('ddd D MMM à HH:mm');
         }
-        this.setState({ order, groups, firstSlot: newFirstSlot });
+        this.setState({ order, groups, firstSlot: newFirstSlot, expension: groups.map(g => true) });
       } else {
-        this.setState({ order: null, groups: [] });
+        this.setState({ order: null, groups: [], expension:[] });
       }
     });
   }
@@ -127,6 +127,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         this.props.history.push('/cart/slots');
       } else {
         (window as any).scrollTo(0, document.body.scrollHeight);
+        this.setState({showErrors:true});
       }
     }
   }
@@ -136,10 +137,12 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
    */
   continue() {
     if (!this.state.summaryMode && this.state.showPhone) {
-      if (!(document as any).getElementById('cart-phone').checkValidity()) {
+      if (!(document as any).getElementById('cart-phone').checkValidity() || !this.state.checkCgr) {
+        this.setState({showErrors:true});
         (window as any).scrollTo(0, document.body.scrollHeight);
         return;
       }
+      this.setState({showErrors:false});
 
       // update phone /my-profil
       const newUser = { ...this.state.myProfil } as User;
@@ -283,9 +286,9 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
         {/* les categories avec les produits */}
         <div className="groups"> {this.state.groups.map((group: CategoryProductChoice, i) => (
-          <ExpansionPanel key={`cat_${i}`}>
+          <ExpansionPanel key={`cat_${i}`} expanded={true}>
             <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
+              
               aria-controls="panel1a-content"
               id={`panel${i}-header`}
             >
@@ -344,14 +347,15 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         </div>
 
 
-        {!this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">
-          <TextField type="tel" required onChange={(e) => this.setState({ phone: e.target.value })} id="cart-phone" inputProps={{ maxLength: 12 }} label="Téléphone" fullWidth={true} value={this.state.phone} />
+        {this.state.order && !this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">
+          <TextField error={!this.state.phone && this.state.showErrors} type="tel" required onChange={(e) => this.setState({ phone: e.target.value })} id="cart-phone" inputProps={{ maxLength: 12 }} label="Téléphone" fullWidth={true} value={this.state.phone} />
         </form></div>)}
 
-        {this.state.order && !this.state.summaryMode && (<div className="reglementation">
+        {this.state.order && !this.state.summaryMode && (<div className={`reglementation`}>
           <Checkbox
             checked={this.state.checkCgr}
             onChange={(e) => this.setState({ checkCgr: e.target.checked })}
+            className={`${!this.state.checkCgr && this.state.showErrors ? 'apperror':''}`}
             inputProps={{ 'aria-label': 'primary checkbox' }}
           /> <Typography variant="body1" className="accept-cgr">Accepter les <a href={CONF.cgr} rel="noreferrer noopener" target="_blank">Conditions Générales de Réservation</a></Typography>
         </div>)}

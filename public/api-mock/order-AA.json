@@ -2,7 +2,7 @@
     "created": 1588003735514,
     "ref": "GAEC_346025QSG576RB",
     "id": "AA",
-    "status": "pending",
+    "status": "confirmed",
     "total": 6.5,
     "slot": 1588255735514,
     "reasonOf": "Tous les produits sont disponibles",
@@ -60,6 +60,10 @@
         "place": {
             "label": "Parking de terre noire",
             "address": "5 rue de la terre, 79000 Niort",
+            "point": {
+                "latitude":46.326069,
+                "longitude":-0.503767
+            },
             "description": "Situé près de la rocade Sud de Niort, au calme.",
             "image": "https://icidrive.b-cdn.net/normandie-ferme-bio-grande-suardiere.jpg",
             "slotsDescription": "Ouvert habituellement la semaine et le week-end",

@@ -89,21 +89,21 @@ class Catalog extends React.Component<{ history: any, match: any }, { waiting: b
       if (cart?.maker?.id !== maker.id) {
         // cas, panier commencé sur un autre maker
         this.setState({ openCleanCart: true, wantToAdd: p })
-        notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
+        notifStore.set({type: NotifType.SNACK_CART, message:`"${p.label}" ajouté`, duration:3000});
       } else {
         //cas panier commencé avec le même maker
         cartStore.addProduct(p)
-          .then(() => notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'}))
+          .then(() => notifStore.set({type: NotifType.SNACK_CART, message:`"${p.label}" ajouté`, duration:3000}))
           .catch((err:any) => {
             if(err?.badQuantity){
-              notifStore.set({type: NotifType.SNACK_CART, message:'Quantité max atteinte'});
+              notifStore.set({type: NotifType.SNACK_CART, message:'Quantité max atteinte', duration:2000});
             }
           });        
       }
     } else {
       if (this.state.maker !== null) {
         cartStore.addFirstProductWithMaker(this.state.maker as any, {product:p, quantity:1});
-        notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
+        notifStore.set({type: NotifType.SNACK_CART, message:`"${p.label}" ajouté`, duration:3000})
       } else {
         console.error("add cart where maker is null");
         this.props.history.push('/');
@@ -122,7 +122,9 @@ class Catalog extends React.Component<{ history: any, match: any }, { waiting: b
 
   cleanAndAdd(){
     cartStore.addFirstProductWithMaker(this.state.maker as any, { product: this.state.wantToAdd, quantity: 1 } as any)
-    notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
+    //notifStore.set({type: NotifType.SNACK_CART, message:'Panier actualisé'});
+    if(this.state.wantToAdd)
+      notifStore.set({type: NotifType.SNACK_CART, message:`"${(this.state.wantToAdd as any).label}" ajouté`, duration:3000})
     this.setState({openCleanCart:false});
   }
 

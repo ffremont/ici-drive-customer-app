@@ -184,10 +184,15 @@ class Makers extends React.Component<{ history: History, location: any }, { show
                       title="Bannière producteur"
                     />
                     <CardContent className="maker-cardcontent">
-                      <Typography gutterBottom variant="h5" component="h2">
+                      <div className="maincontent"><Typography gutterBottom variant="h5" component="h2">
                         {p.name}
                       </Typography>
+                    
                       {p.distance && (<Chip label={p.distance ? `${p.distance.toFixed(1)}km` : 'inconnue'} className="distance-maker" color="default" icon={<RoomIcon />} />)}
+                      </div>
+                      <div className="subcontent">
+                        {p.place.address}
+                      </div>
                     </CardContent>
                   </CardActionArea>
                 </Card>

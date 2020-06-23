@@ -63,7 +63,7 @@ const Near = (props: any) => {
         {address && (<TextField className="current-address"
           fullWidth
           value={address}
-          label="Addresse choisie"
+          label="Adresse choisie"
           type="text"
           inputProps={{
             readOnly: true
