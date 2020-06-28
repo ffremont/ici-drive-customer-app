@@ -5,14 +5,16 @@ export class Config {
     public static reminderNext = 2; // envoi le rappel si la commande doit être retirer dans les 2 heures
 
 
-    public static limitBatchSchedule = 10;
+    public static limitBatchSchedule = 100;
 
     public static apikeyScheduler = 'a792450b-1a50-4429-84d2-420b8ea16ab7';
 
-    public static confirmedExpireAfter = 48; // hours
-    public static confirmedExpireWindowInHours = 6;
-    public static comfirmedExpirationReason = `Annulation automatique, la confirmation doit intervenir au moins 48h avant `
-    public static pendingExpirationReason = `Annulation automatique, la vérification doit intervenir au moins 72h avant `
+    public static enableOrderConfirmAfterDays = 5; // active confirmation si le retrait se fait dans les plus de X jours
+    public static expireWithoutConfirmHours = 3; // expiration des commandes non confirmées 3h avant le retrait
+    public static expireWithConfirmHours = 48;
+
+    public static withConfirmExpirationReason = `Annulation automatique, la confirmation / vérification doit intervenir au moins 48h avant `
+    public static noConfirmExpirationReason = `Annulation automatique, la vérification doit intervenir au moins 3h avant `
 
     public static MAKERS_NEAR_KM = 50;
     public static MAKERS_SEARCH_LIMIT = 50;

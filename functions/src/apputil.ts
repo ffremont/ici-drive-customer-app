@@ -67,6 +67,10 @@ export class AppUtil{
     }
 
     public static async authorized(request:Request) : Promise<string|null>{
+        if(process.env.STUB_AUTH_MAIL){
+            return process.env.STUB_AUTH_MAIL;
+        }
+
         if (!request.headers.authorization || !request.headers.authorization.startsWith('Bearer ')) {
             return null;
         }

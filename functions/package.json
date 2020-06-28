@@ -2,7 +2,7 @@
   "name": "functions",
   "scripts": {
     "build": "tsc",
-    "serve": "export GOOGLE_APPLICATION_CREDENTIALS=/home/florent/Documents/espace_travail/ici-drive/ici-drive-946b5266ccce.json && npm run build && npx firebase emulators:start --only functions",
+    "serve": "export STUB_AUTH_MAIL=ff.fremont.florent@gmail.com && export GOOGLE_APPLICATION_CREDENTIALS=/home/florent/Documents/espace_travail/ici-drive/ici-drive-946b5266ccce.json && npm run build && npx firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",

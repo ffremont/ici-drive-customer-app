@@ -13,19 +13,38 @@ export class OrderDao{
     }
 
     /**
-     * ça doit être vérifier au moins 72h avant
-     * Tout ce qui est prévu dans les 72h
+     * Retourne les commandes PENDING / VERIFIED qui sont passées ou prévues dans les 3h.
      */
-    public async getPendingTooShort(): Promise<Order[]>{
+    public async getExpiredOrderWithoutConfirmation(): Promise<Order[]>{
         const nowTs = (new Date()).getTime();
 
         const snap = await context.db().collection(Context.ORDERS_COLLECTION)
-        .where('status', '==', OrderState.PENDING)
-        .where('slot', '<', nowTs + Config.pendingExpireAfter*3600000)
+        .where('status', 'in', [OrderState.PENDING, OrderState.VERIFIED])
+        .where('slot', '<', nowTs + Config.expireWithoutConfirmHours*3600000)
         .limit(Config.limitBatchSchedule)
         .get();
-        return AppUtil.arrOfSnap(snap) as Order[];  
+        return (AppUtil.arrOfSnap(snap) as Order[]).filter(order => {
+            return (order.maker as any).startDriveAfterDays <= Config.enableOrderConfirmAfterDays;
+        });  
     }
+
+    /**
+     * retourne les réservations PENDING/VERIFIED "longue" prévues dans les 48h et passées
+     * 
+     */
+    public async getExpiredOrderWithConfirmation(): Promise<Order[]>{
+        const nowTs = (new Date()).getTime();
+
+        const snap = await context.db().collection(Context.ORDERS_COLLECTION)
+        .where('status', 'in', [OrderState.PENDING, OrderState.VERIFIED])
+        .where('slot', '<', nowTs + Config.expireWithConfirmHours*3600000)
+        .limit(Config.limitBatchSchedule)
+        .get();
+        return (AppUtil.arrOfSnap(snap) as Order[]).filter(order => {
+            return (order.maker as any).startDriveAfterDays > Config.enableOrderConfirmAfterDays;
+        });  
+    }
+
 
     /**
      * liste des commandes devant être retiré dans les "reminderNext" heures
@@ -42,36 +61,7 @@ export class OrderDao{
         return AppUtil.arrOfSnap(snap) as Order[];  
     }
 
-    /**
-     * Commandes confirmées de - de 48h
-     */
-    public async getConfirmedRecently(): Promise<Order[]>{
-        const nowTs = (new Date()).getTime();
-
-        AppUtil.debug({status:OrderState.CONFIRMED, op:'updated >', value :nowTs - (Config.confirmedExpireAfter - Config.confirmedExpireWindowInHours)*3600000})
-        const snap = await context.db().collection(Context.ORDERS_COLLECTION)
-        .where('status', '==', OrderState.CONFIRMED)
-        .where('updated', '>', nowTs - Config.confirmedExpireAfter*3600000) // toutes les commandes confirmées il y a - de 48h
-        .limit(Config.limitBatchSchedule)
-        .get();
-        AppUtil.debug('getConfirmedRecently.lenth '+snap.size);
-        return AppUtil.arrOfSnap(snap) as Order[];  
-    }
-
-    /**
-     * ça doit être vérifier au moins 48h avant
-     * @deprecated
-     */
-    public async getPendingComingSoon(): Promise<Order[]>{
-        const nowTs = (new Date()).getTime();
-
-        const snap = await context.db().collection(Context.ORDERS_COLLECTION)
-        .where('status', '==', OrderState.PENDING)
-        .where('slot', '<', nowTs + Config.confirmedExpireAfter*3600000) // 
-        .limit(Config.limitBatchSchedule)
-        .get();
-        return AppUtil.arrOfSnap(snap) as Order[];  
-    }
+    
 
     public async get(id:string): Promise<Order|null>{
         if(!id){ return null;}

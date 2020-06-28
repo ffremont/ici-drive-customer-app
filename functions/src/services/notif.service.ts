@@ -36,6 +36,10 @@ export class NotifService {
         from: OrderState.PENDING,
         newStatus: OrderState.REFUSED,
         notify: (order: Order, fcm: string | null) => this.refused(order, fcm)
+    },{
+        from: OrderState.PENDING,
+        newStatus: OrderState.CONFIRMED,
+        notify: (order: Order, fcm: string | null) => this.confirmed(order, fcm)
     }, {
         from: OrderState.VERIFIED,
         newStatus: OrderState.CONFIRMED,

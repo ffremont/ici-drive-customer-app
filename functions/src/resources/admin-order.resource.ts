@@ -2,8 +2,10 @@ import { Request, Response } from 'express';
 import { AppUtil } from "../apputil";
 import { OrderDao } from '../dao/order.dao';
 import { MakerDao } from '../dao/maker.dao';
-import { Order } from '../models/order';
+import { Order, OrderState } from '../models/order';
 import notifService from '../services/notif.service';
+
+import { Config } from '../config';
 
 export class AdminOrderResource{
 
@@ -11,6 +13,7 @@ export class AdminOrderResource{
     private makerDao = new MakerDao();
 
     public async updateOrder(request: Request, response: Response) {
+        AppUtil.debug("AdminOrderResource > updateOrder");
         try{
             const currentMakerEmail = await AppUtil.authorized(request);
             if (currentMakerEmail === null) {
@@ -34,8 +37,16 @@ export class AdminOrderResource{
             if(order.reasonOf){
                 modification.reasonOf = order.reasonOf;
             }
+            AppUtil.debug("AdminOrderResource > updateOrder > order.status:",order.status);
             if(order.status){
-                modification.status = order.status;
+                const delta = (order.slot || 0) - order.created;
+                AppUtil.debug("AdminOrderResource > updateOrder > delta ",delta);
+                if(delta > 0 && (delta < (Config.enableOrderConfirmAfterDays*24*60*60*1000) && (order.status === OrderState.VERIFIED))){
+                    // retrait dans plus de X jours, DESACTIVATION de la CONFIRMATION, on passe directement VERIFIED -> CONFIRMED
+                    modification.status = OrderState.CONFIRMED;
+                }else{
+                    modification.status = order.status;
+                }                
             }else{
                 AppUtil.badRequest(response, 'Contenu de modification invalide');
             }

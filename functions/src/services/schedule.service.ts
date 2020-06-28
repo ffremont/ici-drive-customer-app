@@ -13,21 +13,19 @@ export class ScheduleService {
     /**
      * Annulation des commandes confirmées dès 48h, on check que le retrait ne se fait pas mnt
      */
-    public async comfirmedExpiration() {
-        AppUtil.debug('comfirmedExpiration...');
+    public async confirmExpiration() {
+        AppUtil.debug('confirmExpiration...');
         const nowTo = (new Date()).getTime();
-        const orders = (await this.orderDao.getConfirmedRecently()).filter(order => {
-            return order.slot && ((order.slot - order.updated) < Config.confirmedExpireAfter * 3600000);
-        });
+        const orders = await this.orderDao.getExpiredOrderWithConfirmation();
 
         const batch = context.db().batch();
 
         orders.forEach(order => {
             if (order.id) {
-                AppUtil.debug(`update ${order.id} with status CANCELLED, reasonOf : ${Config.comfirmedExpirationReason}`);
+                AppUtil.debug(`update ${order.id} with status CANCELLED, reasonOf : ${Config.withConfirmExpirationReason}`);
 
                 const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
-                batch.update(ref, { status: OrderState.CANCELLED, updated: nowTo, reasonOf: Config.comfirmedExpirationReason });
+                batch.update(ref, { status: OrderState.CANCELLED, updated: nowTo, reasonOf: Config.withConfirmExpirationReason });
             }
         });
 
@@ -37,12 +35,13 @@ export class ScheduleService {
             const promises = [];
             for (let i = 0; i < orders.length; i++) {
                 const o = orders[i] as any;
+                const previousStatus = `${o.status}`;
                 o.status = OrderState.CANCELLED;
                 o.updated = nowTo;
-                o.reasonOf = Config.comfirmedExpirationReason;
+                o.reasonOf = Config.withConfirmExpirationReason;
 
                 const user = await this.userDao.get(o.customer?.email);
-                promises.push(notifService.applyTransition(user?.fcm || null, OrderState.CONFIRMED, o));
+                promises.push(notifService.applyTransition(user?.fcm || null, previousStatus, o));
             }
             await Promise.all(promises);
             AppUtil.info('PENDING EXPIRATION OK')
@@ -94,20 +93,19 @@ export class ScheduleService {
     /**
      * Annulation des commandes trop vieilles ou sur le point d'être prévues
      */
-    public async pendingExpiration() {
-        AppUtil.debug('pendingExpiration...');
+    public async noConfirmationExpiration() {
+        AppUtil.debug('noConfirmationExpiration...');
         const nowTo = (new Date()).getTime();
-        let orders = (await this.orderDao.getPendingTooShort());
-        orders = orders.concat(await this.orderDao.getPendingComingSoon());
+        let orders = (await this.orderDao.getExpiredOrderWithoutConfirmation());
 
         const batch = context.db().batch();
 
         orders.forEach(order => {
             if (order.id) {
-                AppUtil.debug(`update ${order.id} with status CANCELLED : ` + Config.pendingExpirationReason);
+                AppUtil.debug(`update ${order.id} with status CANCELLED : ` + Config.noConfirmExpirationReason);
                 const ref = context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
 
-                batch.update(ref, { status: OrderState.CANCELLED, updated: nowTo, reasonOf: Config.pendingExpirationReason });
+                batch.update(ref, { status: OrderState.CANCELLED, updated: nowTo, reasonOf: Config.noConfirmExpirationReason });
             }
         });
 
@@ -117,12 +115,13 @@ export class ScheduleService {
             const promises = [];
             for (let i = 0; i < orders.length; i++) {
                 const o = orders[i] as any;
+                const previousStatus = `${o.status}`;
                 o.status = OrderState.CANCELLED;
                 o.updated = nowTo;
-                o.reasonOf = Config.pendingExpirationReason;
+                o.reasonOf = Config.noConfirmExpirationReason;
 
                 const user = await this.userDao.get(o.customer?.email);
-                promises.push(notifService.applyTransition(user?.fcm || null, OrderState.PENDING, o));
+                promises.push(notifService.applyTransition(user?.fcm || null, previousStatus, o));
             }
             await Promise.all(promises);
             AppUtil.info('PENDING EXPIRATION OK')
