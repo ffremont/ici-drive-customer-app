@@ -155,7 +155,11 @@ class Catalog extends React.Component<{ history: any, match: any }, { waiting: b
         {this.state.maker && (<Discover  payments={myPart.payments} goToPlace={() => this.props.history.push(`/makers/${myPart.id}/place`)} image={myPart.image} height={140} description={myPart.description} title={myPart.name} learnMore={myPart.webPage} />)}
         </div>
 
+      
         <Grid className="products-grid" container alignContent="center" alignItems="center" justify="center" spacing={0}>
+          {this.state.products.length === 0 && (<Grid item className="bientot">
+            Bientôt des produits...
+          </Grid>)}
           {this.state.products.map((p: GraphicProduct, i: number) => (
             <Grid item key={i}>
               <Card className="product-card" >

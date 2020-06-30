@@ -5,6 +5,7 @@ import { User } from "./user";
 export interface ProductChoice{
     product:Product;
     quantity:number;
+    checked?:boolean;
 }
 
 export enum OrderState{
