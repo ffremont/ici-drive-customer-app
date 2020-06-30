@@ -9,14 +9,15 @@ export class AuthService{
     public isAuth = false;
     private currentIdToken : string | null = null;
 
-    public authenticate(user:User): void {
+    public async authenticate(user:User): Promise<User> {
         fcmService.init();
         
         this.isAuth = true;
         this.subUser.next(user);
 
         // provoque la récupération du profil dès qu'on est connecté
-        myProfilStore.load();
+       return await myProfilStore.load();
+           
     }
 
     public setIdToken(idToken:string){

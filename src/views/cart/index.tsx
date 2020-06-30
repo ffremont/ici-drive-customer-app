@@ -281,7 +281,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
         {this.state.order && (<div className="info-area">
           <Alert severity="info">
-            Prix TTC. En cas de rupture de stock d'un produit, vous en serez informé et vous choisirez de confirmer ou non.</Alert>
+            Prix TTC. En cas de rupture de stock d'un produit, vous en serez informé.</Alert>
         </div>)}
 
         {/* les categories avec les produits */}
@@ -351,6 +351,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
           <TextField error={!this.state.phone && this.state.showErrors} type="tel" required onChange={(e) => this.setState({ phone: e.target.value })} id="cart-phone" inputProps={{ maxLength: 12 }} label="Téléphone" fullWidth={true} value={this.state.phone} />
         </form></div>)}
 
+        
         {this.state.order && !this.state.summaryMode && (<div className={`reglementation`}>
           <Checkbox
             checked={this.state.checkCgr}
@@ -358,6 +359,9 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
             className={`${!this.state.checkCgr && this.state.showErrors ? 'apperror':''}`}
             inputProps={{ 'aria-label': 'primary checkbox' }}
           /> <Typography variant="body1" className="accept-cgr">Accepter les <a href={CONF.cgr} rel="noreferrer noopener" target="_blank">Conditions Générales de Réservation</a></Typography>
+        </div>)}
+        {this.state.order && !this.state.summaryMode && !this.state.checkCgr && this.state.showErrors && (<div className="reg-ko">
+              Veuillez lire et cocher les CGR
         </div>)}
 
 

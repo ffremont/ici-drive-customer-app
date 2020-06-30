@@ -21,6 +21,20 @@
     margin-left: 40px;
 }
 
+.order-sumup, .order-product{
+    margin:20px;
+}
+
+strong.total{
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.product-label{
+    font-size:1.3rem !important;
+}
+
 @media print {
     .my-speed-dial, .MuiAppBar-root{
         display:none !important;
@@ -29,3 +43,4 @@
         margin-top:0px !important;
     }
 }
+

@@ -92,6 +92,7 @@ const MenuApp = (props: any) => {
   const [auth] = useState(false);
   const [canGoBack, setCanGoBack] = useState(false);
   const [email, setEmail] = useState('');
+  const [goBackPath, setGoBackPath] = useState('');
   const [share, setShare] = useState('');
   const [quantity, setQuantity] = useState(0);
   const [open, setOpen] = useState(false);
@@ -102,6 +103,9 @@ const MenuApp = (props: any) => {
   React.useEffect(() => {
     setMode(props.mode);
   }, [props.mode]);
+  React.useEffect(() => {
+    setGoBackPath(props.goBackPath);
+  }, [props.goBackPath]);
   React.useEffect(() => {
     setShare(props.share);
   }, [props.share]);
@@ -220,7 +224,7 @@ const MenuApp = (props: any) => {
             </IconButton>
           )}
           {canGoBack && (['full', 'makers'].indexOf(mode) === -1) && (
-            <IconButton edge="start" className={classes.firstButton} onClick={() => props.history.goBack()} color="inherit" aria-label="précédent">
+            <IconButton edge="start" className={classes.firstButton} onClick={() => goBackPath ? props.history.push(goBackPath) : props.history.goBack()} color="inherit" aria-label="précédent">
               <ArrowBackIosIcon />
             </IconButton>
           )}

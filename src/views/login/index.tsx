@@ -74,10 +74,23 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
   private registerOnFirebase(){
     this.unregisterAuthObserver = (window as any).firebase.auth().onAuthStateChanged(
       (user:any) => {
-        this.setState({ loading: false, isSignedIn: !!user })
         if(user){
-          (window as any).firebase.auth().currentUser.getIdToken().then((token:string) => authService.setIdToken(token));
-          authService.authenticate({email: user.email});
+          const promises = [(window as any).firebase.auth().currentUser.getIdToken().then((token:string) => {
+            authService.setIdToken(token)
+            return token;
+          })];
+          promises.push(authService.authenticate({email: user.email}));
+          
+          Promise.all(promises)
+          .then((results) => {
+            const user = results[1];
+            let from = !user.lastname || !user.phone ? '/my-profil': this.state.from;
+            
+            this.setState({ loading: false, isSignedIn: true, from });
+          }).catch((e) => {
+            this.setState({ loading: false, isSignedIn: false, from:'/error' });
+
+          });
         }else{
           // no authenticated, noop show buttons
         }        

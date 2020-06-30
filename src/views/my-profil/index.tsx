@@ -48,7 +48,7 @@ class MyProfil extends React.Component<{ history: any }, { email: string, firstn
 
   render() {
     return (<div className="my-profil">
-      <MenuApp mode={'my-profil'} history={this.props.history} />
+      <MenuApp mode={'my-profil'} goBackPath="/" history={this.props.history} />
       <SnackAdd />
       
       {this.state.email && (<form onSubmit={(e) => this.onSubmit(e)}>

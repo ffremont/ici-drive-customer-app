@@ -1,6 +1,6 @@
 import React from 'react';
 import './Order.scss';
-import ordersStore, {OrdersStore} from '../../stores/orders';
+import ordersStore, { OrdersStore } from '../../stores/orders';
 import { Subscription } from 'rxjs';
 import * as O from '../../models/order';
 import * as moment from 'moment';
@@ -12,17 +12,14 @@ import { deepOrange, grey, green } from '@material-ui/core/colors';
 import Chip from '@material-ui/core/Chip';
 import Fab from '@material-ui/core/Fab';
 import { Maker } from '../../models/maker';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 
 import ClearIcon from '@material-ui/icons/Clear';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 import PrintIcon from '@material-ui/icons/Print';
 import RoomIcon from '@material-ui/icons/Room';
@@ -33,18 +30,19 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import Confirm from './confirm';
 import MenuApp from '../../components/menu-app';
 import historyService from '../../services/history.service';
+import Typography from '@material-ui/core/Typography';
 
 
 const pendingActions = [
-  { icon: <PrintIcon />, name: 'print', label:'Imprimer' },
-  { icon: <ClearIcon />, name: 'cancel', label:'Annuler' }
+  { icon: <PrintIcon />, name: 'print', label: 'Imprimer' },
+  { icon: <ClearIcon />, name: 'cancel', label: 'Annuler' }
 ];
 const actions = [
-  { icon: <PrintIcon />, name: 'print', label:'Imprimer' },
-  { icon: <PhoneIcon />, name: 'phone', label:'Contacter' },
-  { icon: <RoomIcon />, name: 'marker', label:'Itinéraire' }
+  { icon: <PrintIcon />, name: 'print', label: 'Imprimer' },
+  { icon: <PhoneIcon />, name: 'phone', label: 'Contacter' },
+  { icon: <RoomIcon />, name: 'marker', label: 'Itinéraire' }
 
-  
+
 ];
 
 const useStyles = (theme: Theme) => ({
@@ -65,9 +63,9 @@ const useStyles = (theme: Theme) => ({
   }
 });
 
-class Order extends React.Component<{ history: any, classes: any, match: any }, { openInfoConfirmed: boolean, openCancelDialog:boolean, order: O.Order | null, open: boolean, hidden: boolean }>{
+class Order extends React.Component<{ history: any, classes: any, match: any }, { openInfoConfirmed: boolean, openCancelDialog: boolean, order: O.Order | null, open: boolean, hidden: boolean }>{
 
-  state = { order: null, open: false, hidden: false, openCancelDialog:false, openInfoConfirmed:false };
+  state = { order: null, open: false, hidden: false, openCancelDialog: false, openInfoConfirmed: false };
   status: any = {};
   sub: Subscription | null = null;
 
@@ -78,15 +76,15 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
 
   componentDidMount() {
     historyService.on(window.location.pathname);
-    this.status[O.OrderState.PENDING] = {label: 'En cours de validation', color: this.props.classes.orange};
-    this.status[O.OrderState.CANCELLED] = {label: 'Annulée', color: this.props.classes.grey};
-    this.status[O.OrderState.VERIFIED] = {label: 'Vérifiée, en attente de confirmation', color: this.props.classes.orange};
-    this.status[O.OrderState.CONFIRMED] = {label: 'Confirmée', color: this.props.classes.green};
-    this.status[O.OrderState.REFUSED] = {label:'Refusée', color: this.props.classes.grey};
+    this.status[O.OrderState.PENDING] = { label: 'En cours de validation', color: this.props.classes.orange };
+    this.status[O.OrderState.CANCELLED] = { label: 'Annulée', color: this.props.classes.grey };
+    this.status[O.OrderState.VERIFIED] = { label: 'Vérifiée, en attente de confirmation', color: this.props.classes.orange };
+    this.status[O.OrderState.CONFIRMED] = { label: 'Confirmée', color: this.props.classes.green };
+    this.status[O.OrderState.REFUSED] = { label: 'Refusée', color: this.props.classes.grey };
 
     const id: string = this.props.match.params.id;
     this.sub = ordersStore.subscribe((orders: O.Order[]) => {
-      console.log('Order > ordersStore.sub ',orders);
+      console.log('Order > ordersStore.sub ', orders);
       if (orders && orders.length) {
         this.setState({ order: orders[0] });
       }
@@ -96,18 +94,18 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
     ordersStore.load(id || '');
   }
 
-  onClickConfirmOrder(){
-    const newOrder:O.Order = {...(this.state.order as any)};
+  onClickConfirmOrder() {
+    const newOrder: O.Order = { ...(this.state.order as any) };
     newOrder.reasonOf = '';
     newOrder.status = O.OrderState.CONFIRMED;
     OrdersStore.update(newOrder)
-      .then(() => this.setState({openInfoConfirmed:true}))
+      .then(() => this.setState({ openInfoConfirmed: true }))
       .catch(() => this.props.history.push('/error'));
   }
 
 
-  cancel(text:string){
-    const newOrder:O.Order = {...(this.state.order as any)};
+  cancel(text: string) {
+    const newOrder: O.Order = { ...(this.state.order as any) };
     newOrder.reasonOf = text;
     newOrder.status = O.OrderState.CANCELLED;
     OrdersStore.update(newOrder)
@@ -117,15 +115,15 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
 
 
 
-  onClickDialAction(action:any){
+  onClickDialAction(action: any) {
     this.setState({ open: false });
-    if(action && (action.name === 'print')){
+    if (action && (action.name === 'print')) {
       window.print();
-    }else if(action && (action.name === 'cancel')){
-      this.setState({openCancelDialog:true});
-    }else if(action && (action.name === 'phone')){
+    } else if (action && (action.name === 'cancel')) {
+      this.setState({ openCancelDialog: true });
+    } else if (action && (action.name === 'phone')) {
       window.open(`tel:${(this.state.order as any).maker.phone}`);
-    }else if(action && (action.name === 'marker') && (this.state.order as any).maker.place.point){
+    } else if (action && (action.name === 'marker') && (this.state.order as any).maker.place.point) {
       window.open(`https://www.google.fr/maps?q=${(this.state.order as any).maker.place.point.latitude},${(this.state.order as any).maker.place.point.longitude}`);
     }
   }
@@ -153,7 +151,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
           {currentOrder.maker.payments.acceptBankCheck && (<Chip className="payment" label="chèque" />)}
           {currentOrder.maker.payments.acceptPaypal && (<Chip className="payment" label="paypal" />)}
         </Grid>)}
-        
+
 
         <Grid item>
           <Grid container direction="column" justify="center" spacing={1}>
@@ -213,39 +211,42 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
 
       </Grid>)}
 
-      {currentOrder && currentOrder.choices && (<TableContainer>
-        <Table className={this.props.classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Quantité</TableCell>
-              <TableCell align="center">Réf.</TableCell>
-              <TableCell align="center">P.U.</TableCell>
-              <TableCell align="center">Libellé</TableCell>
-              <TableCell align="center">Description</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {currentOrder.choices.map((pc: O.ProductChoice, i) => (
-              <TableRow key={`pc_${i}`}>
-                <TableCell align="center">{pc.quantity}</TableCell>
-                <TableCell align="center">{pc.product.ref}</TableCell>
-                <TableCell align="center">{pc.product.price}</TableCell>
-                <TableCell align="center">{pc.product.label}</TableCell>
-                <TableCell align="center">{pc.product.description}</TableCell>
-              </TableRow>
+      {currentOrder && currentOrder.choices && (<Card className="order-sumup" variant="outlined">
+        <CardContent>
+          <Typography variant="h5" component="h2">
+            Résumé du panier 
+        </Typography>
+          <Typography color="textSecondary">
+            {currentOrder.choices.length} produits différents
+        </Typography>
+          <Typography variant="body2" component="p">
+            Total de <strong className="total">{currentOrder.total || 'ERREUR'}€</strong>
+          </Typography>
+        </CardContent>
+      </Card>)}
+
+      {currentOrder && currentOrder.choices.map((pc: O.ProductChoice, i) => (
+              <Card key={`product_${i}`} className="order-product" variant="outlined">
+              <CardContent>
+                <Typography className="product-label" variant="h5">
+                x{pc.quantity} - {pc.product.label}
+              </Typography>
+                <Typography color="textSecondary">
+                  {pc.product.ref}
+              </Typography>
+                <Typography variant="body2" component="p">
+                  <strong>Prix unitaire </strong> {pc.product.price}€
+                  <br/>
+                  <strong>Description</strong> : {pc.product.description}
+                </Typography>
+              </CardContent>
+            </Card>
             ))}
-            <TableRow>
-              <TableCell colSpan={3} align="right">Total</TableCell>
-              <TableCell align="center">{currentOrder.total || 'ERREUR'}€</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>)}
 
-    <Confirm title="Annuler la commande" withText={true} onClose={() => this.setState({openCancelDialog:false})} onConfirm={(txt:string) => this.cancel(txt)} message="Je souhaite annuler pour le motif :" open={this.state.openCancelDialog}/>
-    <Confirm title="La suite par email" withText={false} onClose={() => this.setState({openInfoConfirmed:false})} onConfirm={(txt:string) => this.props.history.push('/my-orders')} message="Un email récapitulatif vous a été transmis." open={this.state.openInfoConfirmed}/>
+      <Confirm title="Annuler la commande" withText={true} onClose={() => this.setState({ openCancelDialog: false })} onConfirm={(txt: string) => this.cancel(txt)} message="Je souhaite annuler pour le motif :" open={this.state.openCancelDialog} />
+      <Confirm title="La suite par email" withText={false} onClose={() => this.setState({ openInfoConfirmed: false })} onConfirm={(txt: string) => this.props.history.push('/my-orders')} message="Un email récapitulatif vous a été transmis." open={this.state.openInfoConfirmed} />
 
-    
+
 
       {/* Actions en fonction des états */}
 
@@ -269,18 +270,18 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
         ))}
       </SpeedDial>)}
 
-      { currentOrder && currentOrder.status === O.OrderState.VERIFIED && (
+      {currentOrder && currentOrder.status === O.OrderState.VERIFIED && (
         <div className="fab-actions">
-          
-        <Fab size="large" color="default" onClick={() => this.setState({openCancelDialog:true})} aria-label="add" className="fab-cancelled">
-            <CloseIcon />
-        </Fab>
 
-        <Fab size="large" color="secondary" onClick={() => this.onClickConfirmOrder()} aria-label="add" className="fab-verified">
+          <Fab size="large" color="default" onClick={() => this.setState({ openCancelDialog: true })} aria-label="add" className="fab-cancelled">
+            <CloseIcon />
+          </Fab>
+
+          <Fab size="large" color="secondary" onClick={() => this.onClickConfirmOrder()} aria-label="add" className="fab-verified">
             <CheckIcon />
-        </Fab>
-        
-          </div>
+          </Fab>
+
+        </div>
       )}
 
     </div>);

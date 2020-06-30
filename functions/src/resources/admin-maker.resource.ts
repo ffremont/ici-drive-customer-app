@@ -224,18 +224,21 @@ class AdminMakerResource {
      */
     public async updateSelf(request: Request, response: Response) {
         try {
+            AppUtil.debug("updateSelf");
             const currentMakerEmail = await AppUtil.authorized(request);
             if (currentMakerEmail === null) {
                 AppUtil.notAuthorized(response); return;
             }
             const partialMaker = await this.makerDao.getByEmail(currentMakerEmail);
+            AppUtil.debug("partialMaker ? "+partialMaker?'oui':'non');
             if(!partialMaker){
                 AppUtil.badRequest(response);return;
             }
             const files = (request as any).files || [];
 
             const newMaker = request.body.data ? JSON.parse(request.body.data) as Maker : request.body;
-            
+            AppUtil.debug("new newMaker ? ",newMaker);
+
             // écrasement des valeurs
             newMaker.id = partialMaker.id;
             newMaker.created = partialMaker.created;
@@ -250,7 +253,7 @@ class AdminMakerResource {
             if(filePlaceImage)
                 newMaker.place.image = await this.safeUploadFile(partialMaker?.place.image||'', filePlaceImage.originalname, filePlaceImage.buffer, 'place');
 
-            if(newMaker.place.point)
+            if(newMaker.place && newMaker.place.point)
                 newMaker.place.point.geopoint = new admin.firestore.GeoPoint(newMaker.place.point.latitude, newMaker.place.point.longitude);
 
             delete newMaker.products;

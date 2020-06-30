@@ -28,73 +28,73 @@ class How extends React.Component<{ history: any, match: any }, {}>{
   render() {
 
     return (<div className="how">
-      <MenuApp mode="light" history={this.props.history} />
+    <MenuApp mode="light" history={this.props.history} />
 <div className="how-content">
-      <Typography variant="h5">Premiers pas</Typography>
+    <Typography variant="h5">Premiers pas</Typography>
 
-      <Stepper orientation="vertical">
+    <Stepper orientation="vertical">
 
-        <Step active={true} key="reservation">
-          <StepLabel>Réservation</StepLabel>
-          <StepContent>
-          <Typography variant="body1">
-          Chaque producteur adapte la date du retrait en fonction de son  activité (min 5jrs après). Lorsque votre réservation est terminée sur <Link href="app.ici-drive.fr">app.ici-drive.fr</Link>. 
-          <strong> Le producteur peut la vérifier jusqu'à 72h avant la date du retrait.</strong>
-          </Typography>
-            
-          </StepContent>
-        </Step>
-        <Step active={true} key="verification">
-          <StepLabel>Vérification par le producteur</StepLabel>
-          <StepContent>
-          <Typography variant="body1">Le producteur s'assure d'avoir le stock suffisant pour honorer la réservation. Le cas échéant une note sera transmise.</Typography>
-          </StepContent>
-        </Step>
-        <Step active={true} key="confirmation">
-          <StepLabel>Confirmation par le consommateur</StepLabel>
-          <StepContent>
-          <Typography variant="body1">Un lapse de temps peut s'écouler entre la réservation et la vérification. Pour éviter tout oubli. Une confirmation est nécessaire jusqu'à 48h avant la date du retrait.
-
-<br/>
-En cas de réservation compatible par PayPal, le producteur enverra la demande de paiement.</Typography>
-          </StepContent>
-        </Step>
-        <Step active={true} key="retrat">
-          <StepLabel>Retrait</StepLabel>
-          <StepContent>
-          <Typography variant="body1">Le retrait se fera à la date choisie lors de la réservation sur le lieu du Drive du producteur.
+      <Step active={true} key="reservation">
+        <StepLabel>Réservation</StepLabel>
+        <StepContent>
+        <Typography variant="body1">
+        Chaque producteur adapte la date du retrait (au plus tôt) en fonction de son  activité. Lorsque votre réservation est terminée sur <Link href="app.ici-drive.fr">app.ici-drive.fr</Link>. 
+        <strong> Le producteur doit la vérifier</strong>, au plus tard, 3h avant le retrait si le retrait est prévu dans les moins de 5 jours, sinon 48h avant le retrait.
+        </Typography>
+          
+        </StepContent>
+      </Step>
+      <Step active={true} key="verification">
+        <StepLabel>Vérification par le producteur</StepLabel>
+        <StepContent>
+        <Typography variant="body1">Le producteur s'assure d'avoir le stock suffisant pour honorer la réservation. Le cas échéant une note sera transmise.</Typography>
+        </StepContent>
+      </Step>
+      <Step active={true} key="confirmation">
+        <StepLabel>Confirmation</StepLabel>
+        <StepContent>
+        <Typography variant="body1">Si le retrait se fait dans - de 5j, la confirmation est automatique.</Typography>
+        <Typography variant="body1">Si le retrait se fait dans + de 5j, la confirmation par le consommateur sera nécessaire et cela pour éviter tout oubli. Elle peut se faire jusqu'à 48h avant la date du retrait.
+</Typography>
+<Typography variant="body1">En cas de réservation compatible par PayPal, le producteur enverra la demande de paiement.</Typography>
+        </StepContent>
+      </Step>
+      <Step active={true} key="retrat">
+        <StepLabel>Retrait</StepLabel>
+        <StepContent>
+        <Typography variant="body1">Le retrait se fera à la date choisie lors de la réservation sur le lieu du Drive du producteur.
 Toutes les informations se trouvent sur votre app dans "mes réservations".</Typography>
-          </StepContent>
-        </Step>
-      </Stepper>
+        </StepContent>
+      </Step>
+    </Stepper>
+
+    <Card>
+      <CardHeader avatar={
+        <Avatar aria-label="euro">
+          <EuroIcon/>
+        </Avatar>
+      } title="Paiement"/>
+      <CardContent>
+        <Typography variant="body1">
+        Les paiements sont du ressort du producteur. Ils se dérouleront soit via PayPal ou sur le lieu du retrait en fonction des préférences du producteur.
+        </Typography>
+      </CardContent>
+      </Card>
 
       <Card>
-        <CardHeader avatar={
-          <Avatar aria-label="euro">
-            <EuroIcon/>
-          </Avatar>
-        } title="Paiement"/>
-        <CardContent>
-          <Typography variant="body1">
-          Les paiements sont du ressort du producteur. Ils se dérouleront soit via PayPal ou sur le lieu du retrait en fonction des préférences du producteur.
-          </Typography>
-        </CardContent>
-        </Card>
-
-        <Card>
-        <CardHeader avatar={
-          <Avatar aria-label="clear">
-            <ClearIcon/>
-          </Avatar>
-        } title="Annuler"/>
-        <CardContent>
-          <Typography variant="body1">
-          Le producteur et le consommateur peuvent annuler la réservation depuis leur espace respectif.
-          </Typography>
-        </CardContent>
-        </Card>
-        </div>
-    </div>);
+      <CardHeader avatar={
+        <Avatar aria-label="clear">
+          <ClearIcon/>
+        </Avatar>
+      } title="Annuler"/>
+      <CardContent>
+        <Typography variant="body1">
+        Le producteur et le consommateur peuvent annuler la réservation depuis leur espace respectif.
+        </Typography>
+      </CardContent>
+      </Card>
+      </div>
+  </div>);
   }
 }
 
