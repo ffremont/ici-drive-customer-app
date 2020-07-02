@@ -256,7 +256,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
             ))}
 
       <Confirm title="Annuler la commande" withText={true} onClose={() => this.setState({ openCancelDialog: false })} onConfirm={(txt: string) => this.cancel(txt)} message="Je souhaite annuler pour le motif :" open={this.state.openCancelDialog} />
-      <Confirm title="La suite par email" withText={false} onClose={() => this.setState({ openInfoConfirmed: false })} onConfirm={(txt: string) => this.props.history.push('/my-orders')} message="Un email récapitulatif vous a été transmis." open={this.state.openInfoConfirmed} />
+      <Confirm title="Réservation confirmée" okText="Ok" withText={false} onClose={() => this.setState({ openInfoConfirmed: false })} onConfirm={(txt: string) => this.props.history.push('/my-orders')} message="Un email récapitulatif vous a été transmis." open={this.state.openInfoConfirmed} />
 
 
 
