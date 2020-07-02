@@ -24,6 +24,8 @@ import CardContent from '@material-ui/core/CardContent';
 import PrintIcon from '@material-ui/icons/Print';
 import RoomIcon from '@material-ui/icons/Room';
 import CheckIcon from '@material-ui/icons/Check';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 import CloseIcon from '@material-ui/icons/Close';
 import PhoneIcon from '@material-ui/icons/Phone';
 
@@ -229,7 +231,17 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
               <Card key={`product_${i}`} className="order-product" variant="outlined">
               <CardContent>
                 <Typography className="product-label" variant="h5">
-                x{pc.quantity} - {pc.product.label}
+                {pc.checked === true && (<Chip
+                icon={<CheckCircleIcon className="flag-ok" />}
+                label="Disponible"
+                className="flag"
+                variant="outlined"
+              />)}{pc.checked === false && (<Chip
+                icon={<CancelIcon className="flag-ko" />}
+                label="Indisponible"
+                className="flag"
+                variant="outlined"
+              />)} x{pc.quantity} - {pc.product.label}
               </Typography>
                 <Typography color="textSecondary">
                   {pc.product.ref}

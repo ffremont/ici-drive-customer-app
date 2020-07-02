@@ -34,6 +34,16 @@ strong.total{
 .product-label{
     font-size:1.3rem !important;
 }
+.flag-ok{
+    color:#4caf50 !important;
+}
+.flag-ko{
+    color:#f44336 !important;
+}
+.flag{
+    margin-right:10px;
+    margin-bottom: 10px;
+}
 
 @media print {
     .my-speed-dial, .MuiAppBar-root{

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { AppUtil } from "../apputil";
 import { OrderDao } from '../dao/order.dao';
 import { MakerDao } from '../dao/maker.dao';
-import { Order, OrderState } from '../models/order';
+import { Order, OrderState, ProductChoice } from '../models/order';
 import notifService from '../services/notif.service';
 
 import { Config } from '../config';
@@ -37,6 +37,19 @@ export class AdminOrderResource{
             if(order.reasonOf){
                 modification.reasonOf = order.reasonOf;
             }
+            if(order.choices){
+                // par défaut c'est CHECKED !
+                const checked :string[] = order.choices.filter(c => c.checked !== false).map(c => c.product.ref);
+                modification.choices = originalOrder.choices.map((c:ProductChoice) => {
+                    if(checked.indexOf(c.product.ref) > -1)
+                        c.checked = true;
+                    else   
+                        c.checked = false;
+
+                    return c;
+                });
+            }
+
             AppUtil.debug("AdminOrderResource > updateOrder > order.status:",order.status);
             if(order.status){
                 const delta = (order.slot || 0) - order.created;
