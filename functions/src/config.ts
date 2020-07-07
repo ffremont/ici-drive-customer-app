@@ -16,7 +16,7 @@ export class Config {
     public static withConfirmExpirationReason = `Annulation automatique, la confirmation / vérification doit intervenir au moins 48h avant `
     public static noConfirmExpirationReason = `Annulation automatique, la vérification doit intervenir au moins 3h avant `
 
-    public static MAKERS_NEAR_KM = 50;
+    public static MAKERS_NEAR_KM = 200;
     public static MAKERS_SEARCH_LIMIT = 50;
 
     public static customerAppUrl = 'https://app.ici-drive.fr';

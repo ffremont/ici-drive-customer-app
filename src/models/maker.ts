@@ -21,6 +21,7 @@ export interface Maker extends User{
     active?:boolean;
     startDriveAfterDays?:number;
     //maxOrdersByDay:number;
+    weekCloses?:number[];
     prefixOrderRef: string;
 
     place: Place;

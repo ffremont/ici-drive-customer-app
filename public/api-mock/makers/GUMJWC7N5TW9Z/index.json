@@ -4,7 +4,8 @@
         "acceptCards": false,
         "acceptPaypal": false
     },
-    "startDriveAfterDays": 1,
+    "startDriveAfterDays": 2,
+    "weekCloses":[28],
     "image": "https://icidrive.b-cdn.net/2019-03-01.jpg",
     "email": "NM8fqfGq3p@gmail.com",
     "name": "aaxcSutMZo",

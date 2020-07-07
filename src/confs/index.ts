@@ -37,7 +37,7 @@ const other: Configuration = {
 const API_BASEURL = '/api';
 const prod: Configuration = {
     cgu: 'https://docs.google.com/document/d/e/2PACX-1vRxz61BpPZL-YJXX2E6tvdYsI0PG1vxv1eGjxQ7TMfqififiO-Snb5pZU21bkjZgTHyENu3I5nFzxRZ/pub',
-    makersNearKm:50,
+    makersNearKm:200,
     cgr: 'https://docs.google.com/document/d/e/2PACX-1vTQkz2Kno4710sHi1MDtQwbIRU3tkddacvc5mlkHKfcJtOpcGLdKxxWDbPyxm4-mnLdeSyRVL4tjJKB/pub',
     acceptableUsePolicy:'https://docs.google.com/document/d/e/2PACX-1vTDZdAk4Eg5oBqaT6IMNagPLsX3---VBud8Qm2WjJCzhMWTeC-j3xlsyqNJfgd61RJIADouTWUDXzwj/pub',
     mentions:'https://docs.google.com/document/d/e/2PACX-1vR68Ij4_PaCqHJrq7Fv-ytuTgkfdC1SIJcMXeiGM0xqK06TsSLPKxwY3pb6dWA3IWPpM2GiGjj9g3Xc/pub',

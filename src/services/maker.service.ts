@@ -11,24 +11,50 @@ class MakerService{
      */
     private static SLOT_QTY = 900000;
 
+    public weekDateToDate(year:number, week:number, day:number) {
+        const firstDayOfYear = new Date(year, 0, 1)
+        const days = 2 + day + (week - 1) * 7 - firstDayOfYear.getDay()
+        return new Date(year, 0, days);
+      }
+
     /**
+     * Les 1ers créneaux disponibles. Sur 7 jours glissant. 
      * 
      * @param maker 
      */
     public getSlots(maker : Maker, limit = -1): Date[]{
         const results : Date[] = [];
-        const now = moment.default();
+        let now = moment.default();
 
         // /!\ rdv après X jours min
         now.add((maker as any).startDriveAfterDays || conf.startDriveAfterDays, 'd');
+        //now.hours(6).minutes(0).seconds(0);
+
+        // skip weekCloses
+        let currentWeekNumber = now.week();
+        // tant que la semaine est fermée, on passe la suivante
+        while(maker.weekCloses && (maker.weekCloses.indexOf(currentWeekNumber) > -1)){
+            currentWeekNumber = currentWeekNumber + 1;
+        }
+        const firstDayOfOpenedWeek = this.weekDateToDate(now.year(), currentWeekNumber, 0);
+        if(firstDayOfOpenedWeek.getTime() >= now.toDate().getTime()){
+            now = moment.default(firstDayOfOpenedWeek)
+        }
         
-        // on propose au maximum, les 7 prochaines dates
+        // on propose au maximum, les 7 jours clissants
         for(let i = 0; i< 7; i++){
             // si férié, on passe
             if(conf.publicHolidays.some(ph => ph.date === now.format('YYYY-MM-DD'))){
                 now.add(1, 'd');
                 continue;
             }
+            
+            let currentWeekNumber = now.week();
+            if(maker.weekCloses && (maker.weekCloses.indexOf(currentWeekNumber) > -1)) {
+                now.add(1, 'd');
+                continue;
+            }
+
             let nowDate = now.toDate();
             const dayKey = now.format('dddd').toLowerCase();
             const slots : any = maker.place.hebdoSlot;
