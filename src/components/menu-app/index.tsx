@@ -232,12 +232,12 @@ const MenuApp = (props: any) => {
 
           {['full', 'makers'].indexOf(mode) > -1 && (
             <Typography variant="h6" className={`${classes.title} ${canGoBack ? '': classes.titleNoPadding}`}>
-              <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveBannerIcon} />
+              <img alt="icon ici drive" onClick={() => props.history.push('/')} className="ici-drive-icon" src={IciDriveBannerIcon} />
             </Typography>
           )}
           {['light', 'catalog'].indexOf(mode) > -1 && (
             <Typography variant="h6" align="center" className={`${classes.title} ${canGoBack ? '': classes.titleNoPadding} ${(window as any).navigator.share && mode === 'catalog' ? classes.catalogTitleCanShare: ''}`}>
-              <img alt="icon ici drive" className="ici-drive-icon" src={IciDriveTypoIcon} />
+              <img alt="icon ici drive" onClick={() => props.history.push('/')} className="ici-drive-icon" src={IciDriveTypoIcon} />
 
             </Typography>
           )}
