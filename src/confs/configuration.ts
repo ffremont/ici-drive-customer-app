@@ -22,4 +22,6 @@ export interface Configuration{
     acceptableUsePolicy:string;
     makersNearKm: number;
     support:string;
+
+    defaultPlaceholderOrderComment:string;
 }

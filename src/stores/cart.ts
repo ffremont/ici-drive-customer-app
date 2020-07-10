@@ -74,6 +74,20 @@ class CartStore implements Store<Order>{
     }
 
     /**
+     * Modifie le commentaire dans le panier
+     * @param newComment 
+     */
+    setComment(newComment:string):Promise<void>{
+        return new Promise((resolve) => {
+            const newOrder: Order = { ...this.order } as Order;
+            newOrder.comment = newComment;
+
+            this.set(newOrder);
+            resolve();
+        }); 
+    }
+
+    /**
      * Reset du panier
      */
     resetCart() : Promise<void>{

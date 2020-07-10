@@ -14,6 +14,7 @@ import cartStore from '../../stores/cart';
 import makerService from '../../services/maker.service';
 import notifStore from '../../stores/notif';
 import Button from '@material-ui/core/Button';
+import conf from '../../confs';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import CartFooter from './cart-footer';
 import Dialog from '@material-ui/core/Dialog';
@@ -26,7 +27,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ModeCommentOutlinedIcon from '@material-ui/icons/ModeCommentOutlined';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
@@ -45,6 +46,7 @@ import Chip from '@material-ui/core/Chip';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import historyService from '../../services/history.service';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 interface CategoryProductChoice {
   products: ProductChoice[],
@@ -284,6 +286,8 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
             Prix TTC. En cas de rupture de stock d'un produit, vous en serez informé.</Alert>
         </div>)}
 
+       
+
         {/* les categories avec les produits */}
         <div className="groups"> {this.state.groups.map((group: CategoryProductChoice, i) => (
           <ExpansionPanel key={`cat_${i}`} expanded={true}>
@@ -339,6 +343,31 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
           <strong>Paiement directement et intégralement au producteur</strong>
         </Alert>)}
 
+        {this.state.order && (<div className="comment-area">
+        <TextField
+          id="comment-multiline-flexible"
+          label="Commentaire"
+          multiline
+          rowsMax={2}
+          inputProps={{maxLength:512}}
+          InputProps={{
+            
+            startAdornment: (
+              <InputAdornment position="start">
+                <ModeCommentOutlinedIcon color="primary" />
+              </InputAdornment>
+            ),
+          }}
+          placeholder={order.maker?.placeholderOrderComment || conf.defaultPlaceholderOrderComment}
+          fullWidth
+          value={order.comment||''}
+          onChange={(e) => {
+            this.setState({order: {...order, comment:e.target.value}});
+            cartStore.setComment(e.target.value);
+          }}
+        />
+        </div>)}
+
         <div className="payments">
           {payments.acceptCoins && (<Chip className="payment" label="espèce" />)}
           {payments.acceptCards && (<Chip className="payment" label="carte bancaire" />)}
@@ -346,6 +375,8 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
           {payments.acceptPaypal && (<Chip className="payment" label="paypal" />)}
         </div>
 
+       
+        
 
         {this.state.order && !this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">
           <TextField error={!this.state.phone && this.state.showErrors} type="tel" required onChange={(e) => this.setState({ phone: e.target.value })} id="cart-phone" inputProps={{ maxLength: 12 }} label="Téléphone" fullWidth={true} value={this.state.phone} />

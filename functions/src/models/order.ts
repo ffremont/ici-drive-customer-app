@@ -32,6 +32,11 @@ export interface Order{
    reasonOf?:string;
    customer?: User;
 
+   /**
+    * commentaire du consommateur
+    */
+   comment?:string;
+
 
    /**
     * True si le rappel a été envoyé

@@ -33,6 +33,7 @@ import Confirm from './confirm';
 import MenuApp from '../../components/menu-app';
 import historyService from '../../services/history.service';
 import Typography from '@material-ui/core/Typography';
+import ModeCommentOutlinedIcon from '@material-ui/icons/ModeCommentOutlined';
 
 
 const pendingActions = [
@@ -145,6 +146,10 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
 
         {currentOrder.reasonOf && (<Grid item>
           <Alert severity="info">{currentOrder.reasonOf}</Alert>
+        </Grid>)}
+
+        {currentOrder.comment && (<Grid item>
+          <Alert icon={<ModeCommentOutlinedIcon fontSize="inherit" />} severity="info">{currentOrder.comment}</Alert>
         </Grid>)}
 
         {currentOrder.maker && currentOrder.maker.payments && (<Grid item className="payments">

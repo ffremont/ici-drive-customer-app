@@ -14,15 +14,48 @@ export interface Maker extends User{
     created: number,
     name: string;
     image: string;
+
+    /**
+     * Page web existante du producteur
+     */
     webPage?:string;
+
+    /**
+     * Description du producteur
+     */
     description:string;
+
+    /**
+     * Téléphone de contact, utilisé dans les réservations
+     */
     phone?: string;
+
+    /**
+     * ID pour le messaging
+     */
     fcm?:string;
+
+    /**
+     * Flag pour activer / désactiver
+     */
     active?:boolean;
+
+    /**
+     * Délai entre la résa et le retrait possible
+     */
     startDriveAfterDays?:number;
     //maxOrdersByDay:number;
     prefixOrderRef: string;
+
+    /**
+     * Jour des semaines fermés
+     */
     weekCloses?:number[];
+
+    /**
+     * Placeholder pour le commentaire dans le panier
+     */
+    placeholderOrderComment?:string;
 
     place: Place;
     categories: string[];

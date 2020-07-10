@@ -74,7 +74,7 @@ const Discover = (props: any) => {
                     <Typography gutterBottom variant="h5" component="h2">
                         {props.title}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
+                    <Typography variant="body2" color="textSecondary" className="makerDesc" component="p">
                         {props.description}
                     </Typography>
 

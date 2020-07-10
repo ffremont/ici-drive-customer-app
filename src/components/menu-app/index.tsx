@@ -229,7 +229,6 @@ const MenuApp = (props: any) => {
             </IconButton>
           )}
 
-
           {['full', 'makers'].indexOf(mode) > -1 && (
             <Typography variant="h6" className={`${classes.title} ${canGoBack ? '': classes.titleNoPadding}`}>
               <img alt="icon ici drive" onClick={() => props.history.push('/')} className="ici-drive-icon" src={IciDriveBannerIcon} />
