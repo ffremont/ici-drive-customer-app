@@ -25,8 +25,14 @@ export interface Order{
    id?:string;
    status?:OrderState; // ATTENTE_VALIDATION, VALIDEE, REFUSEE, ANNULEE
    
-   choices: ProductChoice[],
-   maker?: Maker,
+   choices: ProductChoice[];
+   maker?: Maker;
+
+   /**
+    * Choix de la livraison plutôt que le Drive
+    */
+   wantDelivery?:boolean;
+
    total:number;
    slot?: number;
    reasonOf?:string;

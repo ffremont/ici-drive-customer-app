@@ -34,6 +34,10 @@ import MenuApp from '../../components/menu-app';
 import historyService from '../../services/history.service';
 import Typography from '@material-ui/core/Typography';
 import ModeCommentOutlinedIcon from '@material-ui/icons/ModeCommentOutlined';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import DriveEtaIcon from '@material-ui/icons/DriveEta';
+import { Avatar } from '@material-ui/core';
+import { AlertTitle } from '@material-ui/lab';
 
 
 const pendingActions = [
@@ -137,19 +141,38 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
 
     return (<div className="order">
       <MenuApp mode="light" history={this.props.history} />
+
       {currentOrder && (<Grid container direction="column" justify="center" className="order-container" spacing={1}>
 
         <Grid item>
           <Chip label={this.status[(currentOrder.status as any)].label} className={this.status[(currentOrder.status as any)].color} />
+          {currentOrder.wantDelivery && (<Chip
+            avatar={<Avatar className="avatar-transparent"><LocalShippingIcon /></Avatar>}
+            label="Livraison"
+          />)}
+          {!currentOrder.wantDelivery && (<Chip
+            avatar={<Avatar className="avatar-transparent"><DriveEtaIcon /></Avatar>}
+            label="Drive"
+          />)}
         </Grid>
 
 
+        {currentOrder && currentOrder.maker && currentOrder?.maker?.deliveryDescription && currentOrder?.wantDelivery && (<Alert severity="warning" icon={false}>
+        <AlertTitle>Indication sur la livraison </AlertTitle>{currentOrder?.maker?.deliveryDescription}
+        </Alert>)}
+
         {currentOrder.reasonOf && (<Grid item>
-          <Alert severity="info">{currentOrder.reasonOf}</Alert>
+          <Alert severity="info" icon={false}>
+          <AlertTitle>Commentaire producteur</AlertTitle>
+          {currentOrder.reasonOf}
+          </Alert>
         </Grid>)}
 
         {currentOrder.comment && (<Grid item>
-          <Alert icon={<ModeCommentOutlinedIcon fontSize="inherit" />} severity="info">{currentOrder.comment}</Alert>
+          <Alert icon={false} severity="info">
+            <AlertTitle>Mon commentaire</AlertTitle>
+            {currentOrder.comment}
+          </Alert>
         </Grid>)}
 
         {currentOrder.maker && currentOrder.maker.payments && (<Grid item className="payments">
@@ -201,10 +224,10 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
         </Grid>
 
 
-        <Grid item>
+        {!currentOrder.wantDelivery && (<Grid item>
           <Grid container direction="column" justify="center" spacing={1}>
             <Grid item>
-              <TextField label="Retrait / livraison" variant="filled" fullWidth={true} value={maker.place.label} inputProps={{ readOnly: true }} />
+              <TextField label="Retrait" variant="filled" fullWidth={true} value={maker.place.label} inputProps={{ readOnly: true }} />
             </Grid>
             <Grid item>
               <TextField label="Adresse" variant="filled" fullWidth={true} value={maker.place.address} inputProps={{ readOnly: true }} />
@@ -213,7 +236,17 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
               <TextField label="Horaire du retrait" variant="filled" fullWidth={true} value={moment.default(currentOrder.slot).format('ddd D MMM à HH:mm')} inputProps={{ readOnly: true }} />
             </Grid>
           </Grid>
-        </Grid>
+        </Grid>)}
+        {currentOrder.wantDelivery && (<Grid item>
+          <Grid container direction="column" justify="center" spacing={1}>
+            <Grid item>
+              <TextField label="Adresse de livraison" variant="filled" fullWidth={true} value={currentOrder.customer?.address} inputProps={{ readOnly: true }} />
+            </Grid>
+            <Grid item>
+              <TextField label="Horaire" variant="filled" fullWidth={true} value={currentOrder.slot ? moment.default(currentOrder.slot).format('ddd D MMM à HH:mm') : 'Voir plus haut'} inputProps={{ readOnly: true }} />
+            </Grid>
+          </Grid>
+        </Grid>)}
 
 
       </Grid>)}
@@ -221,22 +254,30 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
       {currentOrder && currentOrder.choices && (<Card className="order-sumup" variant="outlined">
         <CardContent>
           <Typography variant="h5" component="h2">
-            Résumé du panier 
+            Résumé du panier
         </Typography>
-          <Typography color="textSecondary">
+        <Typography color="textSecondary">
             {currentOrder.choices.length} produits différents
         </Typography>
+        {currentOrder.wantDelivery && (
+            <Typography color="textSecondary">
+            Frais de livraison {(currentOrder.maker as any).deliveryCost > 0 ? currentOrder.maker?.deliveryCost?.toFixed(2)+'€': 'gratuit'}
+        </Typography>
+          )}
           <Typography variant="body2" component="p">
-            Total de <strong className="total">{currentOrder.total || 'ERREUR'}€</strong>
+            Total TTC {currentOrder.wantDelivery ? '(livraison incluse) ': ''}<strong className="total">{currentOrder.total || 'ERREUR'}€</strong>
           </Typography>
+          
+          
+          
         </CardContent>
       </Card>)}
 
       {currentOrder && currentOrder.choices.map((pc: O.ProductChoice, i) => (
-              <Card key={`product_${i}`} className="order-product" variant="outlined">
-              <CardContent>
-                <Typography className="product-label" variant="h5">
-                {pc.checked === true && (<Chip
+        <Card key={`product_${i}`} className="order-product" variant="outlined">
+          <CardContent>
+            <Typography className="product-label" variant="h5">
+              {pc.checked === true && (<Chip
                 icon={<CheckCircleIcon className="flag-ok" />}
                 label="Disponible"
                 className="flag"
@@ -247,18 +288,20 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
                 className="flag"
                 variant="outlined"
               />)} x{pc.quantity} - {pc.product.label}
-              </Typography>
-                <Typography color="textSecondary">
-                  {pc.product.ref}
-              </Typography>
-                <Typography variant="body2" component="p">
-                  <strong>Prix unitaire </strong> {pc.product.price}€
-                  <br/>
-                  <strong>Description</strong> : {pc.product.description}
-                </Typography>
-              </CardContent>
-            </Card>
-            ))}
+            </Typography>
+            <Typography color="textSecondary">
+              {pc.product.ref}
+            </Typography>
+            <Typography variant="body2" component="p">
+              <strong>Prix unitaire </strong> {pc.product.price}€
+                  <br />
+              <strong>Description</strong> : {pc.product.description}
+            </Typography>
+          </CardContent>
+        </Card>
+      ))}
+
+      {maker && (<Alert severity="info">Pour toutes questions ou empêchement, contactez directement le producteur (appel ou sms) au <a href={'tel:'+maker.phone}>{maker.phone}</a></Alert>)}
 
       <Confirm title="Annuler la commande" withText={true} onClose={() => this.setState({ openCancelDialog: false })} onConfirm={(txt: string) => this.cancel(txt)} message="Je souhaite annuler pour le motif :" open={this.state.openCancelDialog} />
       <Confirm title="Réservation confirmée" okText="Ok" withText={false} onClose={() => this.setState({ openInfoConfirmed: false })} onConfirm={(txt: string) => this.props.history.push('/my-orders')} message="Un email récapitulatif vous a été transmis." open={this.state.openInfoConfirmed} />

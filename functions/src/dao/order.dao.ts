@@ -13,35 +13,53 @@ export class OrderDao{
     }
 
     /**
-     * Retourne les commandes PENDING / VERIFIED qui sont passées ou prévues dans les 3h.
+     * Si la commande rapide "PENDING" a été créé il y a plus de X heures
+     * ELLE EST EXPIREE
      */
-    public async getExpiredOrderWithoutConfirmation(): Promise<Order[]>{
-        const nowTs = (new Date()).getTime();
-
+    public async getExpiredShortOrder(nowTs:number): Promise<Order[]>{
         const snap = await context.db().collection(Context.ORDERS_COLLECTION)
-        .where('status', 'in', [OrderState.PENDING, OrderState.VERIFIED])
-        .where('slot', '<', nowTs + Config.expireWithoutConfirmHours*3600000)
+        .where('status', 'in', [OrderState.PENDING])
+        .where('created', '<', nowTs - Config.verifyOrderForShortOrderHours*3600000)
         .limit(Config.limitBatchSchedule)
         .get();
         return (AppUtil.arrOfSnap(snap) as Order[]).filter(order => {
-            return (order.maker as any).startDriveAfterDays <= Config.enableOrderConfirmAfterDays;
+            
+            const delta = (order.slot||0) - order.created;
+            AppUtil.debug(order.id,(delta < (Config.enableOrderConfirmAfterDays*24*3600000) ));
+            return (delta > 0) && (delta < (Config.enableOrderConfirmAfterDays*24*3600000));
+        });  
+    }
+
+     /**
+     * Si la commande long "PENDING" doit être vérifiée 3j avant la date de retrait / liv.
+     * ELLE EST EXPIREE
+     */
+    public async getExpiredLongOrder(nowTs:number = 0): Promise<Order[]>{
+        const snap = await context.db().collection(Context.ORDERS_COLLECTION)
+        .where('status', 'in', [OrderState.PENDING])
+        .where('slot', '<', nowTs + Config.verifyOrderForLongOrderHours*3600000)
+        .limit(Config.limitBatchSchedule)
+        .get();
+        return (AppUtil.arrOfSnap(snap) as Order[]).filter(order => {
+            const delta = (order.slot||0) - order.created;
+            AppUtil.debug(order.id,delta,  (delta >= (Config.enableOrderConfirmAfterDays*24*3600000)));
+            return (delta > 0) && (delta >= (Config.enableOrderConfirmAfterDays*24*3600000));
         });  
     }
 
     /**
-     * retourne les réservations PENDING/VERIFIED "longue" prévues dans les 48h et passées
+     * Si la commande long "VERIFIE" doit être confirmée par le client 2j avant la date de retrait / liv.
      * 
      */
-    public async getExpiredOrderWithConfirmation(): Promise<Order[]>{
-        const nowTs = (new Date()).getTime();
-
+    public async getExpiredLongOrderNotConfirmedByCustomer(nowTs:number): Promise<Order[]>{
         const snap = await context.db().collection(Context.ORDERS_COLLECTION)
-        .where('status', 'in', [OrderState.PENDING, OrderState.VERIFIED])
-        .where('slot', '<', nowTs + Config.expireWithConfirmHours*3600000)
+        .where('status', 'in', [OrderState.VERIFIED])
+        .where('slot', '<', nowTs + Config.confirmOrderForLongOrderHours*3600000)
         .limit(Config.limitBatchSchedule)
         .get();
         return (AppUtil.arrOfSnap(snap) as Order[]).filter(order => {
-            return (order.maker as any).startDriveAfterDays > Config.enableOrderConfirmAfterDays;
+            const delta = (order.slot||0) - order.created;
+            return (delta > 0) && (delta >= (Config.enableOrderConfirmAfterDays*24*3600000));
         });  
     }
 
@@ -60,7 +78,6 @@ export class OrderDao{
         .get();
         return AppUtil.arrOfSnap(snap) as Order[];  
     }
-
     
 
     public async get(id:string): Promise<Order|null>{

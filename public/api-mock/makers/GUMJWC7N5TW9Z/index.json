@@ -8,9 +8,19 @@
     "weekCloses":[28],
     "image": "https://icidrive.b-cdn.net/2019-03-01.jpg",
     "email": "NM8fqfGq3p@gmail.com",
-    "name": "aaxcSutMZo",
+    "deliveryCost":10,
+    "deliveryAvailableFrom": 20,
+    "deliveryDescription":"Ma cammionnelle est blanche", 
+    "deliveryRadius":15,
+    "delivery": {
+        "mercredi": {
+            "openAt": "14:00",
+            "closeAt": "18:00"
+        }
+    },
+    "name": "La ferme de pascaline",
     "place": {
-        "address": "13 rue de la e6wZQHb 68254 à ntv4Za",
+        "address": "13 rue de la terre, 79000 NIORT",
         "label": "Parking du Super U",
         "image": "https://icidrive.b-cdn.net/ferme_d.jpg",
         "slotsDescription": "Ouvert habituellement la semaine et le week-end",
@@ -76,7 +86,7 @@
         "ref": "R+eiFsv",
         "topOfList": true,
         "label": "TOP ce000mSoxLmRLy5",
-        "categoryId": "viande",
+        "categoryId": "epiceries",
         "image": "https://icidrive.b-cdn.net/bread-2193537_640.jpg"
     }, {
         "maxInCart": 4,

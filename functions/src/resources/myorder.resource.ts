@@ -163,7 +163,7 @@ class MyOrderResource {
                 })
                 .filter(pc => pc.product !== null)
                 .map(pc => pc.quantity * pc.product.price)
-                .reduce((acc, cv) => acc + cv, 0);
+                .reduce((acc, cv) => acc + cv, 0) + (order.wantDelivery ? dbMaker.deliveryCost || 0 : 0);
             
                 const myRef = await context.db().collection(Context.ORDERS_COLLECTION).doc(order.id);
                 await myRef.set(order);

@@ -14,3 +14,36 @@
     white-space: pre-wrap;
     word-break: break-word;
  }
+
+ .modes{
+    position: absolute;
+    margin-top: -156px;
+    margin-left: -16px;
+    padding: 3px;
+    display: flex;
+    flex-direction: row;
+
+    .avatar-mode{
+        color: #ff6600;
+        background: white;
+    }
+    .avatar-mode + .avatar-mode{
+        margin-left:10px;
+    }
+}
+
+.avatar-transparent{
+    background-color: transparent !important;
+}
+
+.delivery-info{
+    margin-bottom:10px;
+}
+
+.d-info + .d-info{
+    margin-left:10px;
+}
+
+.d-info{
+    margin-bottom: 3px;
+}

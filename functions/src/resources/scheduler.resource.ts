@@ -13,8 +13,8 @@ class SchedulerResource{
 
         try{
             await Promise.all([
-                scheduleService.confirmExpiration(),
-                scheduleService.noConfirmationExpiration(),
+                scheduleService.longOrderWithConfirmation(),
+                scheduleService.shortOrderWithoutConfirmation(),
                 scheduleService.reminder()
             ]);
             

@@ -2,10 +2,10 @@
     "webPage": "http://google.fr",
     "image": "https://icidrive.b-cdn.net/2019-03-01.jpg",
     "email": "NM8fqfGq3p@gmail.com",
-    "name": "aaxcSutMZo",
+    "name": "La ferme de pascaline",
     "place": {
         "description": "6pr3JRDiFF3NvpPfafcX3MdLpnz1EsQIOsC1ODyTde7mkdbk1u",
-        "address": "13 rue de la e6wZQHb 68254 à ntv4Za",
+        "address": "13 rue de la terre, 79000 NIORT",
         "label": "Parking du Super U",
         "image": "https://icidrive.b-cdn.net/ferme_d.jpg",
         "slotsDescription": "Ouvert habituellement la semaine et le week-end",
@@ -41,6 +41,29 @@
     "id": "GUMJWC7N5TW9Z",
     "categories": ["viande", "fruit-leg"],
     "phone": "4696311703",
+    "deliveryDescription":"Ma cammionnelle est blanche",
+    "delivery": {
+        "vendredi": {
+            "openAt": "8:00",
+            "closeAt": "12:00"
+        },
+        "mercredi": {
+            "openAt": "8:00",
+            "closeAt": "12:00"
+        },
+        "mardi": {
+            "openAt": "11:00",
+            "closeAt": "12:00"
+        },
+        "lundi": {
+            "openAt": "8:00",
+            "closeAt": "12:00"
+        },
+        "samedi": {
+            "openAt": "8:00",
+            "closeAt": "12:00"
+        }
+    },
     "created": 1588358269139,
     "description": "washmtVzfwj6yODOWqCVXKR1LnBMT89r8t7C9mld9n4upCNNFz",
     "payments":{

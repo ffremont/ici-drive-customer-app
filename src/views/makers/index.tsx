@@ -10,6 +10,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import DriveEtaIcon from '@material-ui/icons/DriveEta';
 import RoomIcon from '@material-ui/icons/Room';
 import { Item } from '../../models/item';
 import Card from '@material-ui/core/Card';
@@ -20,7 +22,7 @@ import { History } from 'history';
 import TabPanel from '../../components/tab-panel';
 import conf from '../../confs';
 import mapService from '../../services/map.service';
-import preferenceService, {GeoSearchPoint} from '../../services/preference.service';
+import preferenceService, { GeoSearchPoint } from '../../services/preference.service';
 import Fab from '@material-ui/core/Fab';
 import { GeoPoint } from '../../models/geo-point';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -28,6 +30,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Near from './near';
 import Button from '@material-ui/core/Button';
 import historyService from '../../services/history.service';
+import { Avatar } from '@material-ui/core';
 
 
 
@@ -37,8 +40,8 @@ interface GraphicMaker extends Maker {
 }
 
 //https://github.com/typescript-cheatsheets/react-typescript-cheatsheet
-class Makers extends React.Component<{ history: History, location: any }, { showEmptyResult: boolean, geoSearchPoint: GeoSearchPoint|null, openNear: boolean, gpsDisabled: boolean, waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
-  state = { geoSearchPoint: null, waiting: false, openNear: false, gpsDisabled: false, showEmptyResult: false, makers: [], value: 0, categories: [], filterCat: 'all', geoPoint: { latitude: 0, longitude: 0 } };
+class Makers extends React.Component<{ history: History, location: any }, { showEmptyResult: boolean, geoSearchPoint: GeoSearchPoint | null, openNear: boolean, gpsDisabled: boolean, waiting: boolean, geoPoint: GeoPoint, makers: GraphicMaker[], filterCat: string, value: number, categories: Item[] }>{
+  state = { geoSearchPoint: null, waiting: false, openNear: false, gpsDisabled: false, showEmptyResult: false, makers: [], value: 0, categories: [], filterCat: 'allDrives', geoPoint: { latitude: 0, longitude: 0 } };
   sub: Subscription | null = null;
 
 
@@ -60,11 +63,13 @@ class Makers extends React.Component<{ history: History, location: any }, { show
 
           //this.setState({makers: this.computeGeoDistance(this.state.makers, geoSearchPoint) });
         }
-    });
+      });
 
     this.sub = makerStore.subscribe((newMakers: Maker[]) => {
       const cats: any = {
-        'all': { label: 'Tout', id: 'all' }
+        //'all': { label: 'Tout', id: 'all' },
+        'allDrives': { label: 'Tout', id: 'allDrives' },
+        'deliveries': { label: 'Livraisons', id: 'deliveries' },
       };
       for (let ip in newMakers) {
         const part = newMakers[ip];
@@ -85,7 +90,7 @@ class Makers extends React.Component<{ history: History, location: any }, { show
     });
   }
 
-  private computeGeoDistance(makers: GraphicMaker[], geoPoint: GeoPoint|null): GraphicMaker[] {
+  private computeGeoDistance(makers: GraphicMaker[], geoPoint: GeoPoint | null): GraphicMaker[] {
     if (!geoPoint || (geoPoint.latitude === 0)) {
       return makers;
     }
@@ -114,28 +119,28 @@ class Makers extends React.Component<{ history: History, location: any }, { show
     if (cat) {
       this.setState({ value: newValue, filterCat: cat.id });
     } else {
-      this.setState({ value: 0, filterCat: 'all' });
+      this.setState({ value: 0, filterCat: 'allDrives' });
     }
   }
 
-/**
- * Dès qu'on change l'adresse de la recherche
- * @param near 
- */
+  /**
+   * Dès qu'on change l'adresse de la recherche
+   * @param near 
+   */
   onChangeNear(near: { latitude: number, longitude: number, address: string }) {
-    const geoSearchPoint = {latitude:near.latitude, longitude: near.longitude, address: near.address};
+    const geoSearchPoint = { latitude: near.latitude, longitude: near.longitude, address: near.address };
     this.setState({
       geoSearchPoint,
-      waiting: true, 
+      waiting: true,
       showEmptyResult: false,
-      gpsDisabled:false, 
+      gpsDisabled: false,
       geoPoint: geoSearchPoint
-    }); 
-    preferenceService.setSearchPoint(geoSearchPoint).then(() => {});
+    });
+    preferenceService.setSearchPoint(geoSearchPoint).then(() => { });
 
     makerStore.search(geoSearchPoint).finally(() => {
       this.setState({ waiting: false, showEmptyResult: true });
-    });    
+    });
   }
 
 
@@ -144,7 +149,7 @@ class Makers extends React.Component<{ history: History, location: any }, { show
       this.changeTab(newValue);
     };
 
-    const geoSearchPoint :any = this.state.geoSearchPoint;
+    const geoSearchPoint: any = this.state.geoSearchPoint;
 
     return (
       <div className="makers">
@@ -166,12 +171,13 @@ class Makers extends React.Component<{ history: History, location: any }, { show
             {this.state.gpsDisabled && (<div className="empty-makers">
               <Typography variant="h4">GPS désactivé</Typography>
               <Typography variant="h5">Filtrer par adresse</Typography>
-              
+
               <Button onClick={() => this.setState({ openNear: true })} variant="outlined" color="secondary">Rechercher</Button>
             </div>)}
 
             {this.state.makers.filter((p: Maker) => {
-              if (this.state.filterCat === 'all') return true;
+              if (this.state.filterCat === 'allDrives') return true;
+              else if (this.state.filterCat === 'deliveries') return p.delivery;
               else return p.categories.some((c: string) => c === this.state.filterCat)
             }).map((p: GraphicMaker, i) => {
               return (
@@ -184,11 +190,19 @@ class Makers extends React.Component<{ history: History, location: any }, { show
                       title="Bannière producteur"
                     />
                     <CardContent className="maker-cardcontent">
+                      <div className="modes">
+                      <Avatar className="avatar-mode">
+                          <DriveEtaIcon />
+                        </Avatar>
+                        {p.delivery && (<Avatar className="avatar-mode">
+                          <LocalShippingIcon />
+                        </Avatar>)}
+                      </div>
                       <div className="maincontent"><Typography gutterBottom variant="h5" component="h2">
                         {p.name}
                       </Typography>
-                    
-                      {p.distance && (<Chip label={p.distance ? `${p.distance.toFixed(1)}km` : 'inconnue'} className="distance-maker" color="default" icon={<RoomIcon />} />)}
+
+                        {p && ((p as any).distance > 0) && (<Chip label={p.distance ? `${p.distance.toFixed(1)}km` : 'inconnue'} className="distance-maker" color="default" icon={<RoomIcon />} />)}
                       </div>
                       <div className="subcontent">
                         {p.place.address}
@@ -201,11 +215,11 @@ class Makers extends React.Component<{ history: History, location: any }, { show
           </Grid>
         </TabPanel>)}
 
-        <Fab className="near-search" color={geoSearchPoint && geoSearchPoint.latitude && geoSearchPoint.address && geoSearchPoint.longitude && (geoSearchPoint.address !== 'Autour de moi')? 'secondary' : 'primary'} aria-label="search" onClick={() => this.setState({ openNear: true })}>
+        <Fab className="near-search" color={geoSearchPoint && geoSearchPoint.latitude && geoSearchPoint.address && geoSearchPoint.longitude && (geoSearchPoint.address !== 'Autour de moi') ? 'secondary' : 'primary'} aria-label="search" onClick={() => this.setState({ openNear: true })}>
           <RoomIcon />
         </Fab>
 
-        <Near open={this.state.openNear} address={geoSearchPoint ? geoSearchPoint.address:''} onChange={(near: any) => this.onChangeNear(near)} onClose={() => this.setState({ openNear: false })} />
+        <Near open={this.state.openNear} address={geoSearchPoint ? geoSearchPoint.address : ''} onChange={(near: any) => this.onChangeNear(near)} onClose={() => this.setState({ openNear: false })} />
 
         {this.state.waiting && (<Backdrop className="backdrop" open={true}>
           <CircularProgress color="inherit" />

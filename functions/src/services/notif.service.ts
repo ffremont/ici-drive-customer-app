@@ -237,8 +237,12 @@ export class NotifService {
                 token: fcm,
                 data: {
                     url: `${Config.customerAppUrl}/my-orders/${order.id}`,
-                    title: `Rappel du retrait`,
-                    body: `Votre réservation "${order.ref}" vous attend à ${moment(order.slot).format('HH:mm')} le ${moment(order.slot).format('ddd D MMM')}`
+                    title: order.wantDelivery ? `Rappel de la livraison`:`Rappel du retrait`,
+                    body: 
+                        order.wantDelivery ? 
+                        `Votre réservation "${order.ref}" vous sera livrée vers ${moment(order.slot).format('HH:mm')} le ${moment(order.slot).format('ddd D MMM')}`
+                        :
+                        `Votre réservation "${order.ref}" vous attend à ${moment(order.slot).format('HH:mm')} le ${moment(order.slot).format('ddd D MMM')}`
                 }
             }));
         }
@@ -246,16 +250,17 @@ export class NotifService {
         promises.push(this.send('ici_drive_customer_remind', order.customer?.email as any, Config.subjectRemind, {
             order_link: `${Config.customerAppUrl}/my-orders/${order.id}`,
             order_ref:order.ref,
+            wantDelivery : order.wantDelivery,
             maker_customer_phone: order.customer?.phone,
             when: moment(order.slot).format('ddd D MMM à HH:mm'),
-            maker_place_label: order.maker?.place.label,
-            maker_place_address: order.maker?.place.address,
+            maker_place_label: order.wantDelivery ? 'chez vous' : order.maker?.place.label,
+            maker_place_address: order.wantDelivery ? order.customer?.address : order.maker?.place.address,
             maker_phone: order.maker?.phone,
             google_maps: '',
             payments_info: order.maker?.payments?.acceptPaypal ?
                 `Le producteur ayant opté pour le paiement par PayPal, une demande de réglement vous sera adressée très prochainement.`
                 :
-                `Le producteur ayant opté pour le paiement sur le lieu du retrait, veuillez vous munir lors du retrait : ${paymentsLabels}`
+                `Le producteur ayant opté pour le paiement en direct, veuillez vous munir lors du retrait / livraison : ${paymentsLabels}`
         }));
 
         await Promise.all(promises);
@@ -320,30 +325,33 @@ export class NotifService {
             order.maker?.payments?.acceptCards ? `d'une carte` : null,
             order.maker?.payments?.acceptBankCheck ? `d'un chèque` : null,
             order.maker?.payments?.acceptCoins ? `d'espèces` : null].filter(c => c !== null).join(' / ');
-        const notPaypalMsg = `Vous avez opté pour le paiement au moment du retrait de la marchandise, le client sera muni : ${paymentsLabels}`;
+        const notPaypalMsg = `Vous avez opté pour le paiement au moment du retrait / livraison de la marchandise, le client sera muni : ${paymentsLabels}`;
 
         promises.push(this.send('ici_drive_maker_confirmed', order.maker?.email as any, Config.subjectConfirmed, {
             order_link: `${Config.makerAppUrl}/my-orders/${order.id}`,
             maker_name: order.maker?.name,
             order_ref: order.ref,
-            when: moment(order.slot).format('ddd D MMM à HH:mm'),
-            maker_place_label: order.maker?.place.label,
-            maker_place_address: order.maker?.place.address,
-            maker_phone: order.maker?.phone,
+            wantDelivery: order.wantDelivery,
+            maker_customer_phone: order.customer?.phone,
+            when: order.slot ? moment(order.slot).format('ddd D MMM à HH:mm') : 'convenu entre vous, voir commande',
+            maker_place_label: order.wantDelivery ? 'chez le client': order.maker?.place.label,
+            maker_place_address: order.wantDelivery ? order.customer?.address : order.maker?.place.address,
+            maker_phone: order.wantDelivery ? order.maker?.phone: order.customer?.phone,
             payments_info: order.maker?.payments?.acceptPaypal ? paypalMsg : notPaypalMsg
         }));
         promises.push(this.send('ici_drive_customer_confirmed', order.customer?.email as any, Config.subjectConfirmed, {
             order_link: `${Config.customerAppUrl}/my-orders/${order.id}`,
             order_ref: order.ref,
-            when: moment(order.slot).format('ddd D MMM à HH:mm'),
-            maker_place_label: order.maker?.place.label,
-            maker_place_address: order.maker?.place.address,
+            wantDelivery: order.wantDelivery,
+            when: order.slot ? moment(order.slot).format('ddd D MMM à HH:mm') : 'convenu entre vous, voir commande',
+            maker_place_label: order.wantDelivery ? 'chez moi': order.maker?.place.label,
+            maker_place_address: order.wantDelivery ? order.customer?.address : order.maker?.place.address,
             maker_phone: order.maker?.phone,
             google_maps: '',
             payments_info: order.maker?.payments?.acceptPaypal ?
                 `Le producteur ayant opté pour le paiement par PayPal, une demande de réglement vous sera adressée très prochainement.`
                 :
-                `Le producteur ayant opté pour le paiement sur le lieu du retrait, veuillez vous munir lors du retrait : ${paymentsLabels}`
+                `Le producteur ayant opté pour le paiement en direct, veuillez vous munir lors du retrait / livraison : ${paymentsLabels}`
         }));
         await Promise.all(promises);
     }

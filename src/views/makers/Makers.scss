@@ -57,3 +57,20 @@
         flex:1;
     }
 }
+
+.modes{
+    position: absolute;
+    margin-top: -156px;
+    margin-left: -16px;
+    padding: 3px;
+    display: flex;
+    flex-direction: row;
+
+    .avatar-mode{
+        color: #ff6600;
+        background: white;
+    }
+    .avatar-mode + .avatar-mode{
+        margin-left:10px;
+    }
+}

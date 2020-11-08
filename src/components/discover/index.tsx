@@ -14,6 +14,13 @@ import PaypalIcon from '../../assets/images/paypal.svg';
 import BankCheckIcon from '../../assets/images/bank_check.svg';
 import { PaymentMaker } from '../../models/maker';
 import './Discover.scss';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+import MoneyIcon from '@material-ui/icons/Money';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import DriveEtaIcon from '@material-ui/icons/DriveEta';
+import { Avatar, Chip } from '@material-ui/core';
 
 const useStyles = makeStyles({
     root: {
@@ -38,8 +45,8 @@ const useStyles = makeStyles({
         borderRadius: "8px",
         margin: "0 10px"
     },
-    myDisabled:{
-        opacity:0.5
+    myDisabled: {
+        opacity: 0.5
     },
     btnPay: {
         marginLeft: 10,
@@ -48,8 +55,8 @@ const useStyles = makeStyles({
         width: 26,
         height: 26
     },
-    moneyLabel:{
-        marginLeft:10,
+    moneyLabel: {
+        marginLeft: 10,
         fontSize: '0.8rem',
         textAlign: 'center'
     }
@@ -71,9 +78,36 @@ const Discover = (props: any) => {
                     title="Producteur / artisan"
                 />
                 <CardContent className="discover-content">
+                    <div className="modes">
+                        <Avatar className="avatar-mode">
+                            <DriveEtaIcon />
+                        </Avatar>
+                        {props.delivery && (<Avatar className="avatar-mode">
+                            <LocalShippingIcon />
+                        </Avatar>)}
+                    </div>
                     <Typography gutterBottom variant="h5" component="h2">
                         {props.title}
                     </Typography>
+
+                    {props.delivery && (<div className="delivery-info">
+                        <Chip className="d-info"
+                            avatar={<Avatar className="avatar-transparent"><EuroIcon /></Avatar>}
+                            label={!props.deliveryCost ? 'Livraison gratuite' : `${props.deliveryCost}€ la livraison`}
+                            color="secondary"
+                        />
+                        {props.deliveryRadius && (<Chip className="d-info"
+                            avatar={<Avatar className="avatar-transparent"><TrackChangesIcon /></Avatar>}
+                            label={`Rayon : ${props.deliveryRadius}km`}
+                            color="secondary"
+                        />)}
+                        <Chip className="d-info"
+                            avatar={<Avatar className="avatar-transparent"><ShoppingBasketIcon /></Avatar>}
+                            label={props.deliveryAvailableFrom ? `Minimum ${props.deliveryAvailableFrom}€` :`Aucun min. d'achats`}
+                            color="secondary"
+                        />
+                    </div>)}
+
                     <Typography variant="body2" color="textSecondary" className="makerDesc" component="p">
                         {props.description}
                     </Typography>
@@ -85,14 +119,17 @@ const Discover = (props: any) => {
                         </div>)}
                         {(payments.acceptCards || payments.acceptCoins || payments.acceptCards) && (<div className={`${classes.paymentItem} ${!payments.acceptCards && !payments.acceptCoins ? classes.myDisabled : ''}`}>
                             <CreditCardIcon className={`${classes.moneyIcon} ${!payments.acceptCards ? classes.myDisabled : ''}`} />
-                            <EuroIcon className={`${classes.moneyIcon} ${!payments.acceptCoins ? classes.myDisabled : ''}`} />
-                            <img className={`${classes.moneyIcon} ${!payments.acceptBankCheck ? classes.myDisabled : ''}`}  alt="bank_check" src={BankCheckIcon} />
-                            <span className={classes.moneyLabel}>Paiement au Drive</span>
+                            <MoneyIcon className={`${classes.moneyIcon} ${!payments.acceptCoins ? classes.myDisabled : ''}`} />
+                            <img className={`${classes.moneyIcon} ${!payments.acceptBankCheck ? classes.myDisabled : ''}`} alt="bank_check" src={BankCheckIcon} />
+                            <span className={classes.moneyLabel}>Paiement</span>
                         </div>)}
                     </div>)}
                 </CardContent>
             </CardActionArea>
             <CardActions className={classes.actions}>
+                <Button onClick={props.openSlots} startIcon={<AccessTimeIcon></AccessTimeIcon>} size="small" color="primary">
+                    Horaires
+                </Button>
                 <Button onClick={props.goToPlace} startIcon={<RoomIcon></RoomIcon>} size="small" color="primary">
                     Lieu du Drive
                 </Button>

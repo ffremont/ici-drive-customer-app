@@ -7,7 +7,7 @@ export interface Place{
     image?: string;
     slotsDescription?: string;
     description?:string;
-    hebdoSlot: HebdoSlot,
+    hebdoSlot: HebdoSlot;
 
     point?: GeoPoint
 }

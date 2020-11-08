@@ -40,4 +40,8 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-disableEle
         align-items: center;
         justify-content: center;
     }
+
+    .btn-action + .btn-action{
+        margin-left:20px;
+    }
 }

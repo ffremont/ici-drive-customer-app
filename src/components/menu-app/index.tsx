@@ -224,7 +224,7 @@ const MenuApp = (props: any) => {
             </IconButton>
           )}
           {canGoBack && (['full', 'makers'].indexOf(mode) === -1) && (
-            <IconButton edge="start" className={classes.firstButton} onClick={() => goBackPath ? props.history.push(goBackPath) : props.history.goBack()} color="inherit" aria-label="précédent">
+            <IconButton edge="start" className={classes.firstButton} onClick={() => goBackPath ? props.history.push(goBackPath) : props.history.push('/')} color="inherit" aria-label="précédent">
               <ArrowBackIosIcon />
             </IconButton>
           )}
@@ -245,9 +245,14 @@ const MenuApp = (props: any) => {
               Mon panier
             </Typography>
           )}
-          {['slots'].indexOf(mode) > -1 && (
+          {['slotsDrives'].indexOf(mode) > -1 && (
             <Typography variant="h6" align="center" className={classes.title}>
               Heure du retrait
+            </Typography>
+          )}
+          {['slotsDeliveries'].indexOf(mode) > -1 && (
+            <Typography variant="h6" align="center" className={classes.title}>
+              Heure de livraison
             </Typography>
           )}
           {['summary'].indexOf(mode) > -1 && (

@@ -16,7 +16,29 @@
 }
 
 .card-info{
-    width:300px;
+    width:300px; 
+}
+
+.option-choisie{
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.delivery-address{
+    width: calc(#{"100% - 40px"});
+    margin-left: 20px !important;
+}
+
+.cat-title{
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.item-product{
+    width:100%;
+    max-width:500px;
 }
 
 .groups{
@@ -47,7 +69,11 @@
     padding: 3px 54px;
 }
 .cart{
-    margin-bottom: 170px;
+    margin-bottom: 220px;
+}
+.switch-delivery{
+    padding-left: 20px;
+    padding-top: 20px;
 }
 
 .comment-area{

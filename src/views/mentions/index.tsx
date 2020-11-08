@@ -18,9 +18,7 @@ function Mentions(props: any) {
               <a href={conf.cgu} target="_blank" rel="noreferrer noopener">Conditions générales d'utilisation</a>
               </li>
               <li>
-              <a href={conf.cgr} target="_blank" rel="noreferrer noopener">Conditions générales de réservation</a>
-              </li>
-              <li>
+              
               <a href={conf.cgr} target="_blank" rel="noreferrer noopener">Conditions générales de réservation</a>
               </li>
               <li>

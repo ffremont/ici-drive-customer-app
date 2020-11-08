@@ -1,6 +1,7 @@
 import { User } from "./user";
 import { Place } from "./place";
 import { Product } from "./product";
+import { HebdoSlot } from "./hebdo-slot";
 
 export interface PaymentMaker{
     acceptCoins: boolean;
@@ -48,6 +49,31 @@ export interface Maker extends User{
     prefixOrderRef: string;
 
     /**
+     * Horaires de livraison
+     */
+    delivery?: HebdoSlot;
+
+    /**
+     * Livraison à partir de X euros
+     */
+    deliveryAvailableFrom?:number;
+
+    /**
+     * Prix de la livraison
+     */
+    deliveryCost?:number;
+
+    /**
+     * Rayon de livraison en Km
+     */
+    deliveryRadius?:number;
+
+    /**
+     * Texte de description livraison
+     */
+    deliveryDescription?:string;
+
+    /**
      * Jour des semaines fermés
      */
     weekCloses?:number[];
@@ -62,5 +88,10 @@ export interface Maker extends User{
     products?: Product[];
 
     payments?:PaymentMaker;
+
+    /**
+     * Avis des consommateurs
+     */
+    comments?:Comment;
 
 }

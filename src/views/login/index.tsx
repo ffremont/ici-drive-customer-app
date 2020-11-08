@@ -93,6 +93,7 @@ class Login extends React.Component<{history:any,location:any}, {loading:boolean
           });
         }else{
           // no authenticated, noop show buttons
+          this.setState({ loading: false, isSignedIn: false });
         }        
       }
     );

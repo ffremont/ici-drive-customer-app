@@ -11,8 +11,9 @@ import TabPanel from '../../components/tab-panel';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
-import makerService from '../../services/maker.service';
+import makerService, { MakerService } from '../../services/maker.service';
 import historyService from '../../services/history.service';
+import Other from './other';
 
 interface SlotButton {
   selected: boolean;
@@ -26,9 +27,9 @@ interface SlotGroup {
 }
 
 
-class Slots extends React.Component<{ history: any, match: any }, { order: Order | null, tabId: number, groups: SlotGroup[] }>{
+class Slots extends React.Component<{ history: any, match: any }, { order: Order | null, tabId: number, groups: SlotGroup[], openOther:boolean, firstSlot:any }>{
 
-  state = { order: null, wantResetCard: false, groups: [], tabId: 0 };
+  state = { order: null, wantResetCard: false, groups: [], tabId: 0, openOther:false, firstSlot:null };
   subOrder: Subscription | null = null;
 
   componentWillUnmount() {
@@ -43,7 +44,8 @@ class Slots extends React.Component<{ history: any, match: any }, { order: Order
       if (order.ref && order.maker) {
         const newGroups: SlotGroup[] = [];
 
-        const slots = makerService.getSlots(order.maker);
+        const slots = makerService.getSlots(order.maker, -1, order.wantDelivery);
+        
         for (let i = 0; i < slots.length; i++) {
           const slotDate: Date = slots[i];
 
@@ -61,7 +63,7 @@ class Slots extends React.Component<{ history: any, match: any }, { order: Order
           }
         }
 
-        this.setState({ order, groups: newGroups });
+        this.setState({ order, groups: newGroups, firstSlot: slots && slots.length ? slots[0]: 0  });
       } else {
         this.props.history.push('/');
       }
@@ -80,8 +82,19 @@ class Slots extends React.Component<{ history: any, match: any }, { order: Order
     }else{
       this.props.history.push('/error');
     }
+  }
 
-   
+  /**
+   * Aucun créneau ne me convient, j'opte pour une note
+   * @param note 
+   */
+  validateOther(note:string, slot:Date){
+    const newOrder :Order = {...(this.state.order as any)};
+    newOrder.comment = note;
+    newOrder.slot = slot.getTime();
+    cartStore.set(newOrder);
+  
+    this.props.history.push('/cart/summary');
   }
 
   /**
@@ -106,14 +119,19 @@ class Slots extends React.Component<{ history: any, match: any }, { order: Order
 
   render() {
     const place = this.state.order ? ((this.state.order as any) as Order).maker?.place : null;
+    const order = this.state.order ? ((this.state.order as any) as Order):null;
     return (
       <div className="slots">
-        <MenuApp mode="slots" history={this.props.history} />
+       {order && !order.wantDelivery &&(<MenuApp mode="slotsDrives" history={this.props.history} />)}
+       {order && order.wantDelivery &&(<MenuApp mode="slotsDeliveries" history={this.props.history} />)}
 
-        {place && place.slotsDescription && (<Typography className="slots-desc" variant="body1" align="center">
-          {place?.slotsDescription}
-        </Typography>)}
+      <Other open={this.state.openOther}
+        firstSlot={this.state.firstSlot}
+       onClose={() =>{this.setState({openOther:false})}}
+       onValidate={(note:string, slot:Date) => this.validateOther(note, slot)}
+       />
 
+        
         <AppBar position="static" color="default">
           <Tabs className="slots-tabs" variant="scrollable" scrollButtons="auto" textColor="secondary" value={this.state.tabId} onChange={(e, nv) => this.onChangeTag(e, nv)} aria-label="simple tabs example">
 
@@ -139,7 +157,9 @@ class Slots extends React.Component<{ history: any, match: any }, { order: Order
 
         <div className="slot-footer">
           <div className="main-action">
-            <Button variant="contained" onClick={() => this.validate()} color="secondary" disabled={!this.state.groups.some((g:SlotGroup) => g.slots.some((s:SlotButton) => s.selected))}>Valider le créneau</Button>
+            <Button className="btn-action" variant="contained" onClick={() => this.validate()} color="secondary" disabled={!this.state.groups.some((g:SlotGroup) => g.slots.some((s:SlotButton) => s.selected))}>Valider le créneau</Button>
+
+            {order && order?.wantDelivery && (<Button className="btn-action" variant="contained" onClick={() => this.setState({openOther:true})} color="primary">Autre</Button>)}
           </div>
         </div>
 

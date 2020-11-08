@@ -4,12 +4,14 @@ import * as moment from 'moment';
 import { OfficeSlot } from "../models/hebdo-slot";
 
 
-class MakerService{
+export class MakerService{
 
     /**
      * 15 minutes en ms
      */
-    private static SLOT_QTY = 900000;
+    public static SLOT_QTY = 900000;
+
+    public static SLOT_DELIVERY_QTY = 3600000;
 
     public weekDateToDate(year:number, week:number, day:number) {
         const firstDayOfYear = new Date(year, 0, 1)
@@ -17,12 +19,15 @@ class MakerService{
         return new Date(year, 0, days);
       }
 
+    
+
     /**
      * Les 1ers créneaux disponibles. Sur 7 jours glissant. 
      * 
      * @param maker 
      */
-    public getSlots(maker : Maker, limit = -1): Date[]{
+    public getSlots(maker : Maker, limit = -1, delivery = false): Date[]{
+        const realSlotQty:number = delivery ? MakerService.SLOT_DELIVERY_QTY :  MakerService.SLOT_QTY;
         const results : Date[] = [];
         let now = moment.default();
 
@@ -41,8 +46,8 @@ class MakerService{
             now = moment.default(firstDayOfOpenedWeek)
         }
         
-        // on propose au maximum, les 7 jours clissants
-        for(let i = 0; i< 7; i++){
+        // on propose au maximum, les 14 jours clissants
+        for(let i = 0; i< 14; i++){
             // si férié, on passe
             if(conf.publicHolidays.some(ph => ph.date === now.format('YYYY-MM-DD'))){
                 now.add(1, 'd');
@@ -57,7 +62,7 @@ class MakerService{
 
             let nowDate = now.toDate();
             const dayKey = now.format('dddd').toLowerCase();
-            const slots : any = maker.place.hebdoSlot;
+            const slots : any = delivery ? maker.delivery : maker.place.hebdoSlot;
             const officeSlot: OfficeSlot = slots[dayKey];
             if(!officeSlot || !officeSlot.openAt || !officeSlot.closeAt){
                 now.add(1, 'd');
@@ -81,9 +86,9 @@ class MakerService{
             }
 
             //on parcours tous les créneaux pour le jour "ouvert"
-            const slotsQty = parseInt(`${(closeAt.getTime() - nowDate.getTime())/MakerService.SLOT_QTY}`,10)+1;
+            const slotsQty = parseInt(`${(closeAt.getTime() - nowDate.getTime())/realSlotQty}`,10)+1;
             for(let j =0; j<slotsQty;j++){
-                nowDate = new Date(nowDate.getTime() + ((j > 0) ? MakerService.SLOT_QTY:0));
+                nowDate = new Date(nowDate.getTime() + ((j > 0) ? realSlotQty:0));
                 results.push(new Date(nowDate));
             }
 

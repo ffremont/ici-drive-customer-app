@@ -88,6 +88,19 @@ class CartStore implements Store<Order>{
     }
 
     /**
+     * Active la livraison sur la commande
+     * @param newComment 
+     */
+    setDelivery(wantDelivery:boolean):Promise<void>{
+        return new Promise((resolve) => {
+            const newOrder: Order = { ...this.order } as Order;
+            newOrder.wantDelivery = wantDelivery;
+            this.set(newOrder);
+            resolve();
+        }); 
+    }
+
+    /**
      * Reset du panier
      */
     resetCart() : Promise<void>{

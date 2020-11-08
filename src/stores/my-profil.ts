@@ -5,6 +5,8 @@ import httpClientService from '../services/http-client.service';
 import conf from '../confs';
 import { User } from '../models/user';
 
+
+
 export class MyProfilStore implements Store<User>{
     private sub = new BehaviorSubject<User>({email:''});
 
@@ -17,7 +19,13 @@ export class MyProfilStore implements Store<User>{
     }
 
     static async update(user: User){
-        await httpClientService.axios.put(conf.API.myProfil(), user);
+        if(process.env.REACT_APP_STAGE === 'prod'){
+            await httpClientService.axios.put(conf.API.myProfil(), user);
+        }else{
+            console.log('update user',user);
+            await httpClientService.axios.get(conf.API.myProfil());
+        }
+        
     }
 
     /**

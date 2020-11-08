@@ -11,12 +11,13 @@ export class ScheduleService {
     private userDao = new UserDao();
 
     /**
-     * Annulation des commandes confirmées dès 48h, on check que le retrait ne se fait pas mnt
+     * Annulation des commandes 'longue' (pas vérifiées ou confirmées)
      */
-    public async confirmExpiration() {
-        AppUtil.debug('confirmExpiration...');
+    public async longOrderWithConfirmation() {
+        AppUtil.debug('longOrderWithConfirmation...');
         const nowTo = (new Date()).getTime();
-        const orders = await this.orderDao.getExpiredOrderWithConfirmation();
+        let orders = await this.orderDao.getExpiredLongOrder(nowTo);
+        orders = orders.concat(await this.orderDao.getExpiredLongOrderNotConfirmedByCustomer(nowTo));
 
         const batch = context.db().batch();
 
@@ -91,12 +92,12 @@ export class ScheduleService {
     }
 
     /**
-     * Annulation des commandes trop vieilles ou sur le point d'être prévues
+     * Annulation des commandes courtes (pas vérifiées)
      */
-    public async noConfirmationExpiration() {
-        AppUtil.debug('noConfirmationExpiration...');
+    public async shortOrderWithoutConfirmation() {
+        AppUtil.debug('shortOrderWithoutConfirmation...');
         const nowTo = (new Date()).getTime();
-        let orders = (await this.orderDao.getExpiredOrderWithoutConfirmation());
+        let orders = (await this.orderDao.getExpiredShortOrder(nowTo));
 
         const batch = context.db().batch();
 

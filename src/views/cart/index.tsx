@@ -5,8 +5,6 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import RoomIcon from '@material-ui/icons/Room';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import { Order, ProductChoice } from '../../models/order';
 import { Subscription } from 'rxjs';
@@ -29,6 +27,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import ModeCommentOutlinedIcon from '@material-ui/icons/ModeCommentOutlined';
 import Paper from '@material-ui/core/Paper';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -42,20 +41,24 @@ import { NotifType } from '../../models/notif';
 import { Product } from '../../models/product';
 import myProfilStore, { MyProfilStore } from '../../stores/my-profil';
 import { User } from '../../models/user';
+import DriveEtaIcon from '@material-ui/icons/DriveEta';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import Chip from '@material-ui/core/Chip';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import historyService from '../../services/history.service';
+import RoomIcon from '@material-ui/icons/Room';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import { FormControlLabel, Switch } from '@material-ui/core';
 
 interface CategoryProductChoice {
   products: ProductChoice[],
   category: Item
 }
 
-class Cart extends React.Component<{ history: any, location: any, match: any }, { showErrors:boolean, expension:any, waiting: boolean, showPhone: boolean, myProfil: User, phone: string, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, eraseProduct: Product | null }>{
+class Cart extends React.Component<{ history: any, location: any, match: any }, { showErrors: boolean, expension: any, waiting: boolean, showPhone: boolean, myProfil: User, phone: string, checkCgr: boolean, summaryMode: boolean, firstSlot: string, order: Order | null, groups: CategoryProductChoice[], wantResetCard: boolean, wantDelivery: boolean, eraseProduct: Product | null }>{
 
-  state = { showErrors:false, expension:[], waiting: false, order: null, myProfil: { email: '' }, showPhone: false, phone: '', checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
+  state = { showErrors: false, expension: [], waiting: false, order: null, wantDelivery: false, myProfil: { address: '', email: '' }, showPhone: false, phone: '', checkCgr: false, wantResetCard: false, firstSlot: '', groups: [], eraseProduct: null, summaryMode: false };
   subOrder: Subscription | null = null;
   subMyProfil: Subscription | null = null;
   categories: Item[] = CONF.categories;
@@ -84,14 +87,14 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
           }
         }).filter(group => group && group.products?.length);
 
-        const slots: Date[] = makerService.getSlots((order.maker as any), 1);
+        const slots: Date[] = makerService.getSlots((order.maker as any), 1, order.wantDelivery);
         let newFirstSlot = '';
         if (slots && slots.length) {
           newFirstSlot = moment.default(slots[0]).format('ddd D MMM à HH:mm');
         }
-        this.setState({ order, groups, firstSlot: newFirstSlot, expension: groups.map(g => true) });
+        this.setState({ order, groups, firstSlot: newFirstSlot, wantDelivery: !!order.wantDelivery, expension: groups.map(g => true) });
       } else {
-        this.setState({ order: null, groups: [], expension:[] });
+        this.setState({ order: null, groups: [], expension: [] });
       }
     });
   }
@@ -111,7 +114,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
   private handleContinue() {
     if (this.state.summaryMode) {
-      const newOrder: Order = { ...(this.state.order as any) };
+      const newOrder: Order = { ...(this.state.order as any), wantDelivery:this.state.wantDelivery };
       newOrder.customer = this.state.myProfil;
 
       this.setState({ waiting: true });
@@ -129,7 +132,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         this.props.history.push('/cart/slots');
       } else {
         (window as any).scrollTo(0, document.body.scrollHeight);
-        this.setState({showErrors:true});
+        this.setState({ showErrors: true });
       }
     }
   }
@@ -138,34 +141,72 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
    * FIN DU PROCESSUS PANIER
    */
   continue() {
-    if (!this.state.summaryMode && this.state.showPhone) {
-      if (!(document as any).getElementById('cart-phone').checkValidity() || !this.state.checkCgr) {
-        this.setState({showErrors:true});
-        (window as any).scrollTo(0, document.body.scrollHeight);
-        return;
-      }
-      this.setState({showErrors:false});
 
-      // update phone /my-profil
-      const newUser = { ...this.state.myProfil } as User;
-      newUser.phone = this.state.phone;
-      this.setState({ waiting: true });
-      MyProfilStore.update(newUser)
-        .then(() => {
-          // refresh my-profil
-          this.setState({ waiting: false });
-          myProfilStore.set(newUser);
-          this.handleContinue();
-        })
-        .catch(() => this.props.history.push('/error'));
-    } else {
+    if(this.state.summaryMode){
+      // si mode résumé, on continue
       this.handleContinue();
+    }else{
+      const actions = [];
+      // si mode PANIER
+      if(this.state.wantDelivery) actions.push(new Promise<void>((res, rej) => {
+        if (!(document as any).getElementById('address-form').checkValidity()) {
+          (window as any).scrollTo(0, document.body.scrollHeight);
+          rej();
+          return;
+        }else{
+          // adresse de livraison valide
+          // update address /my-profil
+          const newUser = { ...this.state.myProfil } as User;
+          this.setState({ waiting: true });
+          MyProfilStore.update(newUser)
+            .then(() => {
+              // refresh my-profil
+              this.setState({ waiting: false });
+              myProfilStore.set(newUser);
+              res();
+            })
+            .catch(() => {
+              this.props.history.push('/error');
+              rej();
+            });
+          }
+      }));
+      if(this.state.showPhone) actions.push(new Promise<void>((res, rej) => {
+        if (!(document as any).getElementById('cart-form').checkValidity() || !this.state.checkCgr) {
+          (window as any).scrollTo(0, document.body.scrollHeight);
+          rej();
+          return;
+        }
+  
+        // update phone /my-profil
+        const newUser = { ...this.state.myProfil } as User;
+        newUser.phone = this.state.phone;
+        this.setState({ waiting: true });
+        MyProfilStore.update(newUser)
+          .then(() => {
+            // refresh my-profil
+            this.setState({ waiting: false });
+            myProfilStore.set(newUser);
+            res();
+          })
+          .catch(() => {
+            this.props.history.push('/error');
+            rej();
+          });
+      }));
+
+      Promise.all(actions).then(() => {
+        this.setState({ showErrors: false });
+        this.handleContinue();
+      }).catch(() => {
+        this.setState({ showErrors: true });
+      })
     }
   }
 
   render() {
     const order: Order = (this.state.order as any) as Order;
-    const payments: any = order && order.maker ? order.maker.payments || { acceptCoins: true, acceptBankCheck:true, acceptCards:true } : {};
+    const payments: any = order && order.maker ? order.maker.payments || { acceptCoins: true, acceptBankCheck: true, acceptCards: true } : {};
     const handleClose = () => this.setState({ wantResetCard: false });
     const handleCloseEraseProduct = () => this.setState({ eraseProduct: null });
     const reset = () => {
@@ -261,11 +302,50 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
               />
             </Card>
           </Grid>
+          {order.maker && !this.state.summaryMode && (<Grid item>
+            <Card className="card-info">
+              <CardHeader
+                avatar={
+                  <Avatar>
+                    <DriveEtaIcon />
+                  </Avatar>
+                }
+                title={`Drive chez le producteur`}
+                subheader={`Aucun frais de retrait`}
+              />
+            </Card>
+          </Grid>)}
+          {order.maker && !this.state.summaryMode && (<Grid item>
+            <Card className="card-info">
+              <CardHeader
+                avatar={
+                  <Avatar>
+                    <LocalShippingIcon />
+                  </Avatar>
+                }
+                title={`Livraison possible pour ${order.maker.deliveryCost?.toFixed(2)}€`}
+                subheader={`Rayon : ${order.maker.deliveryRadius}km`}
+              />
+            </Card>
+          </Grid>)}
+          
+          {order.maker && order.wantDelivery && this.state.summaryMode && (<Grid item>
+            <Card className="card-info">
+              <CardHeader
+                avatar={
+                  <Avatar>
+                    <LocalShippingIcon />
+                  </Avatar>
+                }
+                title={`Livraison le ${moment.default(order.slot).format('ddd D MMM à HH:mm')}`}
+                subheader={`Créneau`}
+              />
+            </Card>
+          </Grid>)}
 
-          {this.state.firstSlot && (<Grid item>
+          {this.state.firstSlot && order && !order.wantDelivery && this.state.summaryMode && (<Grid item>
             <Card className="card-info" onClick={() => {
               window.scrollTo(0, document.body.scrollHeight);
-
             }}>
               <CardHeader
                 avatar={
@@ -273,8 +353,8 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
                     <AccessTimeIcon />
                   </Avatar>
                 }
-                title={this.state.summaryMode ? moment.default(order.slot).format('ddd D MMM à HH:mm') : `dès ${this.state.firstSlot}`}
-                subheader="Horaire"
+                title={moment.default(order.slot).format('ddd D MMM à HH:mm')}
+                subheader="Horaire du retrait au Drive"
               />
             </Card>
           </Grid>)}
@@ -286,22 +366,23 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
             Prix TTC. En cas de rupture de stock d'un produit, vous en serez informé.</Alert>
         </div>)}
 
-       
+
 
         {/* les categories avec les produits */}
         <div className="groups"> {this.state.groups.map((group: CategoryProductChoice, i) => (
           <ExpansionPanel key={`cat_${i}`} expanded={true}>
             <ExpansionPanelSummary
-              
+
               aria-controls="panel1a-content"
               id={`panel${i}-header`}
+
             >
-              <Typography>{group.category.label}</Typography>
+              <Typography className="cat-title">{group.category.label}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails className="group-detail">
               <Grid container spacing={2} alignContent="center" direction="column" alignItems="stretch" justify="center">
                 {group.products.map((pc: ProductChoice, j) => (
-                  <Grid item key={`product${j}`} >
+                  <Grid item key={`product${j}`} className="item-product" >
                     <Paper>
                       <div className="my-product">
                         <div className="product-preview">
@@ -338,35 +419,82 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         ))}
         </div>
 
+        {order && order?.maker?.delivery && (<div className="switch-delivery">
+          <FormControlLabel
+            control={
+              <Switch
+                checked={this.state.wantDelivery}
+                disabled={this.state.summaryMode}
+                onChange={(e: any) => { 
+                  this.setState({ wantDelivery: e.target.checked });
+                  cartStore.setDelivery(e.target.checked);
+                }}
+                name="delivery"
+                color="secondary"
+              />
+            }
+            label="Opter pour la livraison à domicile"
+          />
+        </div>)}
+        {this.state.order && !this.state.wantDelivery && (<div className="info-area">
+          <Alert icon={false} className="option-choisie">
+            Option choisie : retrait au Drive chez le producteur</Alert>
+        </div>)}
+        {this.state.order && this.state.wantDelivery && (<div className="info-area">
+          <Alert icon={false} className="option-choisie">
+            Option choisie : livraison chez vous</Alert>
+        </div>)}
+
+        {this.state.order && this.state.wantDelivery && (<div className="info-area">
+          <Alert severity="info">
+            Veuillez vérifier que vous respectez la distance de {order.maker?.deliveryRadius}km entre votre adresse et le producteur{order.maker?.place.address ? ` (${order.maker?.place.address})` : ''}. Si vous êtes hors zone, votre commande sera invalidée par le producteur.</Alert>
+        </div>)}
+
+        {this.state.order && this.state.wantDelivery && (<div className="cart-address"><form id="address-form">
+          <TextField 
+            className="delivery-address" 
+            variant="filled" multiline
+            rowsMax={2} type="text" 
+            required
+            onChange={(e) => this.setState({
+              myProfil: {...this.state.myProfil, address: e.target.value}
+            })} id="cat-address" 
+            inputProps={{ maxLength: 512 }} 
+            disabled={this.state.summaryMode}
+            label="Adresse complète de livraison" 
+            error={!this.state.myProfil.address && this.state.showErrors} 
+            value={this.state.myProfil.address} />
+        </form></div>)}
+
+
+        {this.state.order && (<div className="comment-area">
+          <TextField
+            id="comment-multiline-flexible"
+            label="Commentaire"
+            multiline
+            rowsMax={3}
+            inputProps={{ maxLength: 512 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <ModeCommentOutlinedIcon color="primary" />
+                </InputAdornment>
+              ),
+            }}
+            placeholder={order.maker?.placeholderOrderComment || conf.defaultPlaceholderOrderComment}
+            fullWidth
+            value={order.comment}
+            onChange={(e) => {
+              this.setState({ order: { ...order, comment: e.target.value } });
+              cartStore.setComment(e.target.value);
+            }}
+          />
+        </div>)}
+
         {this.state.order && (<Alert severity="warning" className="instruction-payments">
           <AlertTitle>Pas de paiement sur ici-drive</AlertTitle>
           <strong>Paiement directement et intégralement au producteur</strong>
         </Alert>)}
-
-        {this.state.order && (<div className="comment-area">
-        <TextField
-          id="comment-multiline-flexible"
-          label="Commentaire"
-          multiline
-          rowsMax={2}
-          inputProps={{maxLength:512}}
-          InputProps={{
-            
-            startAdornment: (
-              <InputAdornment position="start">
-                <ModeCommentOutlinedIcon color="primary" />
-              </InputAdornment>
-            ),
-          }}
-          placeholder={order.maker?.placeholderOrderComment || conf.defaultPlaceholderOrderComment}
-          fullWidth
-          value={order.comment||''}
-          onChange={(e) => {
-            this.setState({order: {...order, comment:e.target.value}});
-            cartStore.setComment(e.target.value);
-          }}
-        />
-        </div>)}
 
         <div className="payments">
           {payments.acceptCoins && (<Chip className="payment" label="espèce" />)}
@@ -375,29 +503,33 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
           {payments.acceptPaypal && (<Chip className="payment" label="paypal" />)}
         </div>
 
-       
-        
-
         {this.state.order && !this.state.summaryMode && this.state.showPhone && (<div className="cart-phone"><form id="cart-form">
           <TextField error={!this.state.phone && this.state.showErrors} type="tel" required onChange={(e) => this.setState({ phone: e.target.value })} id="cart-phone" inputProps={{ maxLength: 12 }} label="Téléphone" fullWidth={true} value={this.state.phone} />
         </form></div>)}
 
-        
+
         {this.state.order && !this.state.summaryMode && (<div className={`reglementation`}>
           <Checkbox
             checked={this.state.checkCgr}
             onChange={(e) => this.setState({ checkCgr: e.target.checked })}
-            className={`${!this.state.checkCgr && this.state.showErrors ? 'apperror':''}`}
+            className={`${!this.state.checkCgr && this.state.showErrors ? 'apperror' : ''}`}
             inputProps={{ 'aria-label': 'primary checkbox' }}
-          /> <Typography variant="body1" className="accept-cgr">Accepter les <a href={CONF.cgr} rel="noreferrer noopener" target="_blank">Conditions Générales de Réservation</a></Typography>
+          /> <Typography variant="body1" className="accept-cgr">Accepter les <a href={CONF.cgr} rel="noreferrer noopener" target="_blank">Conditions Générales de Réservation</a>*</Typography>
         </div>)}
         {this.state.order && !this.state.summaryMode && !this.state.checkCgr && this.state.showErrors && (<div className="reg-ko">
-              Veuillez lire et cocher les CGR
+          Veuillez lire et cocher les CGR
         </div>)}
 
 
         {this.state.order && (
-          <CartFooter text={this.state.summaryMode ? 'Envoyer la réservation' : 'Chosir le créneau'} onClickContinue={() => this.continue()} quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total} />
+          <CartFooter
+            text={this.state.summaryMode ? 'Envoyer la réservation' : 'Chosir le créneau'}
+            onClickContinue={() => this.continue()}
+            quantity={order.choices.map(pc => pc.quantity).reduce((acc, cv) => acc + cv, 0)} total={order.total}
+            deliveryAvailableFrom={order?.maker?.deliveryAvailableFrom}
+            deliveryCost={order?.maker?.deliveryCost}
+            wantDelivery={this.state.wantDelivery}
+          />
         )}
 
         {this.state.waiting && (<Backdrop className="backdrop" open={true}>
