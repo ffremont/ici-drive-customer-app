@@ -165,7 +165,7 @@ class Makers extends React.Component<{ history: History, location: any }, { show
           <Grid container direction="column" justify="center" alignItems="center" spacing={1}>
 
             {this.state.showEmptyResult && (this.state.makers.length === 0) && (<div className="empty-makers">
-              <Typography variant="h4">Aucun producteur</Typography>
+              <Typography variant="h4">Aucun vendeur</Typography>
               <Typography variant="h5">dans les {conf.makersNearKm} km </Typography>
             </div>)}
             {this.state.gpsDisabled && (<div className="empty-makers">
@@ -187,7 +187,7 @@ class Makers extends React.Component<{ history: History, location: any }, { show
                     <CardMedia
                       className="maker-cardmedia"
                       image={p.image}
-                      title="Bannière producteur"
+                      title="Bannière vendeur"
                     />
                     <CardContent className="maker-cardcontent">
                       <div className="modes">

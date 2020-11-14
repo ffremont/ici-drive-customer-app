@@ -21,13 +21,13 @@ class Concept extends React.Component<{ history: any, match: any }, {}>{
 
       <Typography variant="h5">Concept</Typography>
       <p>
-        app.ici-drive.fr est une application GRATUITE, OUVERTE à tous les producteurs et consommateurs souhaitant vendre et acheter local.
-        La logistique est supportée par chaque producteur.
+        app.ici-drive.fr est une application GRATUITE, OUVERTE à tous les vendeur locaux et consommateurs souhaitant vendre et acheter local.
+        La logistique est supportée par chaque vendeur.
 </p><p>
 
         <strong>En tant que consommateur</strong>, vous avez accès à tous les produits locaux de qualité en accès drive ou livraison.
         <br/>
-        <strong>En tant que producteur</strong>, vous permettez aux consommateurs de réserver en ligne et de venir récupérer les produits dans votre lieu de retrait.
+        <strong>En tant que producteur / commerçant / restaurateur / artisan</strong>, vous permettez aux consommateurs de réserver en ligne et de venir récupérer les produits dans votre lieu de retrait.
 </p><p>
         Cette plateforme de drive est une initiative citoyenne. Pour consommer localement il faut un prix juste et aussi une logistique.
         

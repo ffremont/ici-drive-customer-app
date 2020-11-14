@@ -53,7 +53,7 @@ const Other = (props: any) => {
       <DialogTitle id="alert-dialog-title">Autre créneau</DialogTitle>
       <DialogContent>
         <Alert severity="info">
-          Merci d'indiquer en détail vos disponibilités de livraison (heures et jours). Le producteur examinera votre demande.
+          Merci d'indiquer en détail vos disponibilités de livraison (heures et jours). Le vendeur examinera votre demande.
           <br/>
           <strong>Date possible à partir du {moment.default(firstSlot).format('ddd D MMM à HH:mm')} </strong>
         </Alert>

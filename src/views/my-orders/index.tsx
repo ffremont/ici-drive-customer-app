@@ -55,8 +55,13 @@ class MyOrders extends React.Component<{ history: any, classes: any }, { orders:
 
     
     this.sub = ordersStore.subscribe((orders: Order[]) => {
-      if(orders)
-        (orders as any).sortBy('slot',true);
+      if(orders){
+        orders = orders.map((o:any) => {
+          o.nStatus = [OrderState.VERIFIED,OrderState.PENDING,  OrderState.CONFIRMED, OrderState.CANCELLED, OrderState.REFUSED].indexOf(o.status || OrderState.PENDING);
+          return o;
+        });
+        (orders as any).sortBy('nStatus', false,'created',true);
+      }
       this.setState({ orders : orders || [] })
     });
 

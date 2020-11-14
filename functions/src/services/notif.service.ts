@@ -204,7 +204,7 @@ export class NotifService {
             {
                 fcm,
                 title: `Nouvelle réservation`,
-                body: `Le producteur va vérifier la réservation "${order.ref}" très prochainement`
+                body: `Vérification très prochaine de la réservation "${order.ref}"`
             },{
                 fcm:order.maker?.fcm || null,
                 title: `Nouvelle réservation`,
@@ -258,9 +258,9 @@ export class NotifService {
             maker_phone: order.maker?.phone,
             google_maps: '',
             payments_info: order.maker?.payments?.acceptPaypal ?
-                `Le producteur ayant opté pour le paiement par PayPal, une demande de réglement vous sera adressée très prochainement.`
+                `Le producteur / commerçant / restaurateur ayant opté pour le paiement par PayPal, une demande de réglement vous sera adressée très prochainement.`
                 :
-                `Le producteur ayant opté pour le paiement en direct, veuillez vous munir lors du retrait / livraison : ${paymentsLabels}`
+                `Le producteur / commerçant / restaurateur ayant opté pour le paiement en direct, veuillez vous munir lors du retrait / livraison : ${paymentsLabels}`
         }));
 
         await Promise.all(promises);
@@ -349,9 +349,9 @@ export class NotifService {
             maker_phone: order.maker?.phone,
             google_maps: '',
             payments_info: order.maker?.payments?.acceptPaypal ?
-                `Le producteur ayant opté pour le paiement par PayPal, une demande de réglement vous sera adressée très prochainement.`
+                `Le producteur / commerçant / restaurateur ayant opté pour le paiement par PayPal, une demande de réglement vous sera adressée très prochainement.`
                 :
-                `Le producteur ayant opté pour le paiement en direct, veuillez vous munir lors du retrait / livraison : ${paymentsLabels}`
+                `Le producteur / commerçant / restaurateur ayant opté pour le paiement en direct, veuillez vous munir lors du retrait / livraison : ${paymentsLabels}`
         }));
         await Promise.all(promises);
     }

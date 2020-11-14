@@ -310,7 +310,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
                     <DriveEtaIcon />
                   </Avatar>
                 }
-                title={`Drive chez le producteur`}
+                title={`Drive chez le vendeur`}
                 subheader={`Aucun frais de retrait`}
               />
             </Card>
@@ -438,7 +438,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
         </div>)}
         {this.state.order && !this.state.wantDelivery && (<div className="info-area">
           <Alert icon={false} className="option-choisie">
-            Option choisie : retrait au Drive chez le producteur</Alert>
+            Option choisie : retrait au Drive chez le vendeur</Alert>
         </div>)}
         {this.state.order && this.state.wantDelivery && (<div className="info-area">
           <Alert icon={false} className="option-choisie">
@@ -447,7 +447,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
         {this.state.order && this.state.wantDelivery && (<div className="info-area">
           <Alert severity="info">
-            Veuillez vérifier que vous respectez la distance de {order.maker?.deliveryRadius}km entre votre adresse et le producteur{order.maker?.place.address ? ` (${order.maker?.place.address})` : ''}. Si vous êtes hors zone, votre commande sera invalidée par le producteur.</Alert>
+            Veuillez vérifier que vous respectez la distance de {order.maker?.deliveryRadius}km entre votre adresse et le vendeur{order.maker?.place.address ? ` (${order.maker?.place.address})` : ''}. Si vous êtes hors zone, votre commande sera invalidée par le vendeur.</Alert>
         </div>)}
 
         {this.state.order && this.state.wantDelivery && (<div className="cart-address"><form id="address-form">
@@ -493,7 +493,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
 
         {this.state.order && (<Alert severity="warning" className="instruction-payments">
           <AlertTitle>Pas de paiement sur ici-drive</AlertTitle>
-          <strong>Paiement directement et intégralement au producteur</strong>
+          <strong>Paiement directement et intégralement au vendeur</strong>
         </Alert>)}
 
         <div className="payments">

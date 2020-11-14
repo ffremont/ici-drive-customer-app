@@ -29,7 +29,7 @@ const CartConflit = (props: any) => {
       <DialogTitle id="alert-dialog-title">Conflit de panier</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Votre panier contient des produits d'un autre producteur, que souhaitez-vous faire ?
+          Votre panier contient des produits d'un autre vendeur, que souhaitez-vous faire ?
           </DialogContentText>
       </DialogContent>
       <DialogActions>

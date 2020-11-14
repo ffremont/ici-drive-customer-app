@@ -12,8 +12,6 @@ export class Config {
     public static verifyOrderForShortOrderHours = 24; // le prod. a X heures pour valider une commande "courte"
     public static verifyOrderForLongOrderHours = 72; // le prod. doit valider la commande "longue" X heures AVANT le retrait / liv.
     public static confirmOrderForLongOrderHours = 48; // le client doit confirmer la commande "longue" X heures AVANT le retrait / liv.
-    public static expireWithoutConfirmHours = 3; // expiration des commandes non confirmées 3h avant le retrait
-    public static expireWithConfirmHours = 48;
 
     public static withConfirmExpirationReason = `Annulation automatique, la vérification doit intervenir au moins 72h avant le retrait / liv. et la confirmation 48h `
     public static noConfirmExpirationReason = `Annulation automatique, la vérification doit intervenir dans les 24h après la commande `

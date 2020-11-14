@@ -163,7 +163,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
 
         {currentOrder.reasonOf && (<Grid item>
           <Alert severity="info" icon={false}>
-          <AlertTitle>Commentaire producteur</AlertTitle>
+          <AlertTitle>Commentaire vendeur</AlertTitle>
           {currentOrder.reasonOf}
           </Alert>
         </Grid>)}
@@ -301,7 +301,7 @@ class Order extends React.Component<{ history: any, classes: any, match: any }, 
         </Card>
       ))}
 
-      {maker && (<Alert severity="info">Pour toutes questions ou empêchement, contactez directement le producteur (appel ou sms) au <a href={'tel:'+maker.phone}>{maker.phone}</a></Alert>)}
+      {maker && (<Alert severity="info">Pour toutes questions ou empêchement, contactez directement le vendeur (appel ou sms) au <a href={'tel:'+maker.phone}>{maker.phone}</a></Alert>)}
 
       <Confirm title="Annuler la commande" withText={true} onClose={() => this.setState({ openCancelDialog: false })} onConfirm={(txt: string) => this.cancel(txt)} message="Je souhaite annuler pour le motif :" open={this.state.openCancelDialog} />
       <Confirm title="Réservation confirmée" okText="Ok" withText={false} onClose={() => this.setState({ openInfoConfirmed: false })} onConfirm={(txt: string) => this.props.history.push('/my-orders')} message="Un email récapitulatif vous a été transmis." open={this.state.openInfoConfirmed} />

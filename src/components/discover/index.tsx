@@ -75,7 +75,7 @@ const Discover = (props: any) => {
                     alt="image"
                     height={props.height}
                     image={props.image}
-                    title="Producteur / artisan"
+                    title="Vendeurs locaux"
                 />
                 <CardContent className="discover-content">
                     <div className="modes">

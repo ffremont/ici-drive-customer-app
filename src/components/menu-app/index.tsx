@@ -164,7 +164,7 @@ const MenuApp = (props: any) => {
   const shareMaker = () => {
     (window as any).navigator.share({
       title: `Drive de produits locaux`,
-      text: `Découvrez ce producteur ${share}`,
+      text: `Découvrez ce vendeur local ${share}`,
     }); // partage l'URL de MDN
     
   };
