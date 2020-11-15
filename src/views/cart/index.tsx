@@ -315,7 +315,7 @@ class Cart extends React.Component<{ history: any, location: any, match: any }, 
               />
             </Card>
           </Grid>)}
-          {order.maker && !this.state.summaryMode && (<Grid item>
+          {order.maker && !this.state.summaryMode && order.maker.delivery && (<Grid item>
             <Card className="card-info">
               <CardHeader
                 avatar={
