@@ -20,7 +20,7 @@
     "firebase": "^7.14.0",
     "moment": "^2.24.0",
     "ngeohash": "^0.6.3",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "npm-watch": "^0.6.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
