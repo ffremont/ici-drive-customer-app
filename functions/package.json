@@ -33,7 +33,7 @@
     "form-data": "^3.0.0",
     "got": "^11.1.3",
     "moment": "^2.25.1",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "ngeohash": "^0.6.3",
     "qs": "^6.9.4",
     "random-location": "^1.1.3",
